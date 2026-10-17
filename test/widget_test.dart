@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:envivn/src/common/utils/aqi_helper.dart';
+import 'package:envivn/src/common/utils/date_helper.dart';
 import 'package:envivn/src/common/utils/weather_code_helper.dart';
 
 void main() {
@@ -32,6 +33,15 @@ void main() {
     test('WeatherCodeHelper resolves rain correctly', () {
       final info = WeatherCodeHelper.getInfo(63);
       expect(info.description, 'Mưa vừa');
+    });
+
+    test('DateHelper formats Vietnamese date without throwing LocaleDataException', () {
+      final date = DateTime(2026, 10, 17, 13, 0);
+      final formatted = DateHelper.formatVietnamese(date);
+      expect(formatted, isNotEmpty);
+
+      final fullFormatted = DateHelper.formatVietnameseFull(date);
+      expect(fullFormatted, isNotEmpty);
     });
   });
 }

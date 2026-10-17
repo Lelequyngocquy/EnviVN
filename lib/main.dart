@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
+
 import 'src/common/constants/colors.dart';
 import 'src/common/constants/strings.dart';
 import 'src/core/di/injection_container.dart' as di;
@@ -19,6 +23,11 @@ import 'src/shared/router/router_key_manager.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   UIColors.setSystemUIOverlay();
+
+  // Initialize Vietnamese locale data for intl DateFormat
+  await initializeDateFormatting('vi_VN', null);
+  await initializeDateFormatting('vi', null);
+  Intl.defaultLocale = 'vi_VN';
 
   await di.setupGetIt();
 
@@ -40,6 +49,17 @@ class EnviVNApp extends StatelessWidget {
         navigatorKey: GlobalKeyManager.instance.root,
         debugShowCheckedModeBanner: false,
         title: AppStrings.appName,
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('vi', 'VN'),
+          Locale('vi'),
+          Locale('en', 'US'),
+        ],
+        locale: const Locale('vi', 'VN'),
         theme: ThemeData(
           useMaterial3: true,
           brightness: Brightness.dark,

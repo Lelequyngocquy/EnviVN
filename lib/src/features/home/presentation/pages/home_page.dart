@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/extensions/context_x.dart';
+import 'package:envivn/src/common/utils/date_helper.dart';
 import 'package:envivn/src/core/presentation/widgets/loading.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_cubit.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_state.dart';
@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
-    final dateStr = DateFormat('EEEE, dd \'tháng\' MM', 'vi').format(now);
+    final dateStr = DateHelper.formatVietnamese(now);
 
     return Scaffold(
       backgroundColor: UIColors.bg,

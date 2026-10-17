@@ -1,14 +1,14 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
-import '../../../../common/constants/colors.dart';
-import '../../../../shared/widgets/glass.dart';
-import '../../../air_quality/presentation/cubits/air_quality_cubit.dart';
-import '../../../air_quality/presentation/cubits/air_quality_state.dart';
-import '../cubits/weather_cubit.dart';
-import '../cubits/weather_state.dart';
+import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/common/utils/date_helper.dart';
+import 'package:envivn/src/shared/widgets/glass.dart';
+import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_cubit.dart';
+import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_state.dart';
+import 'package:envivn/src/features/weather/presentation/cubits/weather_cubit.dart';
+import 'package:envivn/src/features/weather/presentation/cubits/weather_state.dart';
 
 class TwentyFourHourDetailPage extends StatelessWidget {
   const TwentyFourHourDetailPage({super.key});
@@ -16,7 +16,7 @@ class TwentyFourHourDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
-    final dateStr = DateFormat('EEEE, dd/MM/yyyy', 'vi').format(now);
+    final dateStr = DateHelper.formatVietnameseFull(now);
 
     return Scaffold(
       backgroundColor: UIColors.bg,
