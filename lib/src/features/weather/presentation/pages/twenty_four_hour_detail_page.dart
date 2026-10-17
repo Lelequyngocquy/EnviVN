@@ -7,7 +7,6 @@ import 'package:envivn/src/common/utils/date_helper.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_cubit.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_state.dart';
-import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
 import 'package:envivn/src/features/weather/presentation/cubits/weather_cubit.dart';
 import 'package:envivn/src/features/weather/presentation/cubits/weather_state.dart';
 
@@ -36,33 +35,20 @@ class TwentyFourHourDetailPage extends StatelessWidget {
                     children: [
                       // Header Row
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          AppGlass(
-                            borderRadius: 14,
-                            child: IconButton(
-                              icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 18),
-                              onPressed: () {
-                                if (Navigator.canPop(context)) {
-                                  Navigator.pop(context);
-                                } else {
-                                  context.read<HomeDashboardCubit>().setTab(0);
-                                }
-                              },
-                              tooltip: 'Quay lại',
-                            ),
-                          ),
-                          const SizedBox(width: 14),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
                                 'Chi tiết 24 giờ',
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 22,
                                   fontWeight: FontWeight.bold,
                                   color: UIColors.textPrimary,
                                 ),
                               ),
+                              const SizedBox(height: 2),
                               Text(
                                 dateStr,
                                 style: const TextStyle(
@@ -71,6 +57,15 @@ class TwentyFourHourDetailPage extends StatelessWidget {
                                 ),
                               ),
                             ],
+                          ),
+                          AppGlass(
+                            borderRadius: 14,
+                            padding: const EdgeInsets.all(10),
+                            child: const Icon(
+                              Icons.insights_rounded,
+                              color: UIColors.primary,
+                              size: 20,
+                            ),
                           ),
                         ],
                       ),
