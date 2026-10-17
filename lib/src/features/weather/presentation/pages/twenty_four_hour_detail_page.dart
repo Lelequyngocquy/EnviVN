@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/aqi_helper.dart';
+import 'package:envivn/src/core/presentation/widgets/app_status_tag.dart';
 import 'package:envivn/src/common/utils/date_helper.dart';
 import 'package:envivn/src/common/utils/weather_code_helper.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_cubit.dart';
@@ -209,21 +210,10 @@ class TwentyFourHourDetailPage extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-          decoration: BoxDecoration(
-            color: tagColor.withOpacity(0.15),
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: tagColor.withOpacity(0.4), width: 0.8),
-          ),
-          child: Text(
-            tag,
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-              color: tagColor,
-            ),
-          ),
+        AppStatusTag(
+          label: tag,
+          color: tagColor,
+          size: AppTagSize.small,
         ),
       ],
     );

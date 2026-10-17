@@ -127,6 +127,8 @@ class AppBottomSheet extends StatelessWidget {
                           if (title != null)
                             Text(
                               title!,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,
@@ -137,6 +139,8 @@ class AppBottomSheet extends StatelessWidget {
                             const SizedBox(height: 2),
                             Text(
                               subtitle!,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: UIColors.textSecondary,

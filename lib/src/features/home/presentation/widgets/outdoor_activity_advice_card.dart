@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/activity_advice_helper.dart';
 import 'package:envivn/src/common/utils/aqi_helper.dart';
+import 'package:envivn/src/core/presentation/widgets/app_status_tag.dart';
 import 'package:envivn/src/features/air_quality/domain/entities/air_quality_entity.dart';
 import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
@@ -41,51 +42,42 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: adviceData.statusColor.withOpacity(0.18),
-                      borderRadius: BorderRadius.circular(10),
+              Expanded(
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: adviceData.statusColor.withOpacity(0.18),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(
+                        Icons.directions_run_rounded,
+                        color: adviceData.statusColor,
+                        size: 20,
+                      ),
                     ),
-                    child: Icon(
-                      Icons.directions_run_rounded,
-                      color: adviceData.statusColor,
-                      size: 20,
+                    const SizedBox(width: 10),
+                    const Expanded(
+                      child: Text(
+                        'Khuyến nghị hoạt động',
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          color: UIColors.textPrimary,
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 10),
-                  const Text(
-                    'Khuyến nghị hoạt động',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: UIColors.textPrimary,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: adviceData.statusColor.withOpacity(0.18),
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: adviceData.statusColor.withOpacity(0.4),
-                  ),
-                ),
-                child: Text(
-                  adviceData.statusLabel,
-                  style: TextStyle(
-                    color: adviceData.statusColor,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+              const SizedBox(width: 8),
+              AppStatusTag(
+                label: adviceData.statusLabel,
+                color: adviceData.statusColor,
+                size: AppTagSize.medium,
               ),
             ],
           ),
@@ -239,28 +231,12 @@ class _ActionGlassPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: color.withOpacity(0.35)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14, color: color),
-          const SizedBox(width: 5),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: color,
-            ),
-          ),
-        ],
-      ),
+    return AppStatusTag(
+      label: label,
+      icon: icon,
+      color: color,
+      size: AppTagSize.medium,
+      fontWeight: FontWeight.w600,
     );
   }
 }

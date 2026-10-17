@@ -10,11 +10,7 @@ class HomeWeatherCard extends StatelessWidget {
   final WeatherEntity weather;
   final VoidCallback? onDetailTap;
 
-  const HomeWeatherCard({
-    super.key,
-    required this.weather,
-    this.onDetailTap,
-  });
+  const HomeWeatherCard({super.key, required this.weather, this.onDetailTap});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +35,9 @@ class HomeWeatherCard extends StatelessWidget {
         : (nextRainProb > 30 ? 'Khả năng mưa' : 'Khô ráo');
 
     // High / Low temp for today if daily forecast exists
-    final daily = weather.dailyForecast.isNotEmpty ? weather.dailyForecast.first : null;
+    final daily = weather.dailyForecast.isNotEmpty
+        ? weather.dailyForecast.first
+        : null;
     final String? highLowStr = daily != null
         ? 'Cao: ${daily.maxTemp.toStringAsFixed(0)}° • Thấp: ${daily.minTemp.toStringAsFixed(0)}°'
         : null;
@@ -52,62 +50,23 @@ class HomeWeatherCard extends StatelessWidget {
         children: [
           // 1. Header Row
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.cloud_sync_rounded,
-                    size: 16,
-                    color: UIColors.secondary.withOpacity(0.9),
-                  ),
-                  const SizedBox(width: 6),
-                  const Text(
-                    'THỜI TIẾT HIỆN TẠI',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.8,
-                      color: UIColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-              if (onDetailTap != null)
-                GestureDetector(
-                  onTap: onDetailTap,
-                  behavior: HitTestBehavior.opaque,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.06),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: Colors.white.withOpacity(0.12),
-                        width: 0.8,
-                      ),
-                    ),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'Chi tiết 24h',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                            color: UIColors.secondary,
-                          ),
-                        ),
-                        SizedBox(width: 2),
-                        Icon(
-                          Icons.chevron_right_rounded,
-                          size: 14,
-                          color: UIColors.secondary,
-                        ),
-                      ],
-                    ),
+              Expanded(
+                child: const Text(
+                  'THỜI TIẾT HIỆN TẠI',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.8,
+                    color: UIColors.textSecondary,
                   ),
                 ),
+              ),
+              Icon(
+                Icons.cloud_sync_rounded,
+                size: 16,
+                color: UIColors.secondary.withOpacity(0.9),
+              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -246,7 +205,9 @@ class HomeWeatherCard extends StatelessWidget {
                     iconColor: const Color(0xFF67E8F9),
                     label: 'Độ ẩm',
                     value: humidityStr,
-                    sub: weather.relativeHumidity > 80 ? 'Ẩm cao' : 'Thoáng đãng',
+                    sub: weather.relativeHumidity > 80
+                        ? 'Ẩm cao'
+                        : 'Thoáng đãng',
                   ),
                 ),
                 Container(
@@ -282,9 +243,14 @@ class HomeWeatherCard extends StatelessWidget {
                     color: UIColors.textMuted,
                   ),
                 ),
-                if (weather.hourlyForecast.any((h) => h.precipitationProbability >= 40))
+                if (weather.hourlyForecast.any(
+                  (h) => h.precipitationProbability >= 40,
+                ))
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: UIColors.secondary.withOpacity(0.16),
                       borderRadius: BorderRadius.circular(6),
@@ -292,7 +258,11 @@ class HomeWeatherCard extends StatelessWidget {
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.umbrella_rounded, size: 10, color: UIColors.secondary),
+                        Icon(
+                          Icons.umbrella_rounded,
+                          size: 10,
+                          color: UIColors.secondary,
+                        ),
                         SizedBox(width: 4),
                         Text(
                           'Sắp có mưa',
@@ -313,20 +283,30 @@ class HomeWeatherCard extends StatelessWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
-                itemCount: weather.hourlyForecast.length > 10 ? 10 : weather.hourlyForecast.length,
+                itemCount: weather.hourlyForecast.length > 10
+                    ? 10
+                    : weather.hourlyForecast.length,
                 separatorBuilder: (context, index) => const SizedBox(width: 8),
                 itemBuilder: (context, index) {
                   final item = weather.hourlyForecast[index];
                   final isFirst = index == 0;
-                  final timeStr = isFirst ? 'Bây giờ' : DateFormat('HH:mm').format(item.time);
-                  final itemInfo = WeatherCodeHelper.getInfo(item.weatherCode, time: item.time);
+                  final timeStr = isFirst
+                      ? 'Bây giờ'
+                      : DateFormat('HH:mm').format(item.time);
+                  final itemInfo = WeatherCodeHelper.getInfo(
+                    item.weatherCode,
+                    time: item.time,
+                  );
 
                   return GestureDetector(
                     onTap: onDetailTap,
                     behavior: HitTestBehavior.opaque,
                     child: Container(
                       width: 58,
-                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: isFirst
                             ? UIColors.primary.withOpacity(0.12)
@@ -346,15 +326,15 @@ class HomeWeatherCard extends StatelessWidget {
                             timeStr,
                             style: TextStyle(
                               fontSize: 10,
-                              fontWeight: isFirst ? FontWeight.bold : FontWeight.w500,
-                              color: isFirst ? UIColors.primary : UIColors.textSecondary,
+                              fontWeight: isFirst
+                                  ? FontWeight.bold
+                                  : FontWeight.w500,
+                              color: isFirst
+                                  ? UIColors.primary
+                                  : UIColors.textSecondary,
                             ),
                           ),
-                          Icon(
-                            itemInfo.icon,
-                            size: 18,
-                            color: itemInfo.color,
-                          ),
+                          Icon(itemInfo.icon, size: 18, color: itemInfo.color),
                           Text(
                             '${item.temperature.toStringAsFixed(0)}°',
                             style: const TextStyle(
@@ -382,6 +362,40 @@ class HomeWeatherCard extends StatelessWidget {
               ),
             ),
           ],
+          const SizedBox(height: 14),
+          const Divider(height: 1, color: UIColors.surfaceVariant),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Cập nhật: Vừa xong',
+                style: const TextStyle(fontSize: 11, color: UIColors.textMuted),
+              ),
+              if (onDetailTap != null)
+                GestureDetector(
+                  onTap: onDetailTap,
+                  behavior: HitTestBehavior.opaque,
+                  child: Row(
+                    children: const [
+                      Text(
+                        'Chi tiết 24h',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: UIColors.primary,
+                        ),
+                      ),
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        size: 16,
+                        color: UIColors.primary,
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
         ],
       ),
     );
@@ -423,10 +437,7 @@ class _WeatherPillItem extends StatelessWidget {
         const SizedBox(height: 1),
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 9,
-            color: UIColors.textSecondary,
-          ),
+          style: const TextStyle(fontSize: 9, color: UIColors.textSecondary),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

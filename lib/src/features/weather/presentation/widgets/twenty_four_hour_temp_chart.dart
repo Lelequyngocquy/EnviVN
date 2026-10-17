@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/core/presentation/widgets/app_status_tag.dart';
 import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
@@ -44,42 +45,38 @@ class TwentyFourHourTempChart extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    'Biểu đồ nhiệt độ 24 giờ tới',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: UIColors.textPrimary,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      'Biểu đồ nhiệt độ 24 giờ tới',
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: UIColors.textPrimary,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Đường cong nhiệt độ (°C) theo từng mốc giờ',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: UIColors.textSecondary,
+                    SizedBox(height: 4),
+                    Text(
+                      'Đường cong nhiệt độ (°C) theo từng mốc giờ',
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: UIColors.textSecondary,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: UIColors.secondary.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: UIColors.secondary.withOpacity(0.4)),
-                ),
-                child: const Text(
-                  '24 Giờ',
-                  style: TextStyle(
-                    color: UIColors.secondary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 11,
-                  ),
-                ),
+              const SizedBox(width: 8),
+              const AppStatusTag(
+                label: '24 Giờ',
+                color: UIColors.secondary,
+                size: AppTagSize.medium,
               ),
             ],
           ),

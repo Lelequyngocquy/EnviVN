@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 
 import '../../../../domain/entities/base.dart';
+import '../../../configs/env_config.dart';
 import 'configs/base_response.dart';
 import 'configs/endpoint.dart';
 
@@ -18,7 +19,7 @@ class RestfulRequest {
     String? defaultBaseUrl,
     this.timeout = const Duration(seconds: 15),
   })  : _client = client ?? http.Client(),
-        defaultBaseUrl = defaultBaseUrl ?? 'https://api.open-meteo.com';
+        defaultBaseUrl = defaultBaseUrl ?? EnvConfig.openMeteoWeatherBaseUrl;
 
   Future<BaseResponse> requestData(
     EndpointType endpoint, {

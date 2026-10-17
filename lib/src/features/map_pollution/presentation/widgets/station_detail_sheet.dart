@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:envivn/src/core/presentation/widgets/app_bottom_sheet.dart';
+import 'package:envivn/src/core/presentation/widgets/app_status_tag.dart';
 import '../../../../common/constants/colors.dart';
 import '../../../../common/utils/aqi_helper.dart';
 import '../../domain/entities/station_pollution_entity.dart';
@@ -16,21 +17,10 @@ class StationDetailSheet extends StatelessWidget {
     return AppBottomSheet(
       title: station.name,
       subtitle: 'Khu vực: ${station.province}',
-      trailing: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: info.color.withOpacity(0.15),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: info.color.withOpacity(0.3)),
-        ),
-        child: Text(
-          info.label,
-          style: TextStyle(
-            color: info.color,
-            fontWeight: FontWeight.bold,
-            fontSize: 13,
-          ),
-        ),
+      trailing: AppStatusTag(
+        label: info.label,
+        color: info.color,
+        size: AppTagSize.large,
       ),
       bottomButtonText: 'Đóng',
       child: SingleChildScrollView(

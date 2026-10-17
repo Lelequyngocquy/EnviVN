@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/core/presentation/widgets/app_status_tag.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
 class Aqi24hChartCard extends StatelessWidget {
@@ -23,42 +24,38 @@ class Aqi24hChartCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    'Diễn biến nồng độ 24 giờ qua',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: UIColors.textPrimary,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      'Diễn biến nồng độ 24 giờ qua',
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: UIColors.textPrimary,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Chỉ số AQI theo từng khung giờ',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: UIColors.textSecondary,
+                    SizedBox(height: 4),
+                    Text(
+                      'Chỉ số AQI theo từng khung giờ',
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: UIColors.textSecondary,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: UIColors.primary.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: UIColors.primary.withOpacity(0.4)),
-                ),
-                child: const Text(
-                  'AQI US',
-                  style: TextStyle(
-                    color: UIColors.primary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 11,
-                  ),
-                ),
+              const SizedBox(width: 8),
+              const AppStatusTag(
+                label: 'AQI US',
+                color: UIColors.primary,
+                size: AppTagSize.medium,
               ),
             ],
           ),

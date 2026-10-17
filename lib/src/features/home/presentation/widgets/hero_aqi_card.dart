@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/aqi_helper.dart';
+import 'package:envivn/src/core/presentation/widgets/app_status_tag.dart';
 import 'package:envivn/src/features/air_quality/domain/entities/air_quality_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
@@ -37,8 +38,8 @@ class HeroAQICard extends StatelessWidget {
                 'CHỈ SỐ CHẤT LƯỢNG KHÔNG KHÍ',
                 style: TextStyle(
                   fontSize: 11,
-                  letterSpacing: 1.2,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.8,
                   color: UIColors.textSecondary,
                 ),
               ),
@@ -49,32 +50,25 @@ class HeroAQICard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
-                '$aqiVal',
-                style: const TextStyle(
-                  fontSize: 64,
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white,
-                  height: 1.0,
+              Expanded(
+                child: Text(
+                  '$aqiVal',
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 64,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    height: 1.0,
+                  ),
                 ),
               ),
               const SizedBox(width: 14),
               // Status Badge Pill
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                decoration: BoxDecoration(
-                  color: aqiInfo.color.withOpacity(0.18),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: aqiInfo.color.withOpacity(0.4)),
-                ),
-                child: Text(
-                  aqiInfo.label,
-                  style: TextStyle(
-                    color: aqiInfo.color,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13,
-                  ),
-                ),
+              AppStatusTag(
+                label: aqiInfo.label,
+                color: aqiInfo.color,
+                size: AppTagSize.large,
               ),
             ],
           ),
@@ -97,8 +91,20 @@ class HeroAQICard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
-                  Text('Dự báo theo giờ', style: TextStyle(fontSize: 11, color: UIColors.textSecondary)),
-                  Text('24h', style: TextStyle(fontSize: 11, color: UIColors.textSecondary)),
+                  Text(
+                    'Dự báo theo giờ',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: UIColors.textSecondary,
+                    ),
+                  ),
+                  Text(
+                    '24h',
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: UIColors.textSecondary,
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 8),
@@ -163,7 +169,11 @@ class HeroAQICard extends StatelessWidget {
                           color: UIColors.primary,
                         ),
                       ),
-                      Icon(Icons.chevron_right_rounded, size: 16, color: UIColors.primary),
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        size: 16,
+                        color: UIColors.primary,
+                      ),
                     ],
                   ),
                 ),

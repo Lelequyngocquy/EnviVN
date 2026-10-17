@@ -53,11 +53,17 @@ class LiquidGlassBottomBar extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 8,)
-        ,AppGlass( isFixed: true,
-            borderRadius: 100,
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: NavBarItem(icon: Icons.message_outlined, label: 'Trợ lý', isActive: false, onTap: (){},),),
+        const SizedBox(width: 8),
+        AppGlass(
+          isFixed: true,
+          borderRadius: 100,
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: NavBarItem(
+            icon: Icons.wechat_outlined,
+            isActive: false,
+            onTap: () {},
+          ),
+        ),
       ],
     );
   }
@@ -65,14 +71,14 @@ class LiquidGlassBottomBar extends StatelessWidget {
 
 class NavBarItem extends StatelessWidget {
   final IconData icon;
-  final String label;
+  final String? label;
   final bool isActive;
   final VoidCallback onTap;
 
   const NavBarItem({
     super.key,
     required this.icon,
-    required this.label,
+    this.label,
     required this.isActive,
     required this.onTap,
   });
@@ -83,24 +89,28 @@ class NavBarItem extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        padding: label != null
+            ? const EdgeInsets.symmetric(horizontal: 12, vertical: 4)
+            : const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               icon,
               color: isActive ? UIColors.primary : UIColors.textMuted,
-              size: 22,
+              size: label != null ? 22 : 40,
             ),
-            const SizedBox(height: 3),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
-                color: isActive ? UIColors.primary : UIColors.textMuted ,
+            if (label != null) ...{
+              const SizedBox(height: 3),
+              Text(
+                label ?? '',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
+                  color: isActive ? UIColors.primary : UIColors.textMuted,
+                ),
               ),
-            ),
+            },
           ],
         ),
       ),

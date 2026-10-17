@@ -32,7 +32,7 @@ class MapTopControlBar extends StatelessWidget {
         // 1. Filter Glass Bar
         AppGlass(
           borderRadius: 22,
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Row(
             children: [
               const Icon(
@@ -67,7 +67,9 @@ class MapTopControlBar extends StatelessWidget {
                       const SizedBox(width: 6),
                       _FilterGlassChip(
                         label: 'Kém',
-                        isActive: activeFilter == 'unhealthy' || activeFilter == 'warning',
+                        isActive:
+                            activeFilter == 'unhealthy' ||
+                            activeFilter == 'warning',
                         onTap: () => onFilterChanged('unhealthy'),
                       ),
                     ],
@@ -77,7 +79,9 @@ class MapTopControlBar extends StatelessWidget {
               IconButton(
                 icon: Icon(
                   showHeatmap ? Icons.blur_on_rounded : Icons.blur_off_rounded,
-                  color: showHeatmap ? UIColors.primary : UIColors.textSecondary,
+                  color: showHeatmap
+                      ? UIColors.primary
+                      : UIColors.textSecondary,
                 ),
                 onPressed: onToggleHeatmap,
                 tooltip: 'Bật/Tắt Heatmap',
@@ -92,11 +96,13 @@ class MapTopControlBar extends StatelessWidget {
           physics: const ClampingScrollPhysics(),
           scrollDirection: Axis.horizontal,
           child: Row(
-            children: [ _QuickCityGlassChip(
-              label: 'Toàn quốc',
-              isActive: curCity == 'Toàn quốc',
-              onTap: onSelectAllVietnam,
-            ),const SizedBox(width: 6),
+            children: [
+              _QuickCityGlassChip(
+                label: 'Toàn quốc',
+                isActive: curCity == 'Toàn quốc',
+                onTap: onSelectAllVietnam,
+              ),
+              const SizedBox(width: 6),
               _QuickCityGlassChip(
                 label: 'Hà Nội',
                 isActive: curCity.contains('Hà Nội'),
@@ -111,7 +117,9 @@ class MapTopControlBar extends StatelessWidget {
               const SizedBox(width: 6),
               _QuickCityGlassChip(
                 label: 'TP. Hồ Chí Minh',
-                isActive: curCity.contains('Hồ Chí Minh') || curCity.contains('Quận 1'),
+                isActive:
+                    curCity.contains('Hồ Chí Minh') ||
+                    curCity.contains('Quận 1'),
                 onTap: () => onSelectCity('TP. Hồ Chí Minh'),
               ),
               const SizedBox(width: 6),
@@ -120,8 +128,6 @@ class MapTopControlBar extends StatelessWidget {
                 isActive: curCity.contains('Hải Phòng'),
                 onTap: () => onSelectCity('Hải Phòng'),
               ),
-
-
             ],
           ),
         ),
@@ -204,4 +210,3 @@ class _QuickCityGlassChip extends StatelessWidget {
     );
   }
 }
-

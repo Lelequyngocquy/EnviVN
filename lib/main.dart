@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'src/common/constants/colors.dart';
 import 'src/common/constants/strings.dart';
 import 'src/core/di/injection_container.dart' as di;
+import 'src/core/infrastructure/configs/env_config.dart';
 import 'src/core/presentation/widgets/fade_trans_nav.dart';
 import 'src/features/air_quality/presentation/cubits/air_quality_cubit.dart';
 import 'src/features/home/presentation/cubits/home_dashboard_cubit.dart';
@@ -21,6 +22,9 @@ import 'src/shared/router/router_key_manager.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   UIColors.setSystemUIOverlay();
+
+  // Load environment configuration (.env with fallback to .env_example)
+  await EnvConfig.init();
 
   // Initialize Vietnamese locale data for intl DateFormat
   await initializeDateFormatting('vi_VN', null);

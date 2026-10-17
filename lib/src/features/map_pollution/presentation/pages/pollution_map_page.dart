@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/aqi_helper.dart';
+import 'package:envivn/src/core/infrastructure/configs/env_config.dart';
 import 'package:envivn/src/core/presentation/widgets/loading.dart';
 import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
 import 'package:envivn/src/features/map_pollution/presentation/cubits/map_pollution_cubit.dart';
@@ -138,8 +139,8 @@ class _PollutionMapPageState extends State<PollutionMapPage> {
                 ),
                 children: [
                   TileLayer(
-                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName: 'com.envivn.envivn',
+                    urlTemplate: EnvConfig.osmTileUrl,
+                    userAgentPackageName: EnvConfig.mapUserAgent,
                     tileBuilder: darkModeTileBuilder,
                   ),
                   if (state.showHeatmap) CircleLayer(circles: circles),

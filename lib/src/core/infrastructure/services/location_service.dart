@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
+import '../configs/env_config.dart';
+
 class LocationResult {
   final double latitude;
   final double longitude;
@@ -85,7 +87,7 @@ class LocationService {
   Future<LocationResult?> _getLocationByIp() async {
     try {
       final response = await http
-          .get(Uri.parse('http://ip-api.com/json'))
+          .get(Uri.parse(EnvConfig.ipApiBaseUrl))
           .timeout(const Duration(seconds: 4));
 
       if (response.statusCode == 200) {

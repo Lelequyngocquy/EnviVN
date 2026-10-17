@@ -3,16 +3,14 @@ import 'package:intl/intl.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/weather_code_helper.dart';
+import 'package:envivn/src/core/presentation/widgets/app_status_tag.dart';
 import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
 class HourlyWeatherSlider extends StatelessWidget {
   final List<HourlyWeatherPoint> hourlyList;
 
-  const HourlyWeatherSlider({
-    super.key,
-    required this.hourlyList,
-  });
+  const HourlyWeatherSlider({super.key, required this.hourlyList});
 
   @override
   Widget build(BuildContext context) {
@@ -29,38 +27,28 @@ class HourlyWeatherSlider extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'DỰ BÁO CHI TIẾT TỪNG MỐC GIỜ',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.8,
-                  color: UIColors.textSecondary,
+              const Expanded(
+                child: Text(
+                  'DỰ BÁO CHI TIẾT TỪNG MỐC GIỜ SẮP TỚI',
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.8,
+                    color: UIColors.textSecondary,
+                  ),
                 ),
               ),
-              if (points.any((h) => h.precipitationProbability >= 40))
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: UIColors.secondary.withOpacity(0.16),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.umbrella_rounded, size: 10, color: UIColors.secondary),
-                      SizedBox(width: 4),
-                      Text(
-                        'Có mưa trong ngày',
-                        style: TextStyle(
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                          color: UIColors.secondary,
-                        ),
-                      ),
-                    ],
-                  ),
+              if (points.any((h) => h.precipitationProbability >= 40)) ...[
+                const SizedBox(width: 8),
+                const AppStatusTag(
+                  label: 'Có mưa trong ngày',
+                  icon: Icons.umbrella_rounded,
+                  color: UIColors.secondary,
+                  size: AppTagSize.small,
                 ),
+              ],
             ],
           ),
           const SizedBox(height: 14),
@@ -74,12 +62,20 @@ class HourlyWeatherSlider extends StatelessWidget {
               itemBuilder: (context, index) {
                 final item = points[index];
                 final isFirst = index == 0;
-                final timeStr = isFirst ? 'Bây giờ' : DateFormat('HH:mm').format(item.time);
-                final itemInfo = WeatherCodeHelper.getInfo(item.weatherCode, time: item.time);
+                final timeStr = isFirst
+                    ? 'Bây giờ'
+                    : DateFormat('HH:mm').format(item.time);
+                final itemInfo = WeatherCodeHelper.getInfo(
+                  item.weatherCode,
+                  time: item.time,
+                );
 
                 return Container(
                   width: 64,
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: isFirst
                         ? UIColors.secondary.withOpacity(0.12)
@@ -99,8 +95,12 @@ class HourlyWeatherSlider extends StatelessWidget {
                         timeStr,
                         style: TextStyle(
                           fontSize: 10,
-                          fontWeight: isFirst ? FontWeight.bold : FontWeight.w500,
-                          color: isFirst ? UIColors.secondary : UIColors.textSecondary,
+                          fontWeight: isFirst
+                              ? FontWeight.bold
+                              : FontWeight.w500,
+                          color: isFirst
+                              ? UIColors.secondary
+                              : UIColors.textSecondary,
                         ),
                       ),
                       Icon(itemInfo.icon, size: 20, color: itemInfo.color),
@@ -116,7 +116,11 @@ class HourlyWeatherSlider extends StatelessWidget {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.water_drop, size: 8, color: UIColors.secondary),
+                            const Icon(
+                              Icons.water_drop,
+                              size: 8,
+                              color: UIColors.secondary,
+                            ),
                             Text(
                               '${item.precipitationProbability}%',
                               style: const TextStyle(
