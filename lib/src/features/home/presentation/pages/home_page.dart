@@ -7,6 +7,7 @@ import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_stat
 import 'package:envivn/src/features/home/presentation/pages/location_permission_page.dart';
 import 'package:envivn/src/features/home/presentation/widgets/home_dashboard_view.dart';
 import 'package:envivn/src/features/home/presentation/widgets/liquid_glass_bottom_bar.dart';
+import 'package:envivn/src/features/home/presentation/widgets/location_loading_overlay.dart';
 import 'package:envivn/src/features/map_pollution/presentation/pages/pollution_map_page.dart';
 import 'package:envivn/src/features/weather/presentation/pages/twenty_four_hour_detail_page.dart';
 
@@ -51,14 +52,16 @@ class _HomePageState extends State<HomePage> {
             BlocBuilder<HomeDashboardCubit, HomeDashboardState>(
               buildWhen: (prev, curr) => prev.currentTab != curr.currentTab,
               builder: (context, state) {
-                return IndexedStack(
-                  index: state.currentTab,
-                  children: const [
-                    HomeDashboardView(),
-                    PollutionMapPage(),
-                    TwentyFourHourDetailPage(),
-                    LocationPermissionPage(),
-                  ],
+                return ClipRect(
+                  child: IndexedStack(
+                    index: state.currentTab,
+                    children: const [
+                      HomeDashboardView(),
+                      PollutionMapPage(),
+                      TwentyFourHourDetailPage(),
+                      LocationPermissionPage(),
+                    ],
+                  ),
                 );
               },
             ),
@@ -77,6 +80,24 @@ class _HomePageState extends State<HomePage> {
                       context.read<HomeDashboardCubit>().setTab(index);
                     },
                   ),
+                );
+              },
+            ),
+
+            // 3. Full-Screen Blocking Glass Loading Popup during Location Change
+            BlocBuilder<HomeDashboardCubit, HomeDashboardState>(
+              buildWhen: (prev, curr) =>
+                  prev.isChangingLocation != curr.isChangingLocation ||
+                  (curr.isChangingLocation && prev.currentCity != curr.currentCity),
+              builder: (context, state) {
+                return AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 250),
+                  child: state.isChangingLocation
+                      ? LocationLoadingOverlay(
+                          key: const ValueKey('location_loading_overlay'),
+                          cityName: state.currentCity.name,
+                        )
+                      : const SizedBox.shrink(),
                 );
               },
             ),

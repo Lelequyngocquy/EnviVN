@@ -9,6 +9,7 @@ class HomeDashboardState extends Equatable {
   final DateTime? lastUpdated;
   final String? noticeMessage;
   final int currentTab;
+  final bool isChangingLocation;
 
   const HomeDashboardState({
     this.status = DashboardStatus.initial,
@@ -16,6 +17,7 @@ class HomeDashboardState extends Equatable {
     this.lastUpdated,
     this.noticeMessage,
     this.currentTab = 0,
+    this.isChangingLocation = false,
   });
 
   HomeDashboardState copyWith({
@@ -23,17 +25,27 @@ class HomeDashboardState extends Equatable {
     CityEntity? currentCity,
     DateTime? lastUpdated,
     String? noticeMessage,
+    bool clearNotice = false,
     int? currentTab,
+    bool? isChangingLocation,
   }) {
     return HomeDashboardState(
       status: status ?? this.status,
       currentCity: currentCity ?? this.currentCity,
       lastUpdated: lastUpdated ?? this.lastUpdated,
-      noticeMessage: noticeMessage ?? this.noticeMessage,
+      noticeMessage: clearNotice ? null : (noticeMessage ?? this.noticeMessage),
       currentTab: currentTab ?? this.currentTab,
+      isChangingLocation: isChangingLocation ?? this.isChangingLocation,
     );
   }
 
   @override
-  List<Object?> get props => [status, currentCity, lastUpdated, noticeMessage, currentTab];
+  List<Object?> get props => [
+        status,
+        currentCity,
+        lastUpdated,
+        noticeMessage,
+        currentTab,
+        isChangingLocation,
+      ];
 }

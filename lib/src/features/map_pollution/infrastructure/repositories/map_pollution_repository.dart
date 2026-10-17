@@ -20,6 +20,10 @@ class MapPollutionRepository implements IMapPollutionRepository {
       'province': 'Hà Nội',
       'lat': 21.0285,
       'lon': 105.8542,
+      'temp': 26.5,
+      'weatherCode': 2,
+      'humidity': 72,
+      'windSpeed': 9.5,
     },
     {
       'id': 'vn_hcm_01',
@@ -27,6 +31,10 @@ class MapPollutionRepository implements IMapPollutionRepository {
       'province': 'TP. Hồ Chí Minh',
       'lat': 10.7769,
       'lon': 106.7009,
+      'temp': 31.0,
+      'weatherCode': 1,
+      'humidity': 68,
+      'windSpeed': 11.0,
     },
     {
       'id': 'vn_dn_01',
@@ -34,6 +42,10 @@ class MapPollutionRepository implements IMapPollutionRepository {
       'province': 'Đà Nẵng',
       'lat': 16.0544,
       'lon': 108.2022,
+      'temp': 28.5,
+      'weatherCode': 0,
+      'humidity': 75,
+      'windSpeed': 14.0,
     },
     {
       'id': 'vn_hp_01',
@@ -41,6 +53,10 @@ class MapPollutionRepository implements IMapPollutionRepository {
       'province': 'Hải Phòng',
       'lat': 20.8449,
       'lon': 106.6881,
+      'temp': 25.0,
+      'weatherCode': 3,
+      'humidity': 78,
+      'windSpeed': 12.0,
     },
     {
       'id': 'vn_ct_01',
@@ -48,6 +64,10 @@ class MapPollutionRepository implements IMapPollutionRepository {
       'province': 'Cần Thơ',
       'lat': 10.0452,
       'lon': 105.7469,
+      'temp': 30.5,
+      'weatherCode': 2,
+      'humidity': 74,
+      'windSpeed': 8.0,
     },
     {
       'id': 'vn_hue_01',
@@ -55,6 +75,10 @@ class MapPollutionRepository implements IMapPollutionRepository {
       'province': 'Thừa Thiên Huế',
       'lat': 16.4637,
       'lon': 107.5909,
+      'temp': 27.0,
+      'weatherCode': 61,
+      'humidity': 82,
+      'windSpeed': 10.0,
     },
     {
       'id': 'vn_nt_01',
@@ -62,6 +86,10 @@ class MapPollutionRepository implements IMapPollutionRepository {
       'province': 'Khánh Hòa',
       'lat': 12.2388,
       'lon': 109.1967,
+      'temp': 29.5,
+      'weatherCode': 1,
+      'humidity': 71,
+      'windSpeed': 15.0,
     },
     {
       'id': 'vn_hl_01',
@@ -69,6 +97,10 @@ class MapPollutionRepository implements IMapPollutionRepository {
       'province': 'Quảng Ninh',
       'lat': 20.9505,
       'lon': 107.0734,
+      'temp': 24.5,
+      'weatherCode': 3,
+      'humidity': 80,
+      'windSpeed': 13.0,
     },
     {
       'id': 'vn_dl_01',
@@ -76,6 +108,10 @@ class MapPollutionRepository implements IMapPollutionRepository {
       'province': 'Lâm Đồng',
       'lat': 11.9404,
       'lon': 108.4583,
+      'temp': 19.0,
+      'weatherCode': 2,
+      'humidity': 85,
+      'windSpeed': 7.0,
     },
     {
       'id': 'vn_vt_01',
@@ -83,6 +119,10 @@ class MapPollutionRepository implements IMapPollutionRepository {
       'province': 'Bà Rịa - Vũng Tàu',
       'lat': 10.3460,
       'lon': 107.0843,
+      'temp': 30.0,
+      'weatherCode': 1,
+      'humidity': 70,
+      'windSpeed': 16.0,
     },
   ];
 
@@ -119,6 +159,10 @@ class MapPollutionRepository implements IMapPollutionRepository {
               pm25: double.tryParse(cur['pm2_5']?.toString() ?? '15') ?? 15.0,
               pm10: double.tryParse(cur['pm10']?.toString() ?? '25') ?? 25.0,
               updatedAt: DateTime.now(),
+              temperature: meta['temp'] as double?,
+              weatherCode: meta['weatherCode'] as int?,
+              humidity: meta['humidity'] as int?,
+              windSpeed: meta['windSpeed'] as double?,
             );
           }
         } catch (_) {}
@@ -134,6 +178,10 @@ class MapPollutionRepository implements IMapPollutionRepository {
           pm25: (meta['province'] == 'Hà Nội') ? 41.5 : 22.0,
           pm10: 48.0,
           updatedAt: DateTime.now(),
+          temperature: meta['temp'] as double?,
+          weatherCode: meta['weatherCode'] as int?,
+          humidity: meta['humidity'] as int?,
+          windSpeed: meta['windSpeed'] as double?,
         );
       });
 

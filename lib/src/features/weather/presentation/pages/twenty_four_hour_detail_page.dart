@@ -1,17 +1,33 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/common/utils/aqi_helper.dart';
 import 'package:envivn/src/common/utils/date_helper.dart';
-import 'package:envivn/src/shared/widgets/glass.dart';
+import 'package:envivn/src/common/utils/weather_code_helper.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_cubit.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_state.dart';
 import 'package:envivn/src/features/weather/presentation/cubits/weather_cubit.dart';
 import 'package:envivn/src/features/weather/presentation/cubits/weather_state.dart';
+import 'package:envivn/src/features/weather/presentation/widgets/aqi_24h_chart_card.dart';
+import 'package:envivn/src/features/weather/presentation/widgets/aqi_pollutants_grid.dart';
+import 'package:envivn/src/features/weather/presentation/widgets/detail_segmented_filter.dart';
+import 'package:envivn/src/features/weather/presentation/widgets/health_advisory_card.dart';
+import 'package:envivn/src/features/weather/presentation/widgets/hourly_weather_slider.dart';
+import 'package:envivn/src/features/weather/presentation/widgets/seven_day_forecast_card.dart';
+import 'package:envivn/src/features/weather/presentation/widgets/twenty_four_hour_temp_chart.dart';
+import 'package:envivn/src/features/weather/presentation/widgets/weather_hero_detail_card.dart';
+import 'package:envivn/src/shared/widgets/glass.dart';
 
-class TwentyFourHourDetailPage extends StatelessWidget {
+class TwentyFourHourDetailPage extends StatefulWidget {
   const TwentyFourHourDetailPage({super.key});
+
+  @override
+  State<TwentyFourHourDetailPage> createState() => _TwentyFourHourDetailPageState();
+}
+
+class _TwentyFourHourDetailPageState extends State<TwentyFourHourDetailPage> {
+  DetailTab _activeTab = DetailTab.all;
 
   @override
   Widget build(BuildContext context) {
@@ -26,197 +42,130 @@ class TwentyFourHourDetailPage extends StatelessWidget {
             return BlocBuilder<WeatherCubit, WeatherState>(
               builder: (context, weatherState) {
                 final aqi = aqiState.airQuality;
-                final hourlyPoints = aqi.hourlyAqi;
+                final weather = weatherState.weather;
+                final weatherInfo = WeatherCodeHelper.getInfo(weather.weatherCode);
+                final aqiInfo = AQIHelper.getAQIInfo(aqi.usAqi);
 
-                return SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Header Row
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Chi tiết 24 giờ',
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                  color: UIColors.textPrimary,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                dateStr,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: UIColors.textSecondary,
-                                ),
-                              ),
-                            ],
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 1. Fixed Top Header & Filter Bar
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(16, 6, 16, 12),
+                      decoration: BoxDecoration(
+                        color: UIColors.bg.withOpacity(0.92),
+                        border: Border(
+                          bottom: BorderSide(
+                            color: Colors.white.withOpacity(0.06),
+                            width: 0.8,
                           ),
-                          AppGlass(
-                            borderRadius: 14,
-                            padding: const EdgeInsets.all(10),
-                            child: const Icon(
-                              Icons.insights_rounded,
-                              color: UIColors.primary,
-                              size: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-
-                      // 2x2 Pollutant Glass Cards (matching 04 · Chi tiết 24 giờ.svg)
-                      GridView.count(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 1.35,
-                        children: [
-                          _GlassPollutantCard(
-                            label: 'PM2.5',
-                            value: aqi.pm25 > 0 ? aqi.pm25.toStringAsFixed(1) : '24.5',
-                            unit: 'µg/m³',
-                            progress: ((aqi.pm25 > 0 ? aqi.pm25 : 24.5) / 75.0).clamp(0.0, 1.0),
-                            progressColor: (aqi.pm25 > 35) ? UIColors.aqiUnhealthySensitive : UIColors.aqiGood,
-                          ),
-                          _GlassPollutantCard(
-                            label: 'PM10',
-                            value: aqi.pm10 > 0 ? aqi.pm10.toStringAsFixed(1) : '48.0',
-                            unit: 'µg/m³',
-                            progress: ((aqi.pm10 > 0 ? aqi.pm10 : 48.0) / 100.0).clamp(0.0, 1.0),
-                            progressColor: (aqi.pm10 > 50) ? UIColors.aqiModerate : UIColors.aqiGood,
-                          ),
-                          _GlassPollutantCard(
-                            label: 'O₃ (Ozone)',
-                            value: aqi.ozone > 0 ? aqi.ozone.toStringAsFixed(1) : '38.2',
-                            unit: 'µg/m³',
-                            progress: ((aqi.ozone > 0 ? aqi.ozone : 38.2) / 120.0).clamp(0.0, 1.0),
-                            progressColor: UIColors.secondary,
-                          ),
-                          _GlassPollutantCard(
-                            label: 'NO₂',
-                            value: aqi.nitrogenDioxide > 0 ? aqi.nitrogenDioxide.toStringAsFixed(1) : '19.5',
-                            unit: 'µg/m³',
-                            progress: ((aqi.nitrogenDioxide > 0 ? aqi.nitrogenDioxide : 19.5) / 60.0).clamp(0.0, 1.0),
-                            progressColor: UIColors.aqiGood,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-
-                      // 24h Detailed Trend Chart (matching #chart in 04 svg)
-                      AppGlass(
-                        borderRadius: 24,
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: const [
-                                    Text(
-                                      'Diễn biến nồng độ 24 giờ qua',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: UIColors.textPrimary,
-                                      ),
-                                    ),
-                                    SizedBox(height: 4),
-                                    Text(
-                                      'Chỉ số AQI theo từng khung giờ',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: UIColors.textSecondary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: UIColors.primary.withOpacity(0.15),
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(color: UIColors.primary.withOpacity(0.4)),
-                                  ),
-                                  child: const Text(
-                                    'AQI US',
-                                    style: TextStyle(
-                                      color: UIColors.primary,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 11,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 28),
-                            _build24hChart(hourlyPoints),
-                          ],
                         ),
                       ),
-                      const SizedBox(height: 18),
-
-                      // Health Advisory Card (matching #health in 04 svg)
-                      AppGlass(
-                        borderRadius: 20,
-                        padding: const EdgeInsets.all(18),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: UIColors.warning.withOpacity(0.18),
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.warning_amber_rounded,
-                                color: UIColors.warning,
-                                size: 24,
-                              ),
-                            ),
-                            const SizedBox(width: 14),
-                            Expanded(
-                              child: Column(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Top Header Row
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Text(
-                                    'Khuyến cáo sức khỏe 24h',
+                                children: [
+                                  const Text(
+                                    'Chi tiết 24 giờ',
                                     style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 22,
                                       fontWeight: FontWeight.bold,
                                       color: UIColors.textPrimary,
                                     ),
                                   ),
-                                  SizedBox(height: 6),
+                                  const SizedBox(height: 2),
                                   Text(
-                                    'Khung giờ 14:00 - 18:00 chất lượng không khí đạt trạng thái trong lành nhất trong ngày, rất thích hợp cho chạy bộ, đạp xe và thông gió nhà cửa.',
-                                    style: TextStyle(
+                                    dateStr,
+                                    style: const TextStyle(
                                       fontSize: 12,
                                       color: UIColors.textSecondary,
-                                      height: 1.45,
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
+                              AppGlass(
+                                borderRadius: 14,
+                                padding: const EdgeInsets.all(10),
+                                child: const Icon(
+                                  Icons.insights_rounded,
+                                  color: UIColors.primary,
+                                  size: 20,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+
+                          // Segmented Filter Pills
+                          DetailSegmentedFilter(
+                            activeTab: _activeTab,
+                            onTabChanged: (tab) => setState(() => _activeTab = tab),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // 2. Scrollable Body
+                    Expanded(
+                      child: ClipRect(
+                        child: SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(
+                            parent: ClampingScrollPhysics(),
+                          ),
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // 3. WEATHER SECTION (Visible if 'all' or 'weather')
+                              if (_activeTab == DetailTab.all || _activeTab == DetailTab.weather) ...[
+                                _buildSectionHeader(
+                                  title: 'DỰ BÁO THỜI TIẾT 24 GIỜ TỚI',
+                                  icon: Icons.wb_sunny_rounded,
+                                  iconColor: UIColors.warning,
+                                  tag: weatherInfo.shortLabel,
+                                  tagColor: weatherInfo.color,
+                                ),
+                                const SizedBox(height: 12),
+                                WeatherHeroDetailCard(weather: weather),
+                                const SizedBox(height: 16),
+                                TwentyFourHourTempChart(hourlyList: weather.hourlyForecast),
+                                const SizedBox(height: 16),
+                                HourlyWeatherSlider(hourlyList: weather.hourlyForecast),
+                                const SizedBox(height: 16),
+                                if (weather.dailyForecast.isNotEmpty) ...[
+                                  SevenDayForecastCard(dailyForecast: weather.dailyForecast),
+                                  const SizedBox(height: 18),
+                                ],
+                              ],
+
+                              // 4. AIR QUALITY SECTION (Visible if 'all' or 'airQuality')
+                              if (_activeTab == DetailTab.all || _activeTab == DetailTab.airQuality) ...[
+                                _buildSectionHeader(
+                                  title: 'CHẤT LƯỢNG KHÔNG KHÍ & BỤI MỊN',
+                                  icon: Icons.air_rounded,
+                                  iconColor: UIColors.primary,
+                                  tag: 'AQI ${aqi.usAqi} • ${aqiInfo.label}',
+                                  tagColor: aqiInfo.color,
+                                ),
+                                const SizedBox(height: 12),
+                                AqiPollutantsGrid(aqi: aqi),
+                                const SizedBox(height: 16),
+                                Aqi24hChartCard(hourlyPoints: aqi.hourlyAqi),
+                                const SizedBox(height: 16),
+                                const HealthAdvisoryCard(),
+                              ],
+                            ],
+                          ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 );
               },
             );
@@ -226,190 +175,48 @@ class TwentyFourHourDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _build24hChart(List<dynamic> points) {
-    final spots = <FlSpot>[];
-    // If real hourly points available, take 9 samples across 24 hours
-    if (points.isNotEmpty) {
-      final step = (points.length / 9).clamp(1, 10).toInt();
-      for (int i = 0; i < points.length && spots.length < 9; i += step) {
-        final p = points[i];
-        final aqiVal = (p.aqi as int? ?? 50).toDouble();
-        spots.add(FlSpot(spots.length.toDouble(), aqiVal));
-      }
-    } else {
-      // Default sample curve matching SVG 04
-      const defaultVals = [52.0, 58.0, 64.0, 52.0, 78.0, 94.0, 84.0, 72.0, 65.0];
-      for (int i = 0; i < defaultVals.length; i++) {
-        spots.add(FlSpot(i.toDouble(), defaultVals[i]));
-      }
-    }
-
-    return SizedBox(
-      height: 170,
-      child: LineChart(
-        LineChartData(
-          minY: 30,
-          maxY: 120,
-          gridData: FlGridData(
-            show: true,
-            drawVerticalLine: false,
-            horizontalInterval: 30,
-            getDrawingHorizontalLine: (value) => FlLine(
-              color: UIColors.border.withOpacity(0.6),
-              strokeWidth: 1,
-            ),
-          ),
-          titlesData: FlTitlesData(
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                reservedSize: 32,
-                interval: 30,
-                getTitlesWidget: (val, _) => Text(
-                  val.toInt().toString(),
-                  style: const TextStyle(color: UIColors.textMuted, fontSize: 10),
-                ),
-              ),
-            ),
-            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                reservedSize: 26,
-                interval: 2,
-                getTitlesWidget: (val, _) {
-                  final hours = ['00h', '06h', '12h', '18h', '24h'];
-                  final idx = (val / 2).toInt();
-                  if (idx >= 0 && idx < hours.length) {
-                    return Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Text(
-                        hours[idx],
-                        style: const TextStyle(color: UIColors.textSecondary, fontSize: 11),
-                      ),
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-            ),
-          ),
-          borderData: FlBorderData(show: false),
-          lineBarsData: [
-            LineChartBarData(
-              spots: spots,
-              isCurved: true,
-              curveSmoothness: 0.35,
-              color: UIColors.primary,
-              barWidth: 3,
-              isStrokeCapRound: true,
-              dotData: FlDotData(
-                show: true,
-                getDotPainter: (spot, _, _, _) => FlDotCirclePainter(
-                  radius: 4,
-                  color: UIColors.bg,
-                  strokeWidth: 2.5,
-                  strokeColor: UIColors.primary,
-                ),
-              ),
-              belowBarData: BarAreaData(
-                show: true,
-                gradient: LinearGradient(
-                  colors: [
-                    UIColors.primary.withOpacity(0.35),
-                    UIColors.primary.withOpacity(0.0),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
+  Widget _buildSectionHeader({
+    required String title,
+    required IconData icon,
+    required Color iconColor,
+    required String tag,
+    required Color tagColor,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Icon(icon, size: 16, color: iconColor),
+            const SizedBox(width: 6),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.8,
+                color: UIColors.textSecondary,
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _GlassPollutantCard extends StatelessWidget {
-  final String label;
-  final String value;
-  final String unit;
-  final double progress;
-  final Color progressColor;
-
-  const _GlassPollutantCard({
-    required this.label,
-    required this.value,
-    required this.unit,
-    required this.progress,
-    required this.progressColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AppGlass(
-      borderRadius: 20,
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: UIColors.textSecondary,
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+          decoration: BoxDecoration(
+            color: tagColor.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: tagColor.withOpacity(0.4), width: 0.8),
+          ),
+          child: Text(
+            tag,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              color: tagColor,
             ),
           ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: UIColors.textPrimary,
-                ),
-              ),
-              const SizedBox(width: 4),
-              Text(
-                unit,
-                style: const TextStyle(
-                  fontSize: 10,
-                  color: UIColors.textMuted,
-                ),
-              ),
-            ],
-          ),
-          // Progress Bar (matching pb-t and pb-f in 04 svg)
-          Stack(
-            children: [
-              Container(
-                height: 6,
-                decoration: BoxDecoration(
-                  color: UIColors.surfaceVariant,
-                  borderRadius: BorderRadius.circular(3),
-                ),
-              ),
-              FractionallySizedBox(
-                widthFactor: progress,
-                child: Container(
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: progressColor,
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

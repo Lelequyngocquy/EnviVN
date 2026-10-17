@@ -37,7 +37,6 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
     }
 
     emit(state.copyWith(
-      status: DashboardStatus.success,
       currentCity: targetCity,
       lastUpdated: storage.getLastUpdateTime() ?? DateTime.now(),
     ));
@@ -48,8 +47,9 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
   Future<void> changeCity(CityEntity city) async {
     emit(state.copyWith(
       status: DashboardStatus.loading,
+      isChangingLocation: true,
       currentCity: city,
-      noticeMessage: null,
+      clearNotice: true,
     ));
 
     await storage.saveSelectedCity(city.name, city.latitude, city.longitude);
@@ -57,23 +57,38 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
   }
 
   Future<void> detectGpsLocation() async {
-    emit(state.copyWith(status: DashboardStatus.loading));
+    emit(state.copyWith(
+      status: DashboardStatus.loading,
+      isChangingLocation: true,
+      clearNotice: true,
+    ));
 
     final locationResult = await locationService.getCurrentLocation();
+    final displayName = locationResult.cityName != null && locationResult.cityName!.isNotEmpty
+        ? 'Vị trí hiện tại (${locationResult.cityName})'
+        : 'Vị trí hiện tại';
+
     final gpsCity = CityEntity(
-      name: 'Vị trí hiện tại',
-      province: 'Định vị GPS',
+      name: displayName,
+      province: locationResult.isDefault ? 'Mặc định' : 'Định vị GPS',
       latitude: locationResult.latitude,
       longitude: locationResult.longitude,
-      isGps: true,
+      isGps: !locationResult.isDefault,
     );
 
     emit(state.copyWith(
       currentCity: gpsCity,
       noticeMessage: locationResult.errorMessage,
+      clearNotice: locationResult.errorMessage == null,
     ));
 
     await _fetchDataForCity(gpsCity);
+  }
+
+  void clearNotice() {
+    if (state.noticeMessage != null) {
+      emit(state.copyWith(clearNotice: true));
+    }
   }
 
   Future<void> refresh() async {
@@ -81,15 +96,24 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
   }
 
   Future<void> _fetchDataForCity(CityEntity city) async {
-    await Future.wait([
-      weatherCubit.fetchWeather(latitude: city.latitude, longitude: city.longitude),
-      airQualityCubit.fetchAirQuality(latitude: city.latitude, longitude: city.longitude),
-    ]);
+    try {
+      await Future.wait([
+        weatherCubit.fetchWeather(latitude: city.latitude, longitude: city.longitude),
+        airQualityCubit.fetchAirQuality(latitude: city.latitude, longitude: city.longitude),
+      ]);
 
-    emit(state.copyWith(
-      status: DashboardStatus.success,
-      lastUpdated: DateTime.now(),
-    ));
+      emit(state.copyWith(
+        status: DashboardStatus.success,
+        isChangingLocation: false,
+        lastUpdated: DateTime.now(),
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        status: DashboardStatus.failure,
+        isChangingLocation: false,
+        noticeMessage: 'Không thể tải toàn bộ dữ liệu vị trí mới: $e',
+      ));
+    }
   }
 
   void setTab(int index) {

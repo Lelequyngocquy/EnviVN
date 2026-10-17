@@ -134,6 +134,7 @@ class _CitySelectorSheetState extends State<CitySelectorSheet> {
           // Cities List
           Expanded(
             child: ListView.separated(
+              physics: const ClampingScrollPhysics(),
               itemCount: filteredCities.length,
               separatorBuilder: (_, _) => Divider(height: 1, color: Colors.white.withOpacity(0.08)),
               itemBuilder: (context, index) {

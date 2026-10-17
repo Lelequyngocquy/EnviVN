@@ -1,0 +1,112 @@
+import 'package:flutter/material.dart';
+
+import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/common/utils/date_helper.dart';
+import 'package:envivn/src/common/utils/weather_code_helper.dart';
+import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
+import 'package:envivn/src/shared/widgets/glass.dart';
+
+class SevenDayForecastCard extends StatelessWidget {
+  final List<DailyWeatherPoint> dailyForecast;
+
+  const SevenDayForecastCard({
+    super.key,
+    required this.dailyForecast,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final days = dailyForecast.take(7).toList();
+    if (days.isEmpty) return const SizedBox.shrink();
+
+    return AppGlass(
+      borderRadius: 24,
+      padding: const EdgeInsets.all(18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: const [
+              Text(
+                'DỰ BÁO THỜI TIẾT 7 NGÀY TỚI',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.8,
+                  color: UIColors.textSecondary,
+                ),
+              ),
+              Icon(Icons.calendar_month_rounded, size: 16, color: UIColors.textSecondary),
+            ],
+          ),
+          const SizedBox(height: 14),
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: days.length,
+            separatorBuilder: (context, index) => Divider(
+              color: Colors.white.withOpacity(0.06),
+              height: 16,
+            ),
+            itemBuilder: (context, index) {
+              final day = days[index];
+              final dayName = DateHelper.formatWeekday(day.date);
+              final info = WeatherCodeHelper.getInfo(day.weatherCode);
+
+              return Row(
+                children: [
+                  SizedBox(
+                    width: 78,
+                    child: Text(
+                      dayName,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: index == 0 ? FontWeight.bold : FontWeight.w500,
+                        color: index == 0 ? Colors.white : UIColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                  Icon(info.icon, size: 18, color: info.color),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      info.shortLabel,
+                      style: const TextStyle(fontSize: 12, color: Colors.white70),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  if (day.precipitationSum > 0)
+                    Container(
+                      margin: const EdgeInsets.only(right: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: UIColors.secondary.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        '💧 ${day.precipitationSum.toStringAsFixed(1)}mm',
+                        style: const TextStyle(
+                          fontSize: 10,
+                          color: UIColors.secondary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  Text(
+                    '${day.minTemp.toStringAsFixed(0)}° / ${day.maxTemp.toStringAsFixed(0)}°',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -39,10 +39,10 @@ class EnviVNApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<WeatherCubit>(create: (_) => di.sl<WeatherCubit>()),
-        BlocProvider<AirQualityCubit>(create: (_) => di.sl<AirQualityCubit>()),
-        BlocProvider<HomeDashboardCubit>(create: (_) => di.sl<HomeDashboardCubit>()),
-        BlocProvider<MapPollutionCubit>(create: (_) => di.sl<MapPollutionCubit>()..fetchVietnamStations()),
+        BlocProvider<WeatherCubit>.value(value: di.sl<WeatherCubit>()),
+        BlocProvider<AirQualityCubit>.value(value: di.sl<AirQualityCubit>()),
+        BlocProvider<HomeDashboardCubit>.value(value: di.sl<HomeDashboardCubit>()),
+        BlocProvider<MapPollutionCubit>(create: (_) => di.sl<MapPollutionCubit>()),
       ],
       child: MaterialApp(
         navigatorKey: GlobalKeyManager.instance.root,

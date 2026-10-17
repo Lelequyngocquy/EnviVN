@@ -12,9 +12,9 @@ import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_stat
 import 'package:envivn/src/features/home/presentation/widgets/city_selector_sheet.dart';
 import 'package:envivn/src/features/home/presentation/widgets/hero_aqi_card.dart';
 import 'package:envivn/src/features/home/presentation/widgets/home_top_bar.dart';
+import 'package:envivn/src/features/home/presentation/widgets/home_weather_card.dart';
 import 'package:envivn/src/features/home/presentation/widgets/map_shortcut_card.dart';
 import 'package:envivn/src/features/home/presentation/widgets/outdoor_activity_advice_card.dart';
-import 'package:envivn/src/features/home/presentation/widgets/weather_metrics_grid.dart';
 import 'package:envivn/src/features/weather/presentation/cubits/weather_cubit.dart';
 import 'package:envivn/src/features/weather/presentation/cubits/weather_state.dart';
 
@@ -88,6 +88,7 @@ class HomeDashboardView extends StatelessWidget {
             listener: (context, state) {
               if (state.noticeMessage != null && state.noticeMessage!.isNotEmpty) {
                 context.showSnackBar(state.noticeMessage!);
+                context.read<HomeDashboardCubit>().clearNotice();
               }
             },
             builder: (context, dashState) {
@@ -102,57 +103,86 @@ class HomeDashboardView extends StatelessWidget {
                         return const LoadingWidget(message: 'Đang tải dữ liệu môi trường...');
                       }
 
-                      return RefreshIndicator(
-                        color: UIColors.primary,
-                        backgroundColor: UIColors.cardBg,
-                        onRefresh: () => context.read<HomeDashboardCubit>().refresh(),
-                        child: SingleChildScrollView(
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 120),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // 1. Top Bar: Location Selector & Notification Bell
-                              HomeTopBar(
-                                cityName: dashState.currentCity.name,
-                                isGps: dashState.currentCity.isGps,
-                                dateText: dateStr,
-                                onLocationTap: () => _openCitySelector(context, dashState),
-                                onNotificationTap: () {
-                                  context.showSnackBar('Chất lượng không khí đang ổn định.');
-                                },
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // 1. Fixed Top Bar (Location Selector & Notification Bell)
+                          Container(
+                            padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
+                            decoration: BoxDecoration(
+                              // color: UIColors.bg.withOpacity(0.92),
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: Colors.white.withOpacity(0.06),
+                                  width: 0.8,
+                                ),
                               ),
-                              const SizedBox(height: 20),
-
-                              // 2. Hero AQI Liquid Glass Card
-                              HeroAQICard(
-                                airQuality: aqiState.airQuality,
-                                onDetailTap: () {
-                                  context.read<HomeDashboardCubit>().setTab(2);
-                                },
-                              ),
-                              const SizedBox(height: 16),
-
-                              // 3. 2x2 Weather Metrics Grid
-                              WeatherMetricsGrid(weather: weatherState.weather),
-                              const SizedBox(height: 16),
-
-                              // 4. Outdoor Sports & Activity Advice Card
-                              OutdoorActivityAdviceCard(
-                                airQuality: aqiState.airQuality,
-                                weather: weatherState.weather,
-                              ),
-                              const SizedBox(height: 16),
-
-                              // 5. Map Shortcut Card
-                              MapShortcutCard(
-                                onTap: () {
-                                  context.read<HomeDashboardCubit>().setTab(1);
-                                },
-                              ),
-                            ],
+                            ),
+                            child: HomeTopBar(
+                              cityName: dashState.currentCity.name,
+                              isGps: dashState.currentCity.isGps,
+                              dateText: dateStr,
+                              onLocationTap: () => _openCitySelector(context, dashState),
+                              onNotificationTap: () {
+                                context.showSnackBar('Chất lượng không khí đang ổn định.');
+                              },
+                            ),
                           ),
-                        ),
+
+                          // 2. Scrollable Body
+                          Expanded(
+                            child: RefreshIndicator(
+                              color: UIColors.primary,
+                              backgroundColor: UIColors.cardBg,
+                              onRefresh: () => context.read<HomeDashboardCubit>().refresh(),
+                              child: ClipRect(
+                                child: SingleChildScrollView(
+                                  physics: const AlwaysScrollableScrollPhysics(
+                                    parent: ClampingScrollPhysics(),
+                                  ),
+                                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+
+                                      // 1. Weather Overview Liquid Glass Card (Mưa gió giông bão nắng mây, dự báo giờ & chỉ số)
+                                      HomeWeatherCard(
+                                        weather: weatherState.weather,
+                                        onDetailTap: () {
+                                          context.read<HomeDashboardCubit>().setTab(2);
+                                        },
+                                      ),
+                                      const SizedBox(height: 16),
+                                      // 2. Hero AQI Liquid Glass Card
+                                      HeroAQICard(
+                                        airQuality: aqiState.airQuality,
+                                        onDetailTap: () {
+                                          context.read<HomeDashboardCubit>().setTab(2);
+                                        },
+                                      ),
+                                      const SizedBox(height: 16),
+
+
+                                      // 3. Outdoor Sports & Activity Advice Card
+                                      OutdoorActivityAdviceCard(
+                                        airQuality: aqiState.airQuality,
+                                        weather: weatherState.weather,
+                                      ),
+                                      const SizedBox(height: 16),
+
+                                      // 4. Map Shortcut Card
+                                      MapShortcutCard(
+                                        onTap: () {
+                                          context.read<HomeDashboardCubit>().setTab(1);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       );
                     },
                   );

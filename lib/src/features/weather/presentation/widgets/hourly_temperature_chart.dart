@@ -157,6 +157,7 @@ class HourlyTemperatureChart extends StatelessWidget {
           SizedBox(
             height: 70,
             child: ListView.separated(
+              physics: const ClampingScrollPhysics(),
               scrollDirection: Axis.horizontal,
               itemCount: points.length,
               separatorBuilder: (_, _) => const SizedBox(width: 12),

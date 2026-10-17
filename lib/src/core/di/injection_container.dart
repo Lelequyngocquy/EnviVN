@@ -19,6 +19,9 @@ import '../infrastructure/services/location_service.dart';
 final sl = GetIt.instance;
 
 Future<void> setupGetIt() async {
+  // Reset GetIt on hot restart or re-initialization to avoid duplicate registration errors
+  await sl.reset();
+
   //! 1. External & Local Storage
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
@@ -67,7 +70,10 @@ Future<void> setupGetIt() async {
   );
 
   sl.registerFactory<MapPollutionCubit>(
-    () => MapPollutionCubit(repository: sl<IMapPollutionRepository>()),
+    () => MapPollutionCubit(
+      repository: sl<IMapPollutionRepository>(),
+      weatherRepository: sl<IWeatherRepository>(),
+    ),
   );
 
   //! 6. Feature: Home Dashboard

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:envivn/src/shared/widgets/app_top_toast.dart';
 
 extension ContextX on BuildContext {
   double get screenHeight => MediaQuery.sizeOf(this).height;
@@ -11,15 +12,8 @@ extension ContextX on BuildContext {
   TextTheme get textTheme => Theme.of(this).textTheme;
   ColorScheme get colorScheme => Theme.of(this).colorScheme;
 
+  /// Shows an iOS-style top floating toast notification that will not cover the bottom bar
   void showSnackBar(String message, {bool isError = false}) {
-    ScaffoldMessenger.of(this).hideCurrentSnackBar();
-    ScaffoldMessenger.of(this).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? Colors.red.shade700 : const Color(0xFF0F766E),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-    );
+    AppTopToast.show(this, message, isError: isError);
   }
 }

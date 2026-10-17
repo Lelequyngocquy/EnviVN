@@ -15,38 +15,50 @@ class LiquidGlassBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppGlass(
-      borderRadius: 30,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          NavBarItem(
-            icon: Icons.home_rounded,
-            label: 'Trang chủ',
-            isActive: currentTab == 0,
-            onTap: () => onTabSelected(0),
+    return Row(
+      children: [
+        Expanded(
+          child: AppGlass(
+            isFixed: true,
+            borderRadius: 30,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                NavBarItem(
+                  icon: Icons.home_rounded,
+                  label: 'Trang chủ',
+                  isActive: currentTab == 0,
+                  onTap: () => onTabSelected(0),
+                ),
+                NavBarItem(
+                  icon: Icons.map_outlined,
+                  label: 'Bản đồ',
+                  isActive: currentTab == 1,
+                  onTap: () => onTabSelected(1),
+                ),
+                NavBarItem(
+                  icon: Icons.bar_chart_rounded,
+                  label: '24 Giờ',
+                  isActive: currentTab == 2,
+                  onTap: () => onTabSelected(2),
+                ),
+                NavBarItem(
+                  icon: Icons.tune_rounded,
+                  label: 'Cài đặt',
+                  isActive: currentTab == 3,
+                  onTap: () => onTabSelected(3),
+                ),
+              ],
+            ),
           ),
-          NavBarItem(
-            icon: Icons.map_outlined,
-            label: 'Bản đồ',
-            isActive: currentTab == 1,
-            onTap: () => onTabSelected(1),
-          ),
-          NavBarItem(
-            icon: Icons.bar_chart_rounded,
-            label: '24 Giờ',
-            isActive: currentTab == 2,
-            onTap: () => onTabSelected(2),
-          ),
-          NavBarItem(
-            icon: Icons.tune_rounded,
-            label: 'Cài đặt',
-            isActive: currentTab == 3,
-            onTap: () => onTabSelected(3),
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(width: 8,)
+        ,AppGlass( isFixed: true,
+            borderRadius: 100,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            child: NavBarItem(icon: Icons.message_outlined, label: 'Trợ lý', isActive: false, onTap: (){},),),
+      ],
     );
   }
 }
@@ -86,7 +98,7 @@ class NavBarItem extends StatelessWidget {
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
-                color: isActive ? UIColors.primary : UIColors.textMuted,
+                color: isActive ? UIColors.primary : UIColors.textMuted ,
               ),
             ),
           ],
