@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../common/constants/colors.dart';
 import '../../../../shared/widgets/glass.dart';
-import '../../../../shared/router/router_key_manager.dart';
 import '../cubits/home_dashboard_cubit.dart';
 
 class LocationPermissionPage extends StatelessWidget {
@@ -15,7 +14,7 @@ class LocationPermissionPage extends StatelessWidget {
       backgroundColor: UIColors.bg,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 96),
           child: Column(
             children: [
               const Spacer(),
@@ -144,7 +143,11 @@ class LocationPermissionPage extends StatelessWidget {
                         onPressed: () async {
                           await context.read<HomeDashboardCubit>().detectGpsLocation();
                           if (context.mounted) {
-                            Navigator.pushReplacementNamed(context, RouterPath.home);
+                            if (Navigator.canPop(context)) {
+                              Navigator.pop(context);
+                            } else {
+                              context.read<HomeDashboardCubit>().setTab(0);
+                            }
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -171,7 +174,11 @@ class LocationPermissionPage extends StatelessWidget {
                       height: 48,
                       child: TextButton(
                         onPressed: () {
-                          Navigator.pushReplacementNamed(context, RouterPath.home);
+                          if (Navigator.canPop(context)) {
+                            Navigator.pop(context);
+                          } else {
+                            context.read<HomeDashboardCubit>().setTab(0);
+                          }
                         },
                         style: TextButton.styleFrom(
                           foregroundColor: UIColors.textSecondary,

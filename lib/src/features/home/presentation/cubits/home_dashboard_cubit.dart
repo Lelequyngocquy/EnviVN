@@ -91,4 +91,10 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
       lastUpdated: DateTime.now(),
     ));
   }
+
+  void setTab(int index) {
+    if (state.currentTab != index) {
+      emit(state.copyWith(currentTab: index));
+    }
+  }
 }

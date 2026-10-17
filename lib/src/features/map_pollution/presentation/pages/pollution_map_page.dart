@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/aqi_helper.dart';
 import 'package:envivn/src/core/presentation/widgets/loading.dart';
+import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
 import 'package:envivn/src/features/map_pollution/domain/entities/station_pollution_entity.dart';
 import 'package:envivn/src/features/map_pollution/presentation/cubits/map_pollution_cubit.dart';
 import 'package:envivn/src/features/map_pollution/presentation/cubits/map_pollution_state.dart';
@@ -168,7 +169,13 @@ class _PollutionMapPageState extends State<PollutionMapPage> {
                         children: [
                           IconButton(
                             icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 18),
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () {
+                              if (Navigator.canPop(context)) {
+                                Navigator.pop(context);
+                              } else {
+                                context.read<HomeDashboardCubit>().setTab(0);
+                              }
+                            },
                           ),
                           const SizedBox(width: 8),
                           Expanded(
@@ -236,7 +243,7 @@ class _PollutionMapPageState extends State<PollutionMapPage> {
                 Positioned(
                   left: 16,
                   right: 16,
-                  bottom: 24,
+                  bottom: 96,
                   child: _buildStationBottomCard(context, state.selectedStation!),
                 ),
             ],

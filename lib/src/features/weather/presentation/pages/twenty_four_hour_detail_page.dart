@@ -7,6 +7,7 @@ import 'package:envivn/src/common/utils/date_helper.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_cubit.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_state.dart';
+import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
 import 'package:envivn/src/features/weather/presentation/cubits/weather_cubit.dart';
 import 'package:envivn/src/features/weather/presentation/cubits/weather_state.dart';
 
@@ -29,7 +30,7 @@ class TwentyFourHourDetailPage extends StatelessWidget {
                 final hourlyPoints = aqi.hourlyAqi;
 
                 return SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -40,7 +41,13 @@ class TwentyFourHourDetailPage extends StatelessWidget {
                             borderRadius: 14,
                             child: IconButton(
                               icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 18),
-                              onPressed: () => Navigator.pop(context),
+                              onPressed: () {
+                                if (Navigator.canPop(context)) {
+                                  Navigator.pop(context);
+                                } else {
+                                  context.read<HomeDashboardCubit>().setTab(0);
+                                }
+                              },
                               tooltip: 'Quay lại',
                             ),
                           ),

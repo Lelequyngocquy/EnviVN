@@ -15,9 +15,7 @@ import 'src/features/home/presentation/pages/home_page.dart';
 import 'src/features/home/presentation/pages/location_permission_page.dart';
 import 'src/features/home/presentation/pages/splash_page.dart';
 import 'src/features/map_pollution/presentation/cubits/map_pollution_cubit.dart';
-import 'src/features/map_pollution/presentation/pages/pollution_map_page.dart';
 import 'src/features/weather/presentation/cubits/weather_cubit.dart';
-import 'src/features/weather/presentation/pages/twenty_four_hour_detail_page.dart';
 import 'src/shared/router/router_key_manager.dart';
 
 void main() async {
@@ -44,6 +42,7 @@ class EnviVNApp extends StatelessWidget {
         BlocProvider<WeatherCubit>(create: (_) => di.sl<WeatherCubit>()),
         BlocProvider<AirQualityCubit>(create: (_) => di.sl<AirQualityCubit>()),
         BlocProvider<HomeDashboardCubit>(create: (_) => di.sl<HomeDashboardCubit>()),
+        BlocProvider<MapPollutionCubit>(create: (_) => di.sl<MapPollutionCubit>()..fetchVietnamStations()),
       ],
       child: MaterialApp(
         navigatorKey: GlobalKeyManager.instance.root,
@@ -89,15 +88,10 @@ class EnviVNApp extends StatelessWidget {
               return FadeRoute(page: const HomePage());
 
             case RouterPath.pollutionMap:
-              return FadeRoute(
-                page: BlocProvider<MapPollutionCubit>(
-                  create: (_) => di.sl<MapPollutionCubit>(),
-                  child: const PollutionMapPage(),
-                ),
-              );
+              return FadeRoute(page: const HomePage(initialTab: 1));
 
             case RouterPath.twentyFourHours:
-              return FadeRoute(page: const TwentyFourHourDetailPage());
+              return FadeRoute(page: const HomePage(initialTab: 2));
 
             default:
               return MaterialPageRoute(
