@@ -19,15 +19,8 @@ import 'package:envivn/src/features/weather/presentation/widgets/twenty_four_hou
 import 'package:envivn/src/features/weather/presentation/widgets/weather_hero_detail_card.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
-class TwentyFourHourDetailPage extends StatefulWidget {
+class TwentyFourHourDetailPage extends StatelessWidget {
   const TwentyFourHourDetailPage({super.key});
-
-  @override
-  State<TwentyFourHourDetailPage> createState() => _TwentyFourHourDetailPageState();
-}
-
-class _TwentyFourHourDetailPageState extends State<TwentyFourHourDetailPage> {
-  DetailTab _activeTab = DetailTab.all;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +36,9 @@ class _TwentyFourHourDetailPageState extends State<TwentyFourHourDetailPage> {
               builder: (context, weatherState) {
                 final aqi = aqiState.airQuality;
                 final weather = weatherState.weather;
-                final weatherInfo = WeatherCodeHelper.getInfo(weather.weatherCode);
+                final weatherInfo = WeatherCodeHelper.getInfo(
+                  weather.weatherCode,
+                );
                 final aqiInfo = AQIHelper.getAQIInfo(aqi.usAqi);
 
                 return Column(
@@ -102,10 +97,11 @@ class _TwentyFourHourDetailPageState extends State<TwentyFourHourDetailPage> {
                           ),
                           const SizedBox(height: 12),
 
-                          // Segmented Filter Pills
+                          // Segmented Filter Pills (State managed via WeatherCubit)
                           DetailSegmentedFilter(
-                            activeTab: _activeTab,
-                            onTabChanged: (tab) => setState(() => _activeTab = tab),
+                            activeTab: weatherState.activeDetailTab,
+                            onTabChanged: (tab) =>
+                                context.read<WeatherCubit>().setDetailTab(tab),
                           ),
                         ],
                       ),
@@ -122,8 +118,8 @@ class _TwentyFourHourDetailPageState extends State<TwentyFourHourDetailPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // 3. WEATHER SECTION (Visible if 'all' or 'weather')
-                              if (_activeTab == DetailTab.all || _activeTab == DetailTab.weather) ...[
+                              // 3. WEATHER SECTION (Controlled by WeatherState getter)
+                              if (weatherState.showWeatherSection) ...[
                                 _buildSectionHeader(
                                   title: 'DỰ BÁO THỜI TIẾT 24 GIỜ TỚI',
                                   icon: Icons.wb_sunny_rounded,
@@ -134,18 +130,24 @@ class _TwentyFourHourDetailPageState extends State<TwentyFourHourDetailPage> {
                                 const SizedBox(height: 12),
                                 WeatherHeroDetailCard(weather: weather),
                                 const SizedBox(height: 16),
-                                TwentyFourHourTempChart(hourlyList: weather.hourlyForecast),
+                                TwentyFourHourTempChart(
+                                  hourlyList: weather.hourlyForecast,
+                                ),
                                 const SizedBox(height: 16),
-                                HourlyWeatherSlider(hourlyList: weather.hourlyForecast),
+                                HourlyWeatherSlider(
+                                  hourlyList: weather.hourlyForecast,
+                                ),
                                 const SizedBox(height: 16),
                                 if (weather.dailyForecast.isNotEmpty) ...[
-                                  SevenDayForecastCard(dailyForecast: weather.dailyForecast),
+                                  SevenDayForecastCard(
+                                    dailyForecast: weather.dailyForecast,
+                                  ),
                                   const SizedBox(height: 18),
                                 ],
                               ],
 
-                              // 4. AIR QUALITY SECTION (Visible if 'all' or 'airQuality')
-                              if (_activeTab == DetailTab.all || _activeTab == DetailTab.airQuality) ...[
+                              // 4. AIR QUALITY SECTION (Controlled by WeatherState getter)
+                              if (weatherState.showAirQualitySection) ...[
                                 _buildSectionHeader(
                                   title: 'CHẤT LƯỢNG KHÔNG KHÍ & BỤI MỊN',
                                   icon: Icons.air_rounded,
@@ -185,21 +187,28 @@ class _TwentyFourHourDetailPageState extends State<TwentyFourHourDetailPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            Icon(icon, size: 16, color: iconColor),
-            const SizedBox(width: 6),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.8,
-                color: UIColors.textSecondary,
+        Expanded(
+          child: Row(
+            children: [
+              Icon(icon, size: 16, color: iconColor),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(
+                  title,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.8,
+                    color: UIColors.textSecondary,
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
+        const SizedBox(width: 8),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
           decoration: BoxDecoration(

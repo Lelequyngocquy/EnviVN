@@ -52,7 +52,7 @@ class SevenDayForecastCard extends StatelessWidget {
             itemBuilder: (context, index) {
               final day = days[index];
               final dayName = DateHelper.formatWeekday(day.date);
-              final info = WeatherCodeHelper.getInfo(day.weatherCode);
+              final info = WeatherCodeHelper.getInfo(day.weatherCode, isDay: true);
 
               return Row(
                 children: [

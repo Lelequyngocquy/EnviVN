@@ -56,7 +56,7 @@ class LiquidGlassBottomBar extends StatelessWidget {
         const SizedBox(width: 8,)
         ,AppGlass( isFixed: true,
             borderRadius: 100,
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child: NavBarItem(icon: Icons.message_outlined, label: 'Trợ lý', isActive: false, onTap: (){},),),
       ],
     );

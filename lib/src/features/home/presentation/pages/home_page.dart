@@ -37,10 +37,8 @@ class _HomePageState extends State<HomePage> {
       canPop: false,
       onPopInvokedWithResult: (bool didPop, dynamic result) {
         if (didPop) return;
-        final cubit = context.read<HomeDashboardCubit>();
-        if (cubit.state.currentTab != 0) {
-          cubit.setTab(0);
-        } else {
+        final handled = context.read<HomeDashboardCubit>().handleBackPress();
+        if (!handled) {
           Navigator.of(context).maybePop();
         }
       },

@@ -9,25 +9,6 @@ import 'package:envivn/src/features/home/presentation/widgets/location_radar_ill
 class LocationPermissionPage extends StatelessWidget {
   const LocationPermissionPage({super.key});
 
-  void _onSkip(BuildContext context) {
-    if (Navigator.canPop(context)) {
-      Navigator.pop(context);
-    } else {
-      context.read<HomeDashboardCubit>().setTab(0);
-    }
-  }
-
-  Future<void> _onAllowLocation(BuildContext context) async {
-    await context.read<HomeDashboardCubit>().detectGpsLocation();
-    if (context.mounted) {
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context);
-      } else {
-        context.read<HomeDashboardCubit>().setTab(0);
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,8 +50,16 @@ class LocationPermissionPage extends StatelessWidget {
 
               // Liquid Glass Action Panel (Apple iOS style)
               LocationActionPanel(
-                onAllow: () => _onAllowLocation(context),
-                onSkip: () => _onSkip(context),
+                onAllow: () => context.read<HomeDashboardCubit>().requestLocationPermission(
+                      onCompleted: () {
+                        if (Navigator.canPop(context)) Navigator.pop(context);
+                      },
+                    ),
+                onSkip: () => context.read<HomeDashboardCubit>().skipLocationPermission(
+                      onCompleted: () {
+                        if (Navigator.canPop(context)) Navigator.pop(context);
+                      },
+                    ),
               ),
               const SizedBox(height: 14),
 

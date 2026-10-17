@@ -35,7 +35,7 @@ class MapShortcutCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
                   Text(
-                    'Bản đồ trạm quan trắc & Heatmap',
+                    'Bản đồ trạm quan trắc',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,

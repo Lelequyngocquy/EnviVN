@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:envivn/src/common/utils/activity_advice_helper.dart';
 import 'package:envivn/src/common/utils/aqi_helper.dart';
 import 'package:envivn/src/common/utils/date_helper.dart';
 import 'package:envivn/src/common/utils/weather_code_helper.dart';
@@ -31,14 +33,65 @@ void main() {
       expect(aqiInfo.wearMask, true);
     });
 
-    test('WeatherCodeHelper resolves clear sky correctly', () {
-      final info = WeatherCodeHelper.getInfo(0);
-      expect(info.description, 'Trời quang đãng');
+    test('WeatherCodeHelper correctly detects daytime vs nighttime hours', () {
+      expect(WeatherCodeHelper.isDaytime(DateTime(2026, 10, 17, 5, 59)), isFalse);
+      expect(WeatherCodeHelper.isDaytime(DateTime(2026, 10, 17, 6, 0)), isTrue);
+      expect(WeatherCodeHelper.isDaytime(DateTime(2026, 10, 17, 12, 0)), isTrue);
+      expect(WeatherCodeHelper.isDaytime(DateTime(2026, 10, 17, 17, 59)), isTrue);
+      expect(WeatherCodeHelper.isDaytime(DateTime(2026, 10, 17, 18, 0)), isFalse);
+      expect(WeatherCodeHelper.isDaytime(DateTime(2026, 10, 17, 23, 30)), isFalse);
+    });
+
+    test('WeatherCodeHelper resolves clear sky with day/night icons', () {
+      final dayInfo = WeatherCodeHelper.getInfo(0, isDay: true);
+      expect(dayInfo.description, 'Trời quang đãng');
+      expect(dayInfo.icon, Icons.wb_sunny_rounded);
+      expect(dayInfo.isNight, isFalse);
+
+      final nightInfo = WeatherCodeHelper.getInfo(0, isDay: false);
+      expect(nightInfo.description, 'Đêm quang đãng');
+      expect(nightInfo.icon, Icons.nightlight_round);
+      expect(nightInfo.isNight, isTrue);
+    });
+
+    test('WeatherCodeHelper resolves partly cloudy with day/night icons', () {
+      final dayInfo = WeatherCodeHelper.getInfo(1, isDay: true);
+      expect(dayInfo.icon, Icons.wb_sunny_outlined);
+      expect(dayInfo.isNight, isFalse);
+
+      final nightInfo = WeatherCodeHelper.getInfo(1, isDay: false);
+      expect(nightInfo.icon, Icons.nights_stay_rounded);
+      expect(nightInfo.isNight, isTrue);
+
+      final dayScattered = WeatherCodeHelper.getInfo(2, isDay: true);
+      expect(dayScattered.icon, Icons.cloud_queue_rounded);
+
+      final nightScattered = WeatherCodeHelper.getInfo(2, isDay: false);
+      expect(nightScattered.icon, Icons.nights_stay_outlined);
     });
 
     test('WeatherCodeHelper resolves rain correctly', () {
       final info = WeatherCodeHelper.getInfo(63);
       expect(info.description, 'Mưa vừa');
+      expect(info.isRain, isTrue);
+    });
+
+    test('ActivityAdviceHelper evaluates multi-factor safety realistically', () {
+      final idealAdvice = ActivityAdviceHelper.evaluate(aqi: 30, uv: 3.0, rainProb: 10);
+      expect(idealAdvice.level, ActivitySafetyLevel.safe);
+      expect(idealAdvice.statusLabel, 'An toàn');
+
+      final unhealthyAdvice = ActivityAdviceHelper.evaluate(aqi: 220, uv: 2.0, rainProb: 0);
+      expect(unhealthyAdvice.level, ActivitySafetyLevel.avoid);
+      expect(unhealthyAdvice.statusLabel, 'Không nên');
+
+      final rainyAdvice = ActivityAdviceHelper.evaluate(aqi: 40, uv: 1.0, rainProb: 90);
+      expect(rainyAdvice.level, ActivitySafetyLevel.avoid);
+      expect(rainyAdvice.statusLabel, 'Không nên');
+
+      final cautionAdvice = ActivityAdviceHelper.evaluate(aqi: 120, uv: 5.0, rainProb: 20);
+      expect(cautionAdvice.level, ActivitySafetyLevel.caution);
+      expect(cautionAdvice.statusLabel, 'Cần chú ý');
     });
 
     test('DateHelper formats Vietnamese date without throwing LocaleDataException', () {

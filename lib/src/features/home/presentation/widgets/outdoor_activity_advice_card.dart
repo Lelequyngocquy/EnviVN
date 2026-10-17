@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/common/utils/activity_advice_helper.dart';
 import 'package:envivn/src/common/utils/aqi_helper.dart';
 import 'package:envivn/src/features/air_quality/domain/entities/air_quality_entity.dart';
 import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
@@ -18,15 +19,18 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final aqi = airQuality.usAqi > 0 ? airQuality.usAqi : 72;
+    final aqi = airQuality.usAqi > 0 ? airQuality.usAqi : 50;
     final info = AQIHelper.getAQIInfo(aqi);
     final uv = weather.uvIndex;
     final rainProb = weather.hourlyForecast.isNotEmpty
         ? weather.hourlyForecast.first.precipitationProbability
         : 0;
 
-    final bool isRunningSafe = aqi <= 100 && uv <= 7 && rainProb <= 40;
-    final bool isRunningCaution = aqi > 100 && aqi <= 150;
+    final adviceData = ActivityAdviceHelper.evaluate(
+      aqi: aqi,
+      uv: uv,
+      rainProb: rainProb,
+    );
 
     return AppGlass(
       borderRadius: 22,
@@ -42,17 +46,12 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: (isRunningSafe
-                              ? UIColors.aqiGood
-                              : (isRunningCaution ? UIColors.aqiModerate : UIColors.aqiUnhealthy))
-                          .withOpacity(0.18),
+                      color: adviceData.statusColor.withOpacity(0.18),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
                       Icons.directions_run_rounded,
-                      color: isRunningSafe
-                          ? UIColors.aqiGood
-                          : (isRunningCaution ? UIColors.aqiModerate : UIColors.aqiUnhealthy),
+                      color: adviceData.statusColor,
                       size: 20,
                     ),
                   ),
@@ -68,26 +67,21 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
                 ],
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
-                  color: (isRunningSafe
-                          ? UIColors.aqiGood
-                          : (isRunningCaution ? UIColors.aqiModerate : UIColors.aqiUnhealthy))
-                      .withOpacity(0.18),
+                  color: adviceData.statusColor.withOpacity(0.18),
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                    color: (isRunningSafe
-                            ? UIColors.aqiGood
-                            : (isRunningCaution ? UIColors.aqiModerate : UIColors.aqiUnhealthy))
-                        .withOpacity(0.4),
+                    color: adviceData.statusColor.withOpacity(0.4),
                   ),
                 ),
                 child: Text(
-                  isRunningSafe ? 'An toàn' : (isRunningCaution ? 'Cần chú ý' : 'Không nên'),
+                  adviceData.statusLabel,
                   style: TextStyle(
-                    color: isRunningSafe
-                        ? UIColors.aqiGood
-                        : (isRunningCaution ? UIColors.aqiModerate : UIColors.aqiUnhealthy),
+                    color: adviceData.statusColor,
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                   ),
@@ -97,7 +91,7 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            info.outdoorAdvice,
+            adviceData.adviceText,
             style: const TextStyle(
               fontSize: 13,
               color: UIColors.textPrimary,
@@ -120,15 +114,15 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
               _TimeSlotGlassChip(
                 time: '05:30 - 07:30',
                 activity: 'Chạy bộ sáng',
-                status: aqi <= 100 ? 'Rất tốt' : 'Nên đeo khẩu trang',
-                isOk: aqi <= 100,
+                status: adviceData.morningStatus,
+                isOk: adviceData.isMorningOk,
               ),
               const SizedBox(width: 8),
               _TimeSlotGlassChip(
                 time: '17:00 - 18:30',
                 activity: 'Tập ngoài trời',
-                status: aqi <= 120 ? 'Thích hợp' : 'Hạn chế gắng sức',
-                isOk: aqi <= 120,
+                status: adviceData.eveningStatus,
+                isOk: adviceData.isEveningOk,
               ),
             ],
           ),
@@ -139,8 +133,12 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
             children: [
               _ActionGlassPill(
                 icon: Icons.masks_rounded,
-                label: info.wearMask ? 'Đeo khẩu trang PM2.5' : 'Không cần khẩu trang',
-                color: info.wearMask ? UIColors.aqiUnhealthySensitive : UIColors.aqiGood,
+                label: info.wearMask
+                    ? 'Đeo khẩu trang PM2.5'
+                    : 'Không cần khẩu trang',
+                color: info.wearMask
+                    ? UIColors.aqiUnhealthySensitive
+                    : UIColors.aqiGood,
               ),
               _ActionGlassPill(
                 icon: Icons.wb_sunny_rounded,
@@ -196,14 +194,21 @@ class _TimeSlotGlassChip extends StatelessWidget {
                 const SizedBox(width: 4),
                 Text(
                   time,
-                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 3),
             Text(
               activity,
-              style: const TextStyle(fontSize: 11, color: UIColors.textSecondary),
+              style: const TextStyle(
+                fontSize: 11,
+                color: UIColors.textSecondary,
+              ),
             ),
             const SizedBox(height: 2),
             Text(

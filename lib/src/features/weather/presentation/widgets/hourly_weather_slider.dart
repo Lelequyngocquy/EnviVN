@@ -75,7 +75,7 @@ class HourlyWeatherSlider extends StatelessWidget {
                 final item = points[index];
                 final isFirst = index == 0;
                 final timeStr = isFirst ? 'Bây giờ' : DateFormat('HH:mm').format(item.time);
-                final itemInfo = WeatherCodeHelper.getInfo(item.weatherCode);
+                final itemInfo = WeatherCodeHelper.getInfo(item.weatherCode, time: item.time);
 
                 return Container(
                   width: 64,

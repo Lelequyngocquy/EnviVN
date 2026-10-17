@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/core/presentation/widgets/app_bottom_sheet.dart';
 import 'package:envivn/src/features/home/domain/entities/city_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
@@ -30,37 +31,12 @@ class _CitySelectorSheetState extends State<CitySelectorSheet> {
       return city.name.toLowerCase().contains(q) || city.province.toLowerCase().contains(q);
     }).toList();
 
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.72,
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-      decoration: BoxDecoration(
-        color: UIColors.cardBg,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-        border: Border.all(color: Colors.white.withOpacity(0.15)),
-      ),
+    return AppBottomSheet(
+      title: 'Chọn khu vực theo dõi',
+      maxHeightFactor: 0.75,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(
-            child: Container(
-              width: 44,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: 18),
-          const Text(
-            'Chọn khu vực theo dõi',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 14),
 
           // Search Box in Dark Glass Style
           TextField(

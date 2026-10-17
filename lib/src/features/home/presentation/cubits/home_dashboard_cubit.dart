@@ -102,10 +102,17 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
         airQualityCubit.fetchAirQuality(latitude: city.latitude, longitude: city.longitude),
       ]);
 
+      final aqi = airQualityCubit.state.airQuality.usAqi;
+      final weather = weatherCubit.state.weather;
+      final hasAlert = aqi > 100 ||
+          weather.uvIndex >= 8 ||
+          (weather.hourlyForecast.isNotEmpty && weather.hourlyForecast.first.precipitationProbability >= 50);
+
       emit(state.copyWith(
         status: DashboardStatus.success,
         isChangingLocation: false,
         lastUpdated: DateTime.now(),
+        hasNotification: hasAlert,
       ));
     } catch (e) {
       emit(state.copyWith(
@@ -120,5 +127,24 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
     if (state.currentTab != index) {
       emit(state.copyWith(currentTab: index));
     }
+  }
+
+  bool handleBackPress() {
+    if (state.currentTab != 0) {
+      setTab(0);
+      return true;
+    }
+    return false;
+  }
+
+  Future<void> requestLocationPermission({void Function()? onCompleted}) async {
+    await detectGpsLocation();
+    setTab(0);
+    onCompleted?.call();
+  }
+
+  void skipLocationPermission({void Function()? onCompleted}) {
+    setTab(0);
+    onCompleted?.call();
   }
 }

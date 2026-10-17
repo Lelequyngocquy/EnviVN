@@ -319,7 +319,7 @@ class HomeWeatherCard extends StatelessWidget {
                   final item = weather.hourlyForecast[index];
                   final isFirst = index == 0;
                   final timeStr = isFirst ? 'Bây giờ' : DateFormat('HH:mm').format(item.time);
-                  final itemInfo = WeatherCodeHelper.getInfo(item.weatherCode);
+                  final itemInfo = WeatherCodeHelper.getInfo(item.weatherCode, time: item.time);
 
                   return GestureDetector(
                     onTap: onDetailTap,

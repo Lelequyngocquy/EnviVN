@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:envivn/src/core/presentation/widgets/app_bottom_sheet.dart';
 import '../../../../common/constants/colors.dart';
 import '../../../../common/utils/aqi_helper.dart';
 import '../../domain/entities/station_pollution_entity.dart';
@@ -12,71 +13,33 @@ class StationDetailSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final info = AQIHelper.getAQIInfo(station.aqi);
 
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+    return AppBottomSheet(
+      title: station.name,
+      subtitle: 'Khu vực: ${station.province}',
+      trailing: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: info.color.withOpacity(0.15),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: info.color.withOpacity(0.3)),
+        ),
+        child: Text(
+          info.label,
+          style: TextStyle(
+            color: info.color,
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+          ),
+        ),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: UIColors.border,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    station.name,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: UIColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'Khu vực: ${station.province}',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: UIColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: info.color.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: info.color.withOpacity(0.3)),
-                ),
-                child: Text(
-                  info.label,
-                  style: TextStyle(
-                    color: info.color,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Row(
+      bottomButtonText: 'Đóng',
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
             children: [
               Container(
                 padding: const EdgeInsets.all(16),
@@ -155,24 +118,9 @@ class StationDetailSheet extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 20),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: UIColors.primary,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text('Đóng'),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

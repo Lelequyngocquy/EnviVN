@@ -5,6 +5,7 @@ import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/extensions/context_x.dart';
 import 'package:envivn/src/common/utils/date_helper.dart';
 import 'package:envivn/src/core/presentation/widgets/loading.dart';
+import 'package:envivn/src/features/home/presentation/widgets/environmental_notification_sheet.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_cubit.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_state.dart';
 import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
@@ -37,6 +38,7 @@ class HomeDashboardView extends StatelessWidget {
       ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -96,8 +98,7 @@ class HomeDashboardView extends StatelessWidget {
                 builder: (context, weatherState) {
                   return BlocBuilder<AirQualityCubit, AirQualityState>(
                     builder: (context, aqiState) {
-                      final isInitialLoading = dashState.status == DashboardStatus.loading &&
-                          weatherState.weather.hourlyForecast.isEmpty;
+                      final isInitialLoading = dashState.isInitialLoading(weatherState.weather.hourlyForecast.length);
 
                       if (isInitialLoading) {
                         return const LoadingWidget(message: 'Đang tải dữ liệu môi trường...');
@@ -122,10 +123,14 @@ class HomeDashboardView extends StatelessWidget {
                               cityName: dashState.currentCity.name,
                               isGps: dashState.currentCity.isGps,
                               dateText: dateStr,
+                              hasNotification: dashState.hasNotification,
                               onLocationTap: () => _openCitySelector(context, dashState),
-                              onNotificationTap: () {
-                                context.showSnackBar('Chất lượng không khí đang ổn định.');
-                              },
+                              onNotificationTap: () => EnvironmentalNotificationSheet.show(
+                                context,
+                                cityName: dashState.currentCity.name,
+                                airQuality: aqiState.airQuality,
+                                weather: weatherState.weather,
+                              ),
                             ),
                           ),
 

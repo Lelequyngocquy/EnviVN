@@ -11,7 +11,7 @@ class MapPollutionState extends Equatable {
   final LatLng? targetLocation;
   final double? targetZoom;
   final String? selectedCityName;
-  final String activeFilter; // 'all', 'good', 'warning'
+  final String activeFilter; // 'all', 'good', 'moderate', 'unhealthy' (hoặc 'warning')
   final bool showHeatmap;
   final String? errorMessage;
 
@@ -26,6 +26,19 @@ class MapPollutionState extends Equatable {
     this.showHeatmap = true,
     this.errorMessage,
   });
+
+  List<StationPollutionEntity> get filteredStations {
+    if (activeFilter == 'good') {
+      return stations.where((st) => st.aqi <= 50).toList();
+    }
+    if (activeFilter == 'moderate') {
+      return stations.where((st) => st.aqi > 50 && st.aqi <= 100).toList();
+    }
+    if (activeFilter == 'unhealthy' || activeFilter == 'warning') {
+      return stations.where((st) => st.aqi > 100).toList();
+    }
+    return stations;
+  }
 
   MapPollutionState copyWith({
     MapPollutionStatus? status,

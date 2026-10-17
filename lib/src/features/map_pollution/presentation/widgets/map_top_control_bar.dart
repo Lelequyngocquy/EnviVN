@@ -60,9 +60,15 @@ class MapTopControlBar extends StatelessWidget {
                       ),
                       const SizedBox(width: 6),
                       _FilterGlassChip(
-                        label: 'Gây hại',
-                        isActive: activeFilter == 'warning',
-                        onTap: () => onFilterChanged('warning'),
+                        label: 'Trung bình',
+                        isActive: activeFilter == 'moderate',
+                        onTap: () => onFilterChanged('moderate'),
+                      ),
+                      const SizedBox(width: 6),
+                      _FilterGlassChip(
+                        label: 'Kém',
+                        isActive: activeFilter == 'unhealthy' || activeFilter == 'warning',
+                        onTap: () => onFilterChanged('unhealthy'),
                       ),
                     ],
                   ),
@@ -86,7 +92,11 @@ class MapTopControlBar extends StatelessWidget {
           physics: const ClampingScrollPhysics(),
           scrollDirection: Axis.horizontal,
           child: Row(
-            children: [
+            children: [ _QuickCityGlassChip(
+              label: 'Toàn quốc',
+              isActive: curCity == 'Toàn quốc',
+              onTap: onSelectAllVietnam,
+            ),const SizedBox(width: 6),
               _QuickCityGlassChip(
                 label: 'Hà Nội',
                 isActive: curCity.contains('Hà Nội'),
@@ -110,12 +120,8 @@ class MapTopControlBar extends StatelessWidget {
                 isActive: curCity.contains('Hải Phòng'),
                 onTap: () => onSelectCity('Hải Phòng'),
               ),
-              const SizedBox(width: 6),
-              _QuickCityGlassChip(
-                label: 'Toàn quốc',
-                isActive: curCity == 'Toàn quốc',
-                onTap: onSelectAllVietnam,
-              ),
+
+
             ],
           ),
         ),

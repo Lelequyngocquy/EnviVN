@@ -68,11 +68,7 @@ class _PollutionMapPageState extends State<PollutionMapPage> {
             return const LoadingWidget(message: 'Đang tải bản đồ & trạm quan trắc...');
           }
 
-          final filteredStations = state.stations.where((st) {
-            if (state.activeFilter == 'good') return st.aqi <= 50;
-            if (state.activeFilter == 'warning') return st.aqi > 100;
-            return true;
-          }).toList();
+          final filteredStations = state.filteredStations;
 
           // Heatmap circles (concentric glowing rings)
           final circles = <CircleMarker>[];
