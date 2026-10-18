@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/core/presentation/widgets/widgets.dart';
 
 enum DetailTab { all, weather, airQuality }
 
@@ -63,20 +64,18 @@ class DetailSegmentedFilter extends StatelessWidget {
               width: 0.8,
             ),
           ),
-          child: Text(
+          child: AppText(
             title,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-              color: isSelected
-                  ? (tab == DetailTab.weather
-                        ? UIColors.secondary
-                        : (tab == DetailTab.airQuality
-                              ? UIColors.primary
-                              : Colors.white))
-                  : UIColors.textSecondary,
-            ),
+            size: 11,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+            color: isSelected
+                ? (tab == DetailTab.weather
+                      ? UIColors.secondary
+                      : (tab == DetailTab.airQuality
+                            ? UIColors.primary
+                            : Colors.white))
+                : UIColors.textSecondary,
           ),
         ),
       ),

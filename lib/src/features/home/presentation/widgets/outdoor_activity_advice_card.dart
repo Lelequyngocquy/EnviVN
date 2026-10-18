@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/activity_advice_helper.dart';
 import 'package:envivn/src/common/utils/aqi_helper.dart';
+import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_status_tag.dart';
+import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/features/air_quality/domain/entities/air_quality_entity.dart';
 import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
@@ -31,6 +33,9 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
       aqi: aqi,
       uv: uv,
       rainProb: rainProb,
+      currentTime: DateTime.now(),
+      hourlyWeather: weather.hourlyForecast,
+      hourlyAqi: airQuality.hourlyAqi,
     );
 
     return AppGlass(
@@ -51,7 +56,7 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
                         color: adviceData.statusColor.withOpacity(0.18),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Icon(
+                      child: AppIcon(
                         Icons.directions_run_rounded,
                         color: adviceData.statusColor,
                         size: 20,
@@ -59,15 +64,11 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 10),
                     const Expanded(
-                      child: Text(
+                      child: AppText.bold(
                         'Khuyến nghị hoạt động',
                         maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                          color: UIColors.textPrimary,
-                        ),
+                        size: 14,
+                        color: UIColors.textPrimary,
                       ),
                     ),
                   ],
@@ -82,40 +83,30 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Text(
+          AppText.medium(
             adviceData.adviceText,
-            style: const TextStyle(
-              fontSize: 13,
-              color: UIColors.textPrimary,
-              height: 1.45,
-              fontWeight: FontWeight.w500,
-            ),
+            size: 13,
+            color: UIColors.textPrimary,
+            height: 1.45,
           ),
           const SizedBox(height: 14),
-          const Text(
+          const AppText.bold(
             'Khung giờ hoạt động gợi ý:',
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
-              color: UIColors.textSecondary,
-            ),
+            size: 11,
+            color: UIColors.textSecondary,
           ),
           const SizedBox(height: 8),
           Row(
             children: [
-              _TimeSlotGlassChip(
-                time: '05:30 - 07:30',
-                activity: 'Chạy bộ sáng',
-                status: adviceData.morningStatus,
-                isOk: adviceData.isMorningOk,
-              ),
-              const SizedBox(width: 8),
-              _TimeSlotGlassChip(
-                time: '17:00 - 18:30',
-                activity: 'Tập ngoài trời',
-                status: adviceData.eveningStatus,
-                isOk: adviceData.isEveningOk,
-              ),
+              for (int i = 0; i < adviceData.slots.length; i++) ...[
+                if (i > 0) const SizedBox(width: 8),
+                _TimeSlotGlassChip(
+                  time: adviceData.slots[i].timeRange,
+                  activity: adviceData.slots[i].activity,
+                  status: adviceData.slots[i].status,
+                  isOk: adviceData.slots[i].isOk,
+                ),
+              ],
             ],
           ),
           const SizedBox(height: 14),
@@ -178,38 +169,35 @@ class _TimeSlotGlassChip extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(
+                AppIcon(
                   Icons.schedule_rounded,
                   size: 13,
                   color: isOk ? UIColors.primary : UIColors.textSecondary,
                 ),
                 const SizedBox(width: 4),
-                Text(
-                  time,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: AppText.bold(
+                    time,
+                    maxLines: 1,
+                    size: 11,
                     color: Colors.white,
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 3),
-            Text(
+            AppText.regular(
               activity,
-              style: const TextStyle(
-                fontSize: 11,
-                color: UIColors.textSecondary,
-              ),
+              maxLines: 1,
+              size: 11,
+              color: UIColors.textSecondary,
             ),
             const SizedBox(height: 2),
-            Text(
+            AppText.bold(
               status,
-              style: TextStyle(
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                color: isOk ? UIColors.primary : UIColors.aqiUnhealthySensitive,
-              ),
+              maxLines: 1,
+              size: 10,
+              color: isOk ? UIColors.primary : UIColors.aqiUnhealthySensitive,
             ),
           ],
         ),

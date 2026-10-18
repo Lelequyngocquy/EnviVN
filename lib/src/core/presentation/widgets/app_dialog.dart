@@ -2,6 +2,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
+import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
 /// Hộp thoại Popup Dialog dùng chung cho toàn bộ ứng dụng EnviVN.
@@ -252,8 +254,8 @@ class AppDialog extends StatelessWidget {
                               width: 1.2,
                             ),
                           ),
-                          child: Icon(
-                            icon,
+                          child: AppIcon(
+                            icon!,
                             size: 28,
                             color: iconColor ?? UIColors.primary,
                           ),
@@ -266,15 +268,11 @@ class AppDialog extends StatelessWidget {
                         titleWidget!,
                         const SizedBox(height: 8),
                       ] else if (title != null) ...[
-                        Text(
+                        AppText.bold(
                           title!,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 16.5,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 0.2,
-                          ),
+                          size: 16.5,
+                          letterSpacing: 0.2,
                         ),
                         const SizedBox(height: 8),
                       ],
@@ -285,14 +283,12 @@ class AppDialog extends StatelessWidget {
                       // Text Content (nếu có và không truyền childrenWidget, hoặc dùng độc lập)
                       if (content != null) ...[
                         if (childrenWidget != null) const SizedBox(height: 8),
-                        Text(
+                        AppText.regular(
                           content!,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 12.5,
-                            color: UIColors.textSecondary,
-                            height: 1.45,
-                          ),
+                          size: 12.5,
+                          color: UIColors.textSecondary,
+                          height: 1.45,
                         ),
                       ],
 
@@ -346,13 +342,10 @@ class AppDialog extends StatelessWidget {
                       width: 0.8,
                     ),
                   ),
-                  child: Text(
+                  child: AppText.semiBold(
                     leftTitle,
-                    style: const TextStyle(
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white70,
-                    ),
+                    size: 13.5,
+                    color: Colors.white70,
                   ),
                 ),
               ),
@@ -384,13 +377,10 @@ class AppDialog extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: Text(
+                  child: AppText.bold(
                     rightButtonTitle!,
-                    style: TextStyle(
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.bold,
-                      color: isDestructive ? Colors.white : Colors.black,
-                    ),
+                    size: 13.5,
+                    color: isDestructive ? Colors.white : Colors.black,
                   ),
                 ),
               ),
@@ -438,15 +428,13 @@ class AppDialog extends StatelessWidget {
                       ),
                     ],
             ),
-            child: Text(
+            child: AppText(
               title,
-              style: TextStyle(
-                fontSize: 13.5,
-                fontWeight: isLeftOnly ? FontWeight.w600 : FontWeight.bold,
-                color: isLeftOnly
-                    ? Colors.white
-                    : (isDestructive ? Colors.white : Colors.black),
-              ),
+              size: 13.5,
+              fontWeight: isLeftOnly ? FontWeight.w600 : FontWeight.bold,
+              color: isLeftOnly
+                  ? Colors.white
+                  : (isDestructive ? Colors.white : Colors.black),
             ),
           ),
         ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
+import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
@@ -99,25 +101,24 @@ class MetricGlassItem extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(icon, color: iconColor, size: 18),
+                AppIcon(icon, color: iconColor, size: 18),
                 const SizedBox(width: 6),
-                Text(
+                AppText.regular(
                   label,
-                  style: const TextStyle(fontSize: 12, color: UIColors.textSecondary),
+                  size: 12,
+                  color: UIColors.textSecondary,
                 ),
               ],
             ),
-            Text(
+            AppText.bold(
               value,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+              size: 22,
+              color: Colors.white,
             ),
-            Text(
+            AppText.regular(
               sub,
-              style: const TextStyle(fontSize: 10, color: UIColors.textMuted),
+              size: 10,
+              color: UIColors.textMuted,
             ),
           ],
         ),

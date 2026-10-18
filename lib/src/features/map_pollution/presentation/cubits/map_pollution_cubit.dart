@@ -2,7 +2,9 @@ import 'dart:math' as math;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../../core/infrastructure/services/location_service.dart';
 import '../../../weather/domain/interfaces/i_weather_repository.dart';
+import '../../domain/entities/quick_city_target.dart';
 import '../../domain/entities/station_pollution_entity.dart';
 import '../../domain/interfaces/i_map_pollution_repository.dart';
 import 'map_pollution_state.dart';
@@ -10,13 +12,18 @@ import 'map_pollution_state.dart';
 class MapPollutionCubit extends Cubit<MapPollutionState> {
   final IMapPollutionRepository repository;
   final IWeatherRepository? weatherRepository;
+  final LocationService? locationService;
 
   MapPollutionCubit({
     required this.repository,
     this.weatherRepository,
+    this.locationService,
   }) : super(const MapPollutionState());
 
-  Future<void> fetchVietnamStations({String? initialCity}) async {
+  Future<void> fetchVietnamStations({
+    String? initialCity,
+    LatLng? initialCoords,
+  }) async {
     emit(state.copyWith(status: MapPollutionStatus.loading, errorMessage: null));
 
     final result = await repository.getVietnamStations();
@@ -28,7 +35,15 @@ class MapPollutionCubit extends Cubit<MapPollutionState> {
         stations: stations,
       ));
 
-      if (initialCity != null && initialCity.isNotEmpty) {
+      await loadUserGpsLocation(fallbackCoords: initialCoords);
+
+      if (initialCoords != null) {
+        selectLocationCoordinates(
+          initialCoords.latitude,
+          initialCoords.longitude,
+          label: initialCity,
+        );
+      } else if (initialCity != null && initialCity.isNotEmpty) {
         selectLocationByCityName(initialCity);
       }
     } else {
@@ -39,12 +54,35 @@ class MapPollutionCubit extends Cubit<MapPollutionState> {
     }
   }
 
+  void setUserGpsLocation(LatLng coords) {
+    if (state.userGpsLocation != coords) {
+      emit(state.copyWith(userGpsLocation: coords));
+    }
+  }
+
+  Future<void> loadUserGpsLocation({LatLng? fallbackCoords}) async {
+    if (fallbackCoords != null && state.userGpsLocation == null) {
+      emit(state.copyWith(userGpsLocation: fallbackCoords));
+    }
+    if (locationService == null) return;
+    try {
+      final isGranted = await locationService!.checkPermissionGranted();
+      if (isGranted) {
+        final loc = await locationService!.getCurrentLocation();
+        if (!loc.isDefault) {
+          emit(state.copyWith(userGpsLocation: LatLng(loc.latitude, loc.longitude)));
+        }
+      }
+    } catch (_) {}
+  }
+
   void selectStation(StationPollutionEntity station) {
     emit(state.copyWith(
       selectedStation: station,
       targetLocation: LatLng(station.latitude, station.longitude),
       targetZoom: 12.0,
       selectedCityName: station.province,
+      isHomeSelected: false,
     ));
 
     _enrichStationWeather(station);
@@ -103,12 +141,56 @@ class MapPollutionCubit extends Cubit<MapPollutionState> {
     }
   }
 
+  void selectHomeLocation({
+    required double lat,
+    required double lon,
+    double zoom = 12.0,
+    String? label,
+  }) {
+    // Check if there is a station close to this coordinate (within ~35km)
+    StationPollutionEntity? closestStation;
+    double minDistance = double.infinity;
+
+    for (final st in state.stations) {
+      final d = _calculateDistance(lat, lon, st.latitude, st.longitude);
+      if (d < minDistance) {
+        minDistance = d;
+        closestStation = st;
+      }
+    }
+
+    if (closestStation != null && minDistance <= 35.0) {
+      emit(state.copyWith(
+        selectedStation: closestStation,
+        targetLocation: LatLng(closestStation.latitude, closestStation.longitude),
+        targetZoom: zoom,
+        selectedCityName: label ?? closestStation.province,
+        isHomeSelected: true,
+      ));
+      _enrichStationWeather(closestStation);
+    } else {
+      emit(state.copyWith(
+        clearSelectedStation: true,
+        targetLocation: LatLng(lat, lon),
+        targetZoom: zoom,
+        selectedCityName: label ?? 'Vị trí hiện tại',
+        isHomeSelected: true,
+      ));
+    }
+  }
+
   void selectLocationCoordinates(
     double lat,
     double lon, {
     double zoom = 12.0,
     String? label,
+    bool isHome = false,
   }) {
+    if (isHome) {
+      selectHomeLocation(lat: lat, lon: lon, zoom: zoom, label: label);
+      return;
+    }
+
     // Check if there is a station close to this coordinate (within ~35km)
     StationPollutionEntity? closestStation;
     double minDistance = double.infinity;
@@ -129,8 +211,28 @@ class MapPollutionCubit extends Cubit<MapPollutionState> {
         targetLocation: LatLng(lat, lon),
         targetZoom: zoom,
         selectedCityName: label,
+        isHomeSelected: false,
       ));
     }
+  }
+
+  void selectQuickCity(QuickCityTarget target) {
+    if (target.isAllCountry) {
+      showAllVietnam();
+    } else {
+      emit(state.copyWith(isHomeSelected: false));
+      selectLocationCoordinates(
+        target.latitude,
+        target.longitude,
+        zoom: target.zoom,
+        label: target.label,
+        isHome: false,
+      );
+    }
+  }
+
+  void updateQuickCities(List<QuickCityTarget> cities) {
+    emit(state.copyWith(quickCities: cities));
   }
 
   void showAllVietnam() {
@@ -139,6 +241,7 @@ class MapPollutionCubit extends Cubit<MapPollutionState> {
       targetLocation: const LatLng(16.0544, 108.2022),
       targetZoom: 5.8,
       selectedCityName: 'Toàn quốc',
+      isHomeSelected: false,
     ));
   }
 
@@ -147,6 +250,7 @@ class MapPollutionCubit extends Cubit<MapPollutionState> {
       clearSelectedStation: true,
       clearTargetLocation: true,
       clearSelectedCityName: true,
+      isHomeSelected: false,
     ));
   }
 
@@ -169,6 +273,11 @@ class MapPollutionCubit extends Cubit<MapPollutionState> {
 
   LatLng? _getCityCoordinates(String cityName) {
     final norm = _normalize(cityName);
+    for (final target in state.quickCities) {
+      if (!target.isAllCountry && target.isSelected(norm)) {
+        return LatLng(target.latitude, target.longitude);
+      }
+    }
     if (norm.contains('hà nội')) return const LatLng(21.0285, 105.8542);
     if (norm.contains('hồ chí minh') || norm.contains('sài gòn') || norm.contains('hcm')) {
       return const LatLng(10.7769, 106.7009);

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
+import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 
 /// Định nghĩa các kích thước quy chuẩn cho thẻ trạng thái (Tag / Badge).
 /// Tự động đồng bộ kích thước khung chứa (padding, border radius) và kích thước chữ/icon.
@@ -141,21 +143,19 @@ class AppStatusTag extends StatelessWidget {
           leading!,
           SizedBox(width: size.spacing),
         ] else if (icon != null) ...[
-          Icon(
-            icon,
+          AppIcon(
+            icon!,
             size: size.iconSize,
             color: effectiveTextColor,
           ),
           SizedBox(width: size.spacing),
         ],
-        Text(
+        AppText(
           label,
-          style: TextStyle(
-            color: effectiveTextColor,
-            fontSize: size.fontSize,
-            fontWeight: fontWeight,
-            height: 1.15,
-          ),
+          color: effectiveTextColor,
+          size: size.fontSize,
+          fontWeight: fontWeight,
+          height: 1.15,
         ),
         if (trailing != null) ...[
           SizedBox(width: size.spacing),

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/aqi_helper.dart';
 import 'package:envivn/src/core/presentation/widgets/app_bottom_sheet.dart';
+import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_status_tag.dart';
+import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/features/air_quality/domain/entities/air_quality_entity.dart';
 import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
@@ -45,7 +47,7 @@ class EnvironmentalNotificationSheet extends StatelessWidget {
           ),
           shape: BoxShape.circle,
         ),
-        child: Icon(
+        child: AppIcon(
           hasAqiWarning
               ? Icons.warning_amber_rounded
               : Icons.notifications_active_rounded,
@@ -87,15 +89,11 @@ class EnvironmentalNotificationSheet extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: Text(
+                      child: AppText.semiBold(
                         'Chất lượng không khí (AQI $aqiVal)',
                         maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
+                        size: 13,
+                        color: Colors.white,
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -107,32 +105,27 @@ class EnvironmentalNotificationSheet extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
-                Text(
+                AppText.regular(
                   aqiInfo.healthAdvice,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: UIColors.textSecondary,
-                    height: 1.4,
-                  ),
+                  size: 12,
+                  color: UIColors.textSecondary,
+                  height: 1.4,
                 ),
                 if (aqiInfo.wearMask) ...[
                   const SizedBox(height: 8),
                   Row(
                     children: const [
-                      Icon(
+                      AppIcon(
                         Icons.masks_rounded,
                         size: 14,
                         color: UIColors.aqiUnhealthySensitive,
                       ),
                       SizedBox(width: 6),
                       Expanded(
-                        child: Text(
+                        child: AppText.medium(
                           'Khuyến nghị đeo khẩu trang lọc bụi mịn PM2.5 khi ra ngoài.',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: UIColors.aqiUnhealthySensitive,
-                            fontWeight: FontWeight.w500,
-                          ),
+                          size: 11,
+                          color: UIColors.aqiUnhealthySensitive,
                         ),
                       ),
                     ],
@@ -154,29 +147,24 @@ class EnvironmentalNotificationSheet extends StatelessWidget {
                   if (hasUvWarning) ...[
                     Row(
                       children: [
-                        const Icon(
+                        const AppIcon(
                           Icons.wb_sunny_rounded,
                           size: 16,
                           color: Colors.orange,
                         ),
                         const SizedBox(width: 6),
-                        Text(
+                        AppText.bold(
                           'Cảnh báo UV: Mức ${weather.uvIndex.toStringAsFixed(1)} (Rất cao)',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.orange,
-                          ),
+                          size: 12,
+                          color: Colors.orange,
                         ),
                       ],
                     ),
                     const SizedBox(height: 4),
-                    const Text(
+                    const AppText.regular(
                       'Hạn chế tiếp xúc trực tiếp dưới ánh nắng giữa trưa, cần thoa kem chống nắng & kính râm.',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: UIColors.textSecondary,
-                      ),
+                      size: 11,
+                      color: UIColors.textSecondary,
                     ),
                   ],
                   if (hasUvWarning && rainProb >= 50)
@@ -184,29 +172,24 @@ class EnvironmentalNotificationSheet extends StatelessWidget {
                   if (rainProb >= 50) ...[
                     Row(
                       children: [
-                        const Icon(
+                        const AppIcon(
                           Icons.umbrella_rounded,
                           size: 16,
                           color: UIColors.secondary,
                         ),
                         const SizedBox(width: 6),
-                        Text(
+                        AppText.bold(
                           'Khả năng mưa: $rainProb%',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: UIColors.secondary,
-                          ),
+                          size: 12,
+                          color: UIColors.secondary,
                         ),
                       ],
                     ),
                     const SizedBox(height: 4),
-                    const Text(
+                    const AppText.regular(
                       'Dự báo có khả năng mưa trong vài giờ tới, hãy mang theo áo mưa hoặc ô.',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: UIColors.textSecondary,
-                      ),
+                      size: 11,
+                      color: UIColors.textSecondary,
                     ),
                   ],
                 ],

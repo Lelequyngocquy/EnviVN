@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../common/constants/colors.dart';
+import 'app_icon.dart';
+import 'app_text.dart';
 
 class CustomErrorView extends StatelessWidget {
   final String message;
@@ -19,27 +21,23 @@ class CustomErrorView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
+            const AppIcon(
               Icons.cloud_off_rounded,
               size: 64,
               color: UIColors.error,
             ),
             const SizedBox(height: 16),
-            Text(
+            const AppText.bold(
               'Không thể tải dữ liệu',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: UIColors.textPrimary,
-                  ),
+              size: 16,
+              color: UIColors.textPrimary,
             ),
             const SizedBox(height: 8),
-            Text(
+            AppText.regular(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: UIColors.textSecondary,
-                fontSize: 14,
-              ),
+              color: UIColors.textSecondary,
+              size: 14,
             ),
             if (onRetry != null) ...[
               const SizedBox(height: 20),
@@ -53,8 +51,8 @@ class CustomErrorView extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                icon: const Icon(Icons.refresh_rounded, size: 18),
-                label: const Text('Thử lại'),
+                icon: const AppIcon(Icons.refresh_rounded, size: 18, color: Colors.white),
+                label: const AppText.bold('Thử lại', size: 14, color: Colors.white),
               ),
             ],
           ],

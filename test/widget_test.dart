@@ -1,19 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/activity_advice_helper.dart';
 import 'package:envivn/src/common/utils/aqi_helper.dart';
 import 'package:envivn/src/common/utils/date_helper.dart';
 import 'package:envivn/src/common/utils/weather_code_helper.dart';
 import 'package:envivn/src/core/domain/entities/base.dart';
 import 'package:envivn/src/core/infrastructure/configs/env_config.dart';
-import 'package:envivn/src/core/presentation/widgets/app_dialog.dart';
-import 'package:envivn/src/core/presentation/widgets/app_status_tag.dart';
+import 'package:envivn/src/core/presentation/widgets/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:envivn/src/core/infrastructure/datasources/local/local_storage.dart';
+import 'package:envivn/src/features/air_quality/domain/entities/air_quality_entity.dart';
+import 'package:envivn/src/features/home/domain/entities/city_entity.dart';
 import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_state.dart';
+import 'package:envivn/src/features/home/presentation/widgets/location_action_panel.dart';
 import 'package:envivn/src/features/home/presentation/widgets/location_loading_overlay.dart';
+import 'package:envivn/src/features/home/presentation/widgets/home_top_bar.dart';
+import 'package:envivn/src/features/map_pollution/domain/entities/quick_city_target.dart';
 import 'package:envivn/src/features/map_pollution/domain/entities/station_pollution_entity.dart';
 import 'package:envivn/src/features/map_pollution/domain/interfaces/i_map_pollution_repository.dart';
 import 'package:envivn/src/features/map_pollution/presentation/cubits/map_pollution_cubit.dart';
 import 'package:envivn/src/features/map_pollution/presentation/cubits/map_pollution_state.dart';
+import 'package:envivn/src/features/map_pollution/presentation/widgets/map_top_control_bar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_cubit.dart';
+import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_state.dart';
+import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
+import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
+import 'package:envivn/src/features/weather/presentation/cubits/weather_cubit.dart';
+import 'package:envivn/src/features/weather/presentation/cubits/weather_state.dart';
+import 'package:envivn/src/features/weather/presentation/pages/twenty_four_hour_detail_page.dart';
 
 void main() {
   group('EnviVN Unit Tests', () {
@@ -133,6 +149,85 @@ void main() {
     );
 
     test(
+      'ActivityAdviceHelper dynamically shifts and forecasts smart time slots based on current time (Option B)',
+      () {
+        final morningTime = DateTime(2026, 10, 18, 6, 0);
+        final morningAdvice = ActivityAdviceHelper.evaluate(
+          aqi: 40,
+          uv: 2.0,
+          rainProb: 10,
+          currentTime: morningTime,
+        );
+        expect(morningAdvice.slots.length, 2);
+        expect(morningAdvice.slots[0].activity, contains('Sáng nay'));
+        expect(morningAdvice.slots[1].activity, contains('Chiều nay'));
+
+        final afternoonTime = DateTime(2026, 10, 18, 14, 0);
+        final hourlyWeather = [
+          HourlyWeatherPoint(
+            time: DateTime(2026, 10, 18, 17, 0),
+            temperature: 28.0,
+            humidity: 75,
+            precipitationProbability: 80,
+            weatherCode: 61,
+          ),
+          HourlyWeatherPoint(
+            time: DateTime(2026, 10, 19, 6, 0),
+            temperature: 24.0,
+            humidity: 60,
+            precipitationProbability: 10,
+            weatherCode: 1,
+          ),
+        ];
+        final hourlyAqi = [
+          HourlyAqiPoint(
+            time: DateTime(2026, 10, 18, 17, 0),
+            aqi: 45,
+            pm25: 12.0,
+            pm10: 25.0,
+          ),
+          HourlyAqiPoint(
+            time: DateTime(2026, 10, 19, 6, 0),
+            aqi: 30,
+            pm25: 8.0,
+            pm10: 15.0,
+          ),
+        ];
+
+        final afternoonAdvice = ActivityAdviceHelper.evaluate(
+          aqi: 50,
+          uv: 6.0,
+          rainProb: 20,
+          currentTime: afternoonTime,
+          hourlyWeather: hourlyWeather,
+          hourlyAqi: hourlyAqi,
+        );
+
+        // Giờ trưa 14:00: Sáng nay đã qua -> Gợi ý Chiều nay & Sáng mai
+        expect(afternoonAdvice.slots.length, 2);
+        expect(afternoonAdvice.slots[0].activity, contains('Chiều nay'));
+        expect(afternoonAdvice.slots[0].status, contains('Nguy cơ mưa 80%'));
+        expect(afternoonAdvice.slots[0].isOk, isFalse);
+
+        expect(afternoonAdvice.slots[1].activity, contains('Sáng mai'));
+        expect(afternoonAdvice.slots[1].status, contains('Rất lý tưởng'));
+        expect(afternoonAdvice.slots[1].isOk, isTrue);
+
+        // Buổi tối 20:00: Gợi ý Tối nay & Sáng mai
+        final eveningTime = DateTime(2026, 10, 18, 20, 0);
+        final eveningAdvice = ActivityAdviceHelper.evaluate(
+          aqi: 40,
+          uv: 0.0,
+          rainProb: 0,
+          currentTime: eveningTime,
+        );
+        expect(eveningAdvice.slots.length, 2);
+        expect(eveningAdvice.slots[0].activity, contains('Tối nay'));
+        expect(eveningAdvice.slots[1].activity, contains('Sáng mai'));
+      },
+    );
+
+    test(
       'DateHelper formats Vietnamese date without throwing LocaleDataException',
       () {
         final date = DateTime(2026, 10, 17, 13, 0);
@@ -206,6 +301,55 @@ void main() {
     );
 
     test(
+      'HomeDashboardState isLocationPermissionGranted flag works correctly in copyWith',
+      () {
+        const state = HomeDashboardState();
+        expect(state.isLocationPermissionGranted, false);
+
+        final grantedState = state.copyWith(isLocationPermissionGranted: true);
+        expect(grantedState.isLocationPermissionGranted, true);
+
+        final revokedState =
+            grantedState.copyWith(isLocationPermissionGranted: false);
+        expect(revokedState.isLocationPermissionGranted, false);
+      },
+    );
+
+    test('LocalStorage persists and retrieves location permission granted state',
+        () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final storage = LocalStorage(prefs: prefs);
+
+      expect(storage.isLocationPermissionGranted(), false);
+
+      await storage.saveLocationPermission(true);
+      expect(storage.isLocationPermissionGranted(), true);
+
+      await storage.saveLocationPermission(false);
+      expect(storage.isLocationPermissionGranted(), false);
+    });
+
+    testWidgets('LocationActionPanel displays custom button titles dynamically',
+        (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: LocationActionPanel(
+              primaryButtonText: 'Chọn vị trí hiện tại',
+              secondaryButtonText: 'Chọn thành phố khác',
+              onAllow: () {},
+              onSkip: () {},
+            ),
+          ),
+        ),
+      );
+
+      expect(find.text('Chọn vị trí hiện tại'), findsOneWidget);
+      expect(find.text('Chọn thành phố khác'), findsOneWidget);
+    });
+
+    test(
       'MapPollutionCubit synchronizes selection by station and city name',
       () async {
         final testStations = [
@@ -268,6 +412,308 @@ void main() {
         expect(cubit.state.targetZoom, 5.8);
 
         cubit.close();
+      },
+    );
+
+    test(
+      'HomeDashboardState hasPendingMapSync flag works correctly and defaults to true',
+      () {
+        const state = HomeDashboardState();
+        expect(state.hasPendingMapSync, isTrue);
+
+        final consumedState = state.copyWith(hasPendingMapSync: false);
+        expect(consumedState.hasPendingMapSync, isFalse);
+
+        final pendingState = consumedState.copyWith(hasPendingMapSync: true);
+        expect(pendingState.hasPendingMapSync, isTrue);
+      },
+    );
+
+    test(
+      'MapPollutionCubit selectLocationCoordinates targets nearest station without mutating home city (One-way sync & Isolation)',
+      () async {
+        final testStations = [
+          StationPollutionEntity(
+            id: 'hn_01',
+            name: 'Trạm Hoàn Kiếm',
+            province: 'Hà Nội',
+            latitude: 21.0285,
+            longitude: 105.8542,
+            aqi: 110,
+            pm25: 38.0,
+            pm10: 55.0,
+            updatedAt: DateTime.now(),
+            temperature: 26.0,
+            weatherCode: 2,
+          ),
+          StationPollutionEntity(
+            id: 'dn_01',
+            name: 'Trạm Hải Châu',
+            province: 'Đà Nẵng',
+            latitude: 16.0544,
+            longitude: 108.2022,
+            aqi: 35,
+            pm25: 10.0,
+            pm10: 18.0,
+            updatedAt: DateTime.now(),
+            temperature: 28.0,
+            weatherCode: 0,
+          ),
+        ];
+
+        final fakeRepo = _FakeMapPollutionRepository(testStations);
+        final mapCubit = MapPollutionCubit(repository: fakeRepo);
+        await mapCubit.fetchVietnamStations();
+
+        var homeState = const HomeDashboardState(
+          currentCity: CityEntity(
+            name: 'Hà Nội',
+            province: 'Hà Nội',
+            latitude: 21.0285,
+            longitude: 105.8542,
+          ),
+          hasPendingMapSync: true,
+        );
+
+        if (homeState.hasPendingMapSync) {
+          mapCubit.selectLocationCoordinates(
+            homeState.currentCity.latitude,
+            homeState.currentCity.longitude,
+            label: homeState.currentCity.name,
+          );
+          homeState = homeState.copyWith(hasPendingMapSync: false);
+        }
+
+        expect(mapCubit.state.selectedStation?.id, 'hn_01');
+        expect(mapCubit.state.targetLocation?.latitude, 21.0285);
+        expect(homeState.hasPendingMapSync, isFalse);
+
+        // Khám phá trạm khác trên bản đồ
+        mapCubit.selectStation(testStations[1]);
+        expect(mapCubit.state.selectedStation?.id, 'dn_01');
+        expect(mapCubit.state.targetLocation?.latitude, 16.0544);
+
+        // Đảm bảo không ảnh hưởng đến vị trí Trang chủ
+        expect(homeState.currentCity.name, 'Hà Nội');
+        expect(homeState.currentCity.latitude, 21.0285);
+
+        mapCubit.close();
+      },
+    );
+
+    test(
+      'QuickCityTarget domain enum accurately defines coordinates, zoom and handles isSelected matching',
+      () {
+        expect(QuickCityTarget.allVietnam.isAllCountry, isTrue);
+        expect(QuickCityTarget.allVietnam.zoom, 5.8);
+        expect(QuickCityTarget.allVietnam.isSelected('Toàn quốc'), isTrue);
+        expect(QuickCityTarget.allVietnam.isSelected('Hà Nội'), isFalse);
+
+        expect(QuickCityTarget.hanoi.label, 'Hà Nội');
+        expect(QuickCityTarget.hanoi.latitude, 21.0285);
+        expect(QuickCityTarget.hanoi.longitude, 105.8542);
+        expect(QuickCityTarget.hanoi.isSelected('Trạm Hoàn Kiếm, Hà Nội'), isTrue);
+
+        expect(QuickCityTarget.hoChiMinh.isSelected('TP. Hồ Chí Minh'), isTrue);
+        expect(QuickCityTarget.hoChiMinh.isSelected('Quận 1, Sài Gòn'), isTrue);
+        expect(QuickCityTarget.hoChiMinh.isSelected('Đà Nẵng'), isFalse);
+
+        // matchesPinnedLocation deduplication tests
+        expect(QuickCityTarget.hanoi.matchesPinnedLocation('Hà Nội'), isTrue);
+        expect(QuickCityTarget.hanoi.matchesPinnedLocation('Vị trí hiện tại (Hà Nội)'), isTrue);
+        expect(QuickCityTarget.hanoi.matchesPinnedLocation('Đà Nẵng'), isFalse);
+        expect(QuickCityTarget.hanoi.matchesPinnedLocation(null), isFalse);
+        expect(QuickCityTarget.hoChiMinh.matchesPinnedLocation('TP. Hồ Chí Minh'), isTrue);
+        expect(QuickCityTarget.hoChiMinh.matchesPinnedLocation('Vị trí hiện tại (Sài Gòn)'), isTrue);
+        expect(QuickCityTarget.allVietnam.matchesPinnedLocation('Toàn quốc'), isFalse);
+      },
+    );
+
+    test(
+      'MapPollutionCubit selectQuickCity navigates to target location or country view',
+      () {
+        final fakeRepo = _FakeMapPollutionRepository([]);
+        final mapCubit = MapPollutionCubit(repository: fakeRepo);
+
+        // 1. Select specific quick city
+        mapCubit.selectQuickCity(QuickCityTarget.daNang);
+        expect(mapCubit.state.targetLocation?.latitude, 16.0544);
+        expect(mapCubit.state.targetLocation?.longitude, 108.2022);
+        expect(mapCubit.state.selectedCityName, 'Đà Nẵng');
+
+        // 2. Select all country
+        mapCubit.selectQuickCity(QuickCityTarget.allVietnam);
+        expect(mapCubit.state.targetZoom, 5.8);
+        expect(mapCubit.state.selectedCityName, 'Toàn quốc');
+
+        // 3. Update quick cities dynamically from cubit
+        mapCubit.updateQuickCities([
+          QuickCityTarget.allVietnam,
+          QuickCityTarget.hanoi,
+          QuickCityTarget.hoChiMinh,
+        ]);
+        expect(mapCubit.state.quickCities.length, 3);
+
+        mapCubit.close();
+      },
+    );
+
+    testWidgets(
+      'MapTopControlBar renders quick city chips dynamically from QuickCityTarget list inside horizontal ListView',
+      (tester) async {
+        QuickCityTarget? selectedTarget;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: MapTopControlBar(
+                activeFilter: 'all',
+                onFilterChanged: (_) {},
+                showHeatmap: true,
+                onToggleHeatmap: () {},
+                selectedCityName: 'Hà Nội',
+                homeCityName: 'Đà Nẵng',
+                onSelectCity: (_) {},
+                onSelectAllVietnam: () {},
+                quickCities: const [
+                  QuickCityTarget.allVietnam,
+                  QuickCityTarget.hanoi,
+                  QuickCityTarget.hoChiMinh,
+                ],
+                onSelectQuickCity: (target) {
+                  selectedTarget = target;
+                },
+              ),
+            ),
+          ),
+        );
+
+        // Verify ListView is rendered
+        expect(find.byType(ListView), findsOneWidget);
+
+        // Verify Home city chip is displayed with icon
+        expect(find.text('Đà Nẵng'), findsOneWidget);
+        expect(find.byIcon(Icons.my_location_rounded), findsOneWidget);
+
+        // Verify quick city chips are displayed
+        expect(find.text('Toàn quốc'), findsOneWidget);
+        expect(find.text('Hà Nội'), findsOneWidget);
+        expect(find.text('TP. Hồ Chí Minh'), findsOneWidget);
+
+        // Verify tap triggers onSelectQuickCity with target enum
+        await tester.tap(find.text('TP. Hồ Chí Minh'));
+        expect(selectedTarget, QuickCityTarget.hoChiMinh);
+      },
+    );
+
+    testWidgets(
+      'MapTopControlBar deduplicates pinned home city from quick cities list to prevent duplicate chips',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: MapTopControlBar(
+                activeFilter: 'all',
+                onFilterChanged: (_) {},
+                showHeatmap: true,
+                onToggleHeatmap: () {},
+                selectedCityName: 'Hà Nội',
+                homeCityName: 'Hà Nội',
+                onSelectCity: (_) {},
+                onSelectAllVietnam: () {},
+                quickCities: const [
+                  QuickCityTarget.allVietnam,
+                  QuickCityTarget.hanoi,
+                  QuickCityTarget.daNang,
+                  QuickCityTarget.hoChiMinh,
+                ],
+              ),
+            ),
+          ),
+        );
+
+        // 'Hà Nội' is pinned at the start as home chip and removed from the subsequent chips
+        expect(find.text('Hà Nội'), findsOneWidget);
+        expect(find.byIcon(Icons.my_location_rounded), findsOneWidget);
+
+        // Other quick cities remain untouched
+        expect(find.text('Toàn quốc'), findsOneWidget);
+        expect(find.text('Đà Nẵng'), findsOneWidget);
+        expect(find.text('TP. Hồ Chí Minh'), findsOneWidget);
+      },
+    );
+
+    test(
+      'MapPollutionCubit selectHomeLocation sets isHomeSelected to true and selects closest station',
+      () async {
+        final testStations = [
+          StationPollutionEntity(
+            id: 'hn_01',
+            name: 'Trạm Hoàn Kiếm',
+            province: 'Hà Nội',
+            latitude: 21.0285,
+            longitude: 105.8542,
+            aqi: 110,
+            pm25: 38.0,
+            pm10: 55.0,
+            updatedAt: DateTime.now(),
+            temperature: 26.0,
+            weatherCode: 2,
+          ),
+        ];
+
+        final fakeRepo = _FakeMapPollutionRepository(testStations);
+        final mapCubit = MapPollutionCubit(repository: fakeRepo);
+        await mapCubit.fetchVietnamStations();
+
+        // 1. Select Home location
+        mapCubit.selectHomeLocation(
+          lat: 21.0285,
+          lon: 105.8542,
+          label: 'Vị trí hiện tại',
+        );
+
+        expect(mapCubit.state.isHomeSelected, isTrue);
+        expect(mapCubit.state.selectedStation?.id, 'hn_01');
+        expect(mapCubit.state.selectedCityName, 'Vị trí hiện tại');
+
+        // 2. Select another city target -> isHomeSelected turns false
+        mapCubit.selectQuickCity(QuickCityTarget.daNang);
+        expect(mapCubit.state.isHomeSelected, isFalse);
+        expect(mapCubit.state.selectedCityName, 'Đà Nẵng');
+
+        mapCubit.close();
+      },
+    );
+
+    testWidgets(
+      'MapTopControlBar highlights Home chip when isHomeSelected is true',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: MapTopControlBar(
+                activeFilter: 'all',
+                onFilterChanged: (_) {},
+                showHeatmap: true,
+                onToggleHeatmap: () {},
+                selectedCityName: 'Hà Nội',
+                homeCityName: 'Vị trí hiện tại',
+                isHomeSelected: true,
+                onSelectCity: (_) {},
+                onSelectAllVietnam: () {},
+                quickCities: const [
+                  QuickCityTarget.allVietnam,
+                  QuickCityTarget.hanoi,
+                  QuickCityTarget.daNang,
+                ],
+              ),
+            ),
+          ),
+        );
+
+        expect(find.text('Vị trí hiện tại'), findsOneWidget);
+        expect(find.byIcon(Icons.my_location_rounded), findsOneWidget);
       },
     );
 
@@ -506,6 +952,221 @@ APP_DEBUG=false
         EnvConfig.reset();
       },
     );
+
+    testWidgets(
+      'TwentyFourHourDetailPage displays location name text and removes insights icon in header',
+      (tester) async {
+        final fakeHomeCubit = _FakeHomeDashboardCubit(
+          const HomeDashboardState(
+            currentCity: CityEntity(
+              name: 'Đà Nẵng',
+              province: 'Đà Nẵng',
+              latitude: 16.0544,
+              longitude: 108.2022,
+            ),
+          ),
+        );
+        final fakeWeatherCubit = _FakeWeatherCubit();
+        final fakeAqiCubit = _FakeAirQualityCubit();
+
+        await tester.pumpWidget(
+          MultiBlocProvider(
+            providers: [
+              BlocProvider<HomeDashboardCubit>.value(value: fakeHomeCubit),
+              BlocProvider<WeatherCubit>.value(value: fakeWeatherCubit),
+              BlocProvider<AirQualityCubit>.value(value: fakeAqiCubit),
+            ],
+            child: const MaterialApp(
+              home: TwentyFourHourDetailPage(),
+            ),
+          ),
+        );
+
+        // Verify the location name text is displayed in header
+        expect(find.text('Đà Nẵng'), findsOneWidget);
+        // Verify insights icon is completely removed
+        expect(find.byIcon(Icons.insights_rounded), findsNothing);
+        expect(find.text('Chi tiết 24 giờ'), findsOneWidget);
+
+        fakeHomeCubit.close();
+        fakeWeatherCubit.close();
+        fakeAqiCubit.close();
+      },
+    );
+
+    testWidgets(
+      'HomeTopBar displays "Chọn vị trí hiện tại" suggestion button when current city is not current location',
+      (tester) async {
+        bool selectedCurrentLocation = false;
+
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: HomeTopBar(
+                cityName: 'Hà Nội',
+                isGps: false,
+                dateText: 'Chủ Nhật, 18 tháng 10',
+                hasNotification: false,
+                onLocationTap: () {},
+                onNotificationTap: () {},
+                onSelectCurrentLocation: () {
+                  selectedCurrentLocation = true;
+                },
+              ),
+            ),
+          ),
+        );
+
+        // Verify dropdown displays 'Hà Nội'
+        expect(find.text('Hà Nội'), findsOneWidget);
+
+        // Verify suggestion button 'Chọn vị trí hiện tại' is displayed
+        expect(find.text('Chọn vị trí hiện tại'), findsOneWidget);
+
+        // Tap suggestion button
+        await tester.tap(find.text('Chọn vị trí hiện tại'));
+        expect(selectedCurrentLocation, isTrue);
+      },
+    );
+
+    testWidgets(
+      'HomeTopBar hides "Chọn vị trí hiện tại" suggestion button when current city is already current location',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: HomeTopBar(
+                cityName: 'Vị trí hiện tại (Hà Nội)',
+                isGps: true,
+                dateText: 'Chủ Nhật, 18 tháng 10',
+                hasNotification: false,
+                onLocationTap: () {},
+                onNotificationTap: () {},
+                onSelectCurrentLocation: () {},
+              ),
+            ),
+          ),
+        );
+
+        // Verify dropdown displays current location
+        expect(find.text('Vị trí hiện tại (Hà Nội)'), findsOneWidget);
+
+        // Verify suggestion button 'Chọn vị trí hiện tại' is NOT displayed
+        expect(find.text('Chọn vị trí hiện tại'), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'AppText renders with correct font weights, default styling, and handles size aliases & maxLines',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Column(
+                children: const [
+                  AppText.regular('Regular Text'),
+                  AppText.medium('Medium Text', size: 16),
+                  AppText.semiBold('SemiBold Text', fontSize: 18),
+                  AppText.semibold('Semibold Alias Text'),
+                  AppText.bold('Bold Text', color: UIColors.primary),
+                  AppText.light('Light Text'),
+                  AppText.extraBold('ExtraBold Text'),
+                  AppText('Default Text', maxLines: 2),
+                ],
+              ),
+            ),
+          ),
+        );
+
+        // Verify all texts are found
+        expect(find.text('Regular Text'), findsOneWidget);
+        expect(find.text('Medium Text'), findsOneWidget);
+        expect(find.text('SemiBold Text'), findsOneWidget);
+        expect(find.text('Semibold Alias Text'), findsOneWidget);
+        expect(find.text('Bold Text'), findsOneWidget);
+        expect(find.text('Light Text'), findsOneWidget);
+        expect(find.text('ExtraBold Text'), findsOneWidget);
+        expect(find.text('Default Text'), findsOneWidget);
+
+        // Verify Text widget styles
+        final regularText = tester.widget<Text>(find.text('Regular Text'));
+        expect(regularText.style?.fontWeight, FontWeight.w400);
+        expect(regularText.style?.fontSize, 14.0);
+        expect(regularText.style?.color, UIColors.textPrimary);
+
+        final mediumText = tester.widget<Text>(find.text('Medium Text'));
+        expect(mediumText.style?.fontWeight, FontWeight.w500);
+        expect(mediumText.style?.fontSize, 16.0);
+
+        final semiBoldText = tester.widget<Text>(find.text('SemiBold Text'));
+        expect(semiBoldText.style?.fontWeight, FontWeight.w600);
+        expect(semiBoldText.style?.fontSize, 18.0);
+
+        final boldText = tester.widget<Text>(find.text('Bold Text'));
+        expect(boldText.style?.fontWeight, FontWeight.w700);
+        expect(boldText.style?.color, UIColors.primary);
+
+        final lightText = tester.widget<Text>(find.text('Light Text'));
+        expect(lightText.style?.fontWeight, FontWeight.w300);
+
+        final extraBoldText = tester.widget<Text>(find.text('ExtraBold Text'));
+        expect(extraBoldText.style?.fontWeight, FontWeight.w800);
+
+        // Verify maxLines & automatic ellipsis overflow
+        final defaultText = tester.widget<Text>(find.text('Default Text'));
+        expect(defaultText.maxLines, 2);
+        expect(defaultText.overflow, TextOverflow.ellipsis);
+      },
+    );
+
+    testWidgets(
+      'AppIcon applies default 20.0 size and UIColors, and honors preset constructors',
+      (tester) async {
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: Scaffold(
+              body: Column(
+                children: [
+                  AppIcon(Icons.home),
+                  AppIcon.small(Icons.star),
+                  AppIcon.medium(Icons.settings),
+                  AppIcon.large(Icons.favorite),
+                  AppIcon.primary(Icons.check),
+                  AppIcon.secondary(Icons.close),
+                  AppIcon(Icons.eco, size: 24, color: UIColors.aqiGood),
+                ],
+              ),
+            ),
+          ),
+        );
+
+        final homeIcon = tester.widget<Icon>(find.byIcon(Icons.home));
+        expect(homeIcon.size, 20.0);
+        expect(homeIcon.color, UIColors.textPrimary);
+
+        final smallIcon = tester.widget<Icon>(find.byIcon(Icons.star));
+        expect(smallIcon.size, 14.0);
+        expect(smallIcon.color, UIColors.textPrimary);
+
+        final mediumIcon = tester.widget<Icon>(find.byIcon(Icons.settings));
+        expect(mediumIcon.size, 20.0);
+
+        final largeIcon = tester.widget<Icon>(find.byIcon(Icons.favorite));
+        expect(largeIcon.size, 28.0);
+
+        final primaryIcon = tester.widget<Icon>(find.byIcon(Icons.check));
+        expect(primaryIcon.color, UIColors.primary);
+        expect(primaryIcon.size, 20.0);
+
+        final secondaryIcon = tester.widget<Icon>(find.byIcon(Icons.close));
+        expect(secondaryIcon.color, UIColors.textSecondary);
+        expect(secondaryIcon.size, 20.0);
+
+        final customIcon = tester.widget<Icon>(find.byIcon(Icons.eco));
+        expect(customIcon.size, 24.0);
+        expect(customIcon.color, UIColors.aqiGood);
+      },
+    );
   });
 }
 
@@ -517,4 +1178,27 @@ class _FakeMapPollutionRepository implements IMapPollutionRepository {
   Future<BaseResult<List<StationPollutionEntity>>> getVietnamStations() async {
     return BaseResult(success: true, data: stations);
   }
+}
+
+class _FakeHomeDashboardCubit extends Cubit<HomeDashboardState>
+    implements HomeDashboardCubit {
+  _FakeHomeDashboardCubit([HomeDashboardState? state])
+      : super(state ?? const HomeDashboardState());
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _FakeWeatherCubit extends Cubit<WeatherState> implements WeatherCubit {
+  _FakeWeatherCubit([WeatherState? state])
+      : super(state ?? const WeatherState());
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+class _FakeAirQualityCubit extends Cubit<AirQualityState>
+    implements AirQualityCubit {
+  _FakeAirQualityCubit([AirQualityState? state])
+      : super(state ?? const AirQualityState());
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

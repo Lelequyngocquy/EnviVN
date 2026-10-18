@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:envivn/src/core/presentation/widgets/app_bottom_sheet.dart';
-import 'package:envivn/src/core/presentation/widgets/app_status_tag.dart';
-import '../../../../common/constants/colors.dart';
-import '../../../../common/utils/aqi_helper.dart';
+import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/common/utils/aqi_helper.dart';
+import 'package:envivn/src/core/presentation/widgets/widgets.dart';
 import '../../domain/entities/station_pollution_entity.dart';
 
 class StationDetailSheet extends StatelessWidget {
@@ -39,23 +38,17 @@ class StationDetailSheet extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    Text(
+                    AppText.extraBold(
                       '${station.aqi}',
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.w800,
-                        color: info.color,
-                        height: 1.0,
-                      ),
+                      size: 36,
+                      color: info.color,
+                      height: 1.0,
                     ),
                     const SizedBox(height: 4),
-                    const Text(
+                    const AppText.semiBold(
                       'US AQI',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: UIColors.textLight,
-                      ),
+                      size: 11,
+                      color: UIColors.textLight,
                     ),
                   ],
                 ),
@@ -90,20 +83,17 @@ class StationDetailSheet extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
+                AppIcon(
                   info.wearMask ? Icons.masks_rounded : Icons.check_circle_rounded,
                   color: info.color,
                   size: 20,
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text(
+                  child: AppText.medium(
                     info.healthAdvice,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: UIColors.textPrimary,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    size: 12,
+                    color: UIColors.textPrimary,
                   ),
                 ),
               ],
@@ -132,17 +122,15 @@ class _MetricRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
+        AppText.regular(
           label,
-          style: const TextStyle(fontSize: 13, color: UIColors.textSecondary),
+          size: 13,
+          color: UIColors.textSecondary,
         ),
-        Text(
+        AppText.bold(
           value,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: isHigh ? UIColors.error : UIColors.textPrimary,
-          ),
+          size: 14,
+          color: isHigh ? UIColors.error : UIColors.textPrimary,
         ),
       ],
     );

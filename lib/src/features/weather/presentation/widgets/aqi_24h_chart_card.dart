@@ -2,7 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
-import 'package:envivn/src/core/presentation/widgets/app_status_tag.dart';
+import 'package:envivn/src/core/presentation/widgets/widgets.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
 class Aqi24hChartCard extends StatelessWidget {
@@ -28,25 +28,20 @@ class Aqi24hChartCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
-                    Text(
+                    AppText.bold(
                       'Diễn biến nồng độ 24 giờ qua',
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: UIColors.textPrimary,
-                      ),
+                      size: 16,
+                      color: UIColors.textPrimary,
                     ),
                     SizedBox(height: 4),
-                    Text(
+                    AppText.regular(
                       'Chỉ số AQI theo từng khung giờ',
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: UIColors.textSecondary,
-                      ),
+                      size: 12,
+                      color: UIColors.textSecondary,
                     ),
                   ],
                 ),
@@ -103,9 +98,10 @@ class Aqi24hChartCard extends StatelessWidget {
                 showTitles: true,
                 reservedSize: 32,
                 interval: 30,
-                getTitlesWidget: (val, _) => Text(
+                getTitlesWidget: (val, _) => AppText.regular(
                   val.toInt().toString(),
-                  style: const TextStyle(color: UIColors.textMuted, fontSize: 10),
+                  color: UIColors.textMuted,
+                  size: 10,
                 ),
               ),
             ),
@@ -122,9 +118,10 @@ class Aqi24hChartCard extends StatelessWidget {
                   if (idx >= 0 && idx < hours.length) {
                     return Padding(
                       padding: const EdgeInsets.only(top: 8),
-                      child: Text(
+                      child: AppText.regular(
                         hours[idx],
-                        style: const TextStyle(color: UIColors.textSecondary, fontSize: 11),
+                        color: UIColors.textSecondary,
+                        size: 11,
                       ),
                     );
                   }

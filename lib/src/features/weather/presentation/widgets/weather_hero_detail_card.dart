@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/weather_code_helper.dart';
+import 'package:envivn/src/core/presentation/widgets/widgets.dart';
 import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
@@ -45,47 +46,35 @@ class WeatherHeroDetailCard extends StatelessWidget {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        AppText.extraBold(
                           tempStr,
-                          style: const TextStyle(
-                            fontSize: 44,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
-                            letterSpacing: -1.0,
-                            height: 1.0,
-                          ),
+                          size: 44,
+                          color: Colors.white,
+                          letterSpacing: -1.0,
+                          height: 1.0,
                         ),
                         const SizedBox(width: 4),
                         const Padding(
                           padding: EdgeInsets.only(top: 4),
-                          child: Text(
+                          child: AppText.bold(
                             '°C',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: UIColors.textSecondary,
-                            ),
+                            size: 20,
+                            color: UIColors.textSecondary,
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 6),
-                    Text(
+                    AppText.bold(
                       weatherInfo.description,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: weatherInfo.color,
-                      ),
+                      size: 16,
+                      color: weatherInfo.color,
                     ),
                     const SizedBox(height: 4),
-                    Text(
+                    AppText.medium(
                       'Cảm giác như: $feelsLikeStr°C${highLowStr != null ? ' • $highLowStr' : ''}',
-                      style: const TextStyle(
-                        fontSize: 11,
-                        color: UIColors.textSecondary,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      size: 11,
+                      color: UIColors.textSecondary,
                     ),
                   ],
                 ),
@@ -108,7 +97,7 @@ class WeatherHeroDetailCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: Icon(
+                child: AppIcon(
                   weatherInfo.icon,
                   size: 36,
                   color: weatherInfo.color,
@@ -203,22 +192,20 @@ class _MetricItem extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 14, color: iconColor),
+        AppIcon(icon, size: 14, color: iconColor),
         const SizedBox(height: 3),
-        Text(
+        AppText.bold(
           value,
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+          size: 12,
+          color: Colors.white,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 1),
-        Text(
+        AppText.regular(
           label,
-          style: const TextStyle(fontSize: 9, color: UIColors.textSecondary),
+          size: 9,
+          color: UIColors.textSecondary,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

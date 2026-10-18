@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 
 /// Vỏ BottomSheet dùng chung cho toàn bộ ứng dụng EnviVN.
 /// Chuẩn hóa giao diện Liquid Glass / Dark Navy: thanh kéo (drag handle), tiêu đề, phụ đề,
@@ -125,26 +126,18 @@ class AppBottomSheet extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (title != null)
-                            Text(
+                            AppText.bold(
                               title!,
+                              size: 17,
                               maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                                color: UIColors.textPrimary,
-                              ),
                             ),
                           if (subtitle != null) ...[
                             const SizedBox(height: 2),
-                            Text(
+                            AppText.regular(
                               subtitle!,
+                              size: 12,
+                              color: UIColors.textSecondary,
                               maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: UIColors.textSecondary,
-                              ),
                             ),
                           ],
                         ],
@@ -179,9 +172,10 @@ class AppBottomSheet extends StatelessWidget {
                   elevation: 0,
                 ),
                 onPressed: onBottomButtonPressed ?? () => Navigator.of(context).pop(),
-                child: Text(
+                child: AppText.bold(
                   bottomButtonText!,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                  size: 14,
+                  color: const Color(0xFF0B1220),
                 ),
               ),
             ),

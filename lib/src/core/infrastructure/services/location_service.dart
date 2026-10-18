@@ -26,6 +26,18 @@ class LocationService {
   static const double defaultLat = 21.0285;
   static const double defaultLon = 105.8542;
 
+  Future<bool> checkPermissionGranted() async {
+    try {
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) return false;
+      final permission = await Geolocator.checkPermission();
+      return permission == LocationPermission.whileInUse ||
+          permission == LocationPermission.always;
+    } catch (_) {
+      return false;
+    }
+  }
+
   Future<LocationResult> getCurrentLocation() async {
     // 1. Try Hardware GPS / OS Location
     try {

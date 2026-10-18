@@ -36,9 +36,17 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
       );
     }
 
+    final isGrantedInStorage = storage.isLocationPermissionGranted();
+    final isGrantedInOs = await locationService.checkPermissionGranted();
+    final isGranted = isGrantedInStorage || isGrantedInOs;
+    if (isGranted && !isGrantedInStorage) {
+      await storage.saveLocationPermission(true);
+    }
+
     emit(state.copyWith(
       currentCity: targetCity,
       lastUpdated: storage.getLastUpdateTime() ?? DateTime.now(),
+      isLocationPermissionGranted: isGranted,
     ));
 
     await _fetchDataForCity(targetCity);
@@ -49,6 +57,7 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
       status: DashboardStatus.loading,
       isChangingLocation: true,
       currentCity: city,
+      hasPendingMapSync: true,
       clearNotice: true,
     ));
 
@@ -76,8 +85,16 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
       isGps: !locationResult.isDefault,
     );
 
+    final isGpsSuccessful = !locationResult.isDefault;
+    if (isGpsSuccessful) {
+      await storage.saveLocationPermission(true);
+    }
+
     emit(state.copyWith(
       currentCity: gpsCity,
+      isLocationPermissionGranted:
+          isGpsSuccessful || storage.isLocationPermissionGranted(),
+      hasPendingMapSync: true,
       noticeMessage: locationResult.errorMessage,
       clearNotice: locationResult.errorMessage == null,
     ));
@@ -126,6 +143,33 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
   void setTab(int index) {
     if (state.currentTab != index) {
       emit(state.copyWith(currentTab: index));
+      if (index == 3) {
+        checkLocationPermissionStatus();
+      }
+    }
+  }
+
+  Future<void> checkLocationPermissionStatus() async {
+    final isGrantedInStorage = storage.isLocationPermissionGranted();
+    final isGrantedInOs = await locationService.checkPermissionGranted();
+    final isGranted = isGrantedInStorage || isGrantedInOs;
+    if (isGranted != state.isLocationPermissionGranted) {
+      if (isGranted && !isGrantedInStorage) {
+        await storage.saveLocationPermission(true);
+      }
+      emit(state.copyWith(isLocationPermissionGranted: isGranted));
+    }
+  }
+
+  void markPendingMapSync() {
+    if (!state.hasPendingMapSync) {
+      emit(state.copyWith(hasPendingMapSync: true));
+    }
+  }
+
+  void consumeMapSync() {
+    if (state.hasPendingMapSync) {
+      emit(state.copyWith(hasPendingMapSync: false));
     }
   }
 
@@ -139,6 +183,8 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
 
   Future<void> requestLocationPermission({void Function()? onCompleted}) async {
     await detectGpsLocation();
+    await storage.saveLocationPermission(true);
+    emit(state.copyWith(isLocationPermissionGranted: true));
     setTab(0);
     onCompleted?.call();
   }

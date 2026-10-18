@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/core/presentation/widgets/widgets.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
 class HealthAdvisoryCard extends StatelessWidget {
@@ -20,7 +21,7 @@ class HealthAdvisoryCard extends StatelessWidget {
               color: UIColors.warning.withOpacity(0.18),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: const AppIcon(
               Icons.warning_amber_rounded,
               color: UIColors.warning,
               size: 24,
@@ -31,22 +32,17 @@ class HealthAdvisoryCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
-                Text(
+                AppText.bold(
                   'Khuyến cáo sức khỏe 24h',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: UIColors.textPrimary,
-                  ),
+                  size: 14,
+                  color: UIColors.textPrimary,
                 ),
                 SizedBox(height: 6),
-                Text(
+                AppText.regular(
                   'Khung giờ 14:00 - 18:00 chất lượng không khí đạt trạng thái trong lành nhất trong ngày, rất thích hợp cho chạy bộ, đạp xe và thông gió nhà cửa.',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: UIColors.textSecondary,
-                    height: 1.45,
-                  ),
+                  size: 12,
+                  color: UIColors.textSecondary,
+                  height: 1.45,
                 ),
               ],
             ),

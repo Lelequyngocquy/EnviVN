@@ -3,11 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/aqi_helper.dart';
-import 'package:envivn/src/core/presentation/widgets/app_status_tag.dart';
+import 'package:envivn/src/core/presentation/widgets/widgets.dart';
 import 'package:envivn/src/common/utils/date_helper.dart';
 import 'package:envivn/src/common/utils/weather_code_helper.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_cubit.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_state.dart';
+import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
+import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_state.dart';
+import 'package:envivn/src/features/home/presentation/widgets/city_selector_sheet.dart';
 import 'package:envivn/src/features/weather/presentation/cubits/weather_cubit.dart';
 import 'package:envivn/src/features/weather/presentation/cubits/weather_state.dart';
 import 'package:envivn/src/features/weather/presentation/widgets/aqi_24h_chart_card.dart';
@@ -22,6 +25,23 @@ import 'package:envivn/src/shared/widgets/glass.dart';
 
 class TwentyFourHourDetailPage extends StatelessWidget {
   const TwentyFourHourDetailPage({super.key});
+
+  void _openCitySelector(BuildContext context, HomeDashboardState state) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => CitySelectorSheet(
+        currentCity: state.currentCity,
+        onCitySelected: (city) {
+          context.read<HomeDashboardCubit>().changeCity(city);
+        },
+        onSelectGps: () {
+          context.read<HomeDashboardCubit>().detectGpsLocation();
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,35 +84,62 @@ class TwentyFourHourDetailPage extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'Chi tiết 24 giờ',
-                                    style: TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const AppText.bold(
+                                      'Chi tiết 24 giờ',
+                                      size: 22,
                                       color: UIColors.textPrimary,
                                     ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    dateStr,
-                                    style: const TextStyle(
-                                      fontSize: 12,
+                                    const SizedBox(height: 2),
+                                    AppText.regular(
+                                      dateStr,
+                                      size: 12,
                                       color: UIColors.textSecondary,
                                     ),
-                                  ),
-                                ],
-                              ),
-                              AppGlass(
-                                borderRadius: 14,
-                                padding: const EdgeInsets.all(10),
-                                child: const Icon(
-                                  Icons.insights_rounded,
-                                  color: UIColors.primary,
-                                  size: 20,
+                                  ],
                                 ),
+                              ),
+                              const SizedBox(width: 8),
+                              BlocBuilder<
+                                HomeDashboardCubit,
+                                HomeDashboardState
+                              >(
+                                buildWhen: (prev, curr) =>
+                                    prev.currentCity != curr.currentCity,
+                                builder: (context, homeState) {
+                                  return GestureDetector(
+                                    onTap: () =>
+                                        _openCitySelector(context, homeState),
+                                    child: AppGlass(
+                                      borderRadius: 14,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 8,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          AppText.semiBold(
+                                            homeState.currentCity.name,
+                                            size: 13,
+                                            color: UIColors.primaryDark,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          const AppIcon(
+                                            Icons.keyboard_arrow_down_rounded,
+                                            color: Colors.grey,
+                                            size: 18,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -191,30 +238,23 @@ class TwentyFourHourDetailPage extends StatelessWidget {
         Expanded(
           child: Row(
             children: [
-              Icon(icon, size: 16, color: iconColor),
+              AppIcon(icon, size: 16, color: iconColor),
               const SizedBox(width: 6),
               Expanded(
-                child: Text(
+                child: AppText.bold(
                   title,
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.8,
-                    color: UIColors.textSecondary,
-                  ),
+                  size: 11,
+                  letterSpacing: 0.8,
+                  color: UIColors.textSecondary,
                 ),
               ),
             ],
           ),
         ),
         const SizedBox(width: 8),
-        AppStatusTag(
-          label: tag,
-          color: tagColor,
-          size: AppTagSize.small,
-        ),
+        AppStatusTag(label: tag, color: tagColor, size: AppTagSize.small),
       ],
     );
   }

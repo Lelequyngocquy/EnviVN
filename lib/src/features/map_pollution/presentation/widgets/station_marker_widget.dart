@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/utils/aqi_helper.dart';
+import 'package:envivn/src/core/presentation/widgets/widgets.dart';
 import 'package:envivn/src/features/map_pollution/domain/entities/station_pollution_entity.dart';
 
 class StationMarkerWidget extends StatelessWidget {
@@ -41,16 +42,13 @@ class StationMarkerWidget extends StatelessWidget {
                 width: 2,
               ),
             ),
-            child: Text(
+            child: AppText.extraBold(
               '${station.aqi}',
-              style: TextStyle(
-                color: isSelected ? info.color : const Color(0xFF0B1220),
-                fontSize: 12,
-                fontWeight: FontWeight.w800,
-              ),
+              color: isSelected ? info.color : const Color(0xFF0B1220),
+              size: 12,
             ),
           ),
-          const Icon(
+          const AppIcon(
             Icons.arrow_drop_down,
             color: Colors.white,
             size: 16,

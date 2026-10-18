@@ -125,6 +125,9 @@ class HomeDashboardView extends StatelessWidget {
                               dateText: dateStr,
                               hasNotification: dashState.hasNotification,
                               onLocationTap: () => _openCitySelector(context, dashState),
+                              onSelectCurrentLocation: () {
+                                context.read<HomeDashboardCubit>().detectGpsLocation();
+                              },
                               onNotificationTap: () => EnvironmentalNotificationSheet.show(
                                 context,
                                 cityName: dashState.currentCity.name,
@@ -178,7 +181,9 @@ class HomeDashboardView extends StatelessWidget {
                                       // 4. Map Shortcut Card
                                       MapShortcutCard(
                                         onTap: () {
-                                          context.read<HomeDashboardCubit>().setTab(1);
+                                          final cubit = context.read<HomeDashboardCubit>();
+                                          cubit.markPendingMapSync();
+                                          cubit.setTab(1);
                                         },
                                       ),
                                     ],

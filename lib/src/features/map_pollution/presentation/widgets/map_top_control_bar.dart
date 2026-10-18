@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/core/presentation/widgets/widgets.dart';
+import 'package:envivn/src/features/map_pollution/domain/entities/quick_city_target.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
 class MapTopControlBar extends StatelessWidget {
@@ -11,6 +13,11 @@ class MapTopControlBar extends StatelessWidget {
   final String? selectedCityName;
   final ValueChanged<String> onSelectCity;
   final VoidCallback onSelectAllVietnam;
+  final String? homeCityName;
+  final VoidCallback? onSelectHomeCity;
+  final bool isHomeSelected;
+  final List<QuickCityTarget> quickCities;
+  final ValueChanged<QuickCityTarget>? onSelectQuickCity;
 
   const MapTopControlBar({
     super.key,
@@ -21,11 +28,24 @@ class MapTopControlBar extends StatelessWidget {
     this.selectedCityName,
     required this.onSelectCity,
     required this.onSelectAllVietnam,
+    this.homeCityName,
+    this.onSelectHomeCity,
+    this.isHomeSelected = false,
+    this.quickCities = QuickCityTarget.values,
+    this.onSelectQuickCity,
   });
 
   @override
   Widget build(BuildContext context) {
     final curCity = selectedCityName ?? '';
+    final hasHome = homeCityName != null && homeCityName!.isNotEmpty;
+
+    // Loại bỏ khỏi danh sách các chip nếu thành phố đó đã được ghim ở đầu
+    final effectiveQuickCities = hasHome
+        ? quickCities
+            .where((target) => !target.matchesPinnedLocation(homeCityName))
+            .toList()
+        : quickCities;
 
     return Column(
       children: [
@@ -35,7 +55,7 @@ class MapTopControlBar extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Row(
             children: [
-              const Icon(
+              const AppIcon(
                 Icons.filter_alt_rounded,
                 color: UIColors.primary,
                 size: 20,
@@ -77,7 +97,7 @@ class MapTopControlBar extends StatelessWidget {
                 ),
               ),
               IconButton(
-                icon: Icon(
+                icon: AppIcon(
                   showHeatmap ? Icons.blur_on_rounded : Icons.blur_off_rounded,
                   color: showHeatmap
                       ? UIColors.primary
@@ -91,44 +111,46 @@ class MapTopControlBar extends StatelessWidget {
         ),
         const SizedBox(height: 8),
 
-        // 2. Quick Jump City Pills with Active Selection Highlighting
-        SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              _QuickCityGlassChip(
-                label: 'Toàn quốc',
-                isActive: curCity == 'Toàn quốc',
-                onTap: onSelectAllVietnam,
-              ),
-              const SizedBox(width: 6),
-              _QuickCityGlassChip(
-                label: 'Hà Nội',
-                isActive: curCity.contains('Hà Nội'),
-                onTap: () => onSelectCity('Hà Nội'),
-              ),
-              const SizedBox(width: 6),
-              _QuickCityGlassChip(
-                label: 'Đà Nẵng',
-                isActive: curCity.contains('Đà Nẵng'),
-                onTap: () => onSelectCity('Đà Nẵng'),
-              ),
-              const SizedBox(width: 6),
-              _QuickCityGlassChip(
-                label: 'TP. Hồ Chí Minh',
-                isActive:
-                    curCity.contains('Hồ Chí Minh') ||
-                    curCity.contains('Quận 1'),
-                onTap: () => onSelectCity('TP. Hồ Chí Minh'),
-              ),
-              const SizedBox(width: 6),
-              _QuickCityGlassChip(
-                label: 'Hải Phòng',
-                isActive: curCity.contains('Hải Phòng'),
-                onTap: () => onSelectCity('Hải Phòng'),
-              ),
-            ],
+        // 2. Quick Jump City Pills with Active Selection Highlighting in ListView
+        SizedBox(
+          height: 34,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            physics: const ClampingScrollPhysics(),
+            itemCount: (hasHome ? 1 : 0) + effectiveQuickCities.length,
+            separatorBuilder: (_, index) => const SizedBox(width: 6),
+            itemBuilder: (context, index) {
+              if (hasHome && index == 0) {
+                final isHomeActive = isHomeSelected ||
+                    (curCity.isNotEmpty &&
+                        (curCity == homeCityName ||
+                            curCity.contains(homeCityName!) ||
+                            homeCityName!.contains(curCity)));
+                return _QuickCityGlassChip(
+                  icon: Icons.my_location_rounded,
+                  label: homeCityName!,
+                  isActive: isHomeActive,
+                  onTap: onSelectHomeCity ?? () => onSelectCity(homeCityName!),
+                );
+              }
+
+              final targetIndex = hasHome ? index - 1 : index;
+              final target = effectiveQuickCities[targetIndex];
+              final isTargetActive = !isHomeSelected && target.isSelected(curCity);
+              return _QuickCityGlassChip(
+                label: target.label,
+                isActive: isTargetActive,
+                onTap: () {
+                  if (onSelectQuickCity != null) {
+                    onSelectQuickCity!(target);
+                  } else if (target.isAllCountry) {
+                    onSelectAllVietnam();
+                  } else {
+                    onSelectCity(target.label);
+                  }
+                },
+              );
+            },
           ),
         ),
       ],
@@ -160,13 +182,10 @@ class _FilterGlassChip extends StatelessWidget {
             color: isActive ? UIColors.primary : Colors.white.withOpacity(0.2),
           ),
         ),
-        child: Text(
+        child: AppText.bold(
           label,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: isActive ? const Color(0xFF0B1220) : Colors.white,
-          ),
+          size: 12,
+          color: isActive ? const Color(0xFF0B1220) : Colors.white,
         ),
       ),
     );
@@ -177,11 +196,13 @@ class _QuickCityGlassChip extends StatelessWidget {
   final String label;
   final bool isActive;
   final VoidCallback onTap;
+  final IconData? icon;
 
   const _QuickCityGlassChip({
     required this.label,
     this.isActive = false,
     required this.onTap,
+    this.icon,
   });
 
   @override
@@ -198,13 +219,24 @@ class _QuickCityGlassChip extends StatelessWidget {
             width: isActive ? 1.5 : 1.0,
           ),
         ),
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: isActive ? FontWeight.bold : FontWeight.w600,
-            color: isActive ? const Color(0xFF0B1220) : Colors.white,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              AppIcon(
+                icon!,
+                size: 13,
+                color: isActive ? const Color(0xFF0B1220) : UIColors.primary,
+              ),
+              const SizedBox(width: 4),
+            ],
+            AppText(
+              label,
+              size: 12,
+              fontWeight: isActive ? FontWeight.bold : FontWeight.w600,
+              color: isActive ? const Color(0xFF0B1220) : Colors.white,
+            ),
+          ],
         ),
       ),
     );

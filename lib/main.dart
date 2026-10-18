@@ -10,6 +10,7 @@ import 'src/common/constants/strings.dart';
 import 'src/core/di/injection_container.dart' as di;
 import 'src/core/infrastructure/configs/env_config.dart';
 import 'src/core/presentation/widgets/fade_trans_nav.dart';
+import 'src/core/presentation/widgets/widgets.dart';
 import 'src/features/air_quality/presentation/cubits/air_quality_cubit.dart';
 import 'src/features/home/presentation/cubits/home_dashboard_cubit.dart';
 import 'src/features/home/presentation/pages/home_page.dart';
@@ -99,9 +100,16 @@ class EnviVNApp extends StatelessWidget {
 
             default:
               return MaterialPageRoute(
-                builder: (_) => Scaffold(
-                  appBar: AppBar(title: const Text('Lỗi')),
-                  body: const Center(child: Text('Trang không tồn tại')),
+                builder: (_) => const Scaffold(
+                  appBar: PreferredSize(
+                    preferredSize: Size.fromHeight(kToolbarHeight),
+                    child: SafeArea(
+                      child: Center(
+                        child: AppText.bold('Lỗi', size: 18),
+                      ),
+                    ),
+                  ),
+                  body: Center(child: AppText.regular('Trang không tồn tại')),
                 ),
               );
           }

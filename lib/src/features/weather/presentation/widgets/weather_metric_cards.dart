@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../common/constants/colors.dart';
+import '../../../../core/presentation/widgets/widgets.dart';
 import '../../domain/entities/weather_entity.dart';
 
 class WeatherMetricCards extends StatelessWidget {
@@ -90,16 +91,13 @@ class _MetricCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, color: iconColor, size: 20),
+              AppIcon(icon, color: iconColor, size: 20),
               const SizedBox(width: 8),
               Expanded(
-                child: Text(
+                child: AppText.medium(
                   title,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: UIColors.textSecondary,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  size: 12,
+                  color: UIColors.textSecondary,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -108,22 +106,16 @@ class _MetricCard extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              AppText.bold(
                 value,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: UIColors.textPrimary,
-                ),
+                size: 18,
+                color: UIColors.textPrimary,
               ),
               const SizedBox(height: 2),
-              Text(
+              AppText.semiBold(
                 subText,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: iconColor,
-                  fontWeight: FontWeight.w600,
-                ),
+                size: 11,
+                color: iconColor,
               ),
             ],
           ),

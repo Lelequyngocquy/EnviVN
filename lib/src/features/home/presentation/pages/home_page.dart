@@ -55,9 +55,9 @@ class _HomePageState extends State<HomePage> {
                     index: state.currentTab,
                     children: const [
                       HomeDashboardView(),
-                      PollutionMapPage(),
                       TwentyFourHourDetailPage(),
-                      LocationPermissionPage(),
+                      PollutionMapPage(),
+                      LocationPermissionPage(isSettings: true),
                     ],
                   ),
                 );
@@ -86,7 +86,8 @@ class _HomePageState extends State<HomePage> {
             BlocBuilder<HomeDashboardCubit, HomeDashboardState>(
               buildWhen: (prev, curr) =>
                   prev.isChangingLocation != curr.isChangingLocation ||
-                  (curr.isChangingLocation && prev.currentCity != curr.currentCity),
+                  (curr.isChangingLocation &&
+                      prev.currentCity != curr.currentCity),
               builder: (context, state) {
                 return AnimatedSwitcher(
                   duration: const Duration(milliseconds: 250),

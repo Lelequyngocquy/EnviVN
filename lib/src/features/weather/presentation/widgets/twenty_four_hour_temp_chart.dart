@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
-import 'package:envivn/src/core/presentation/widgets/app_status_tag.dart';
+import 'package:envivn/src/core/presentation/widgets/widgets.dart';
 import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
@@ -49,25 +49,20 @@ class TwentyFourHourTempChart extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
-                    Text(
+                    AppText.bold(
                       'Biểu đồ nhiệt độ 24 giờ tới',
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: UIColors.textPrimary,
-                      ),
+                      size: 16,
+                      color: UIColors.textPrimary,
                     ),
                     SizedBox(height: 4),
-                    Text(
+                    AppText.regular(
                       'Đường cong nhiệt độ (°C) theo từng mốc giờ',
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: UIColors.textSecondary,
-                      ),
+                      size: 12,
+                      color: UIColors.textSecondary,
                     ),
                   ],
                 ),
@@ -102,9 +97,10 @@ class TwentyFourHourTempChart extends StatelessWidget {
                       showTitles: true,
                       reservedSize: 28,
                       interval: ((maxTemp - minTemp) / 3).clamp(1.0, 10.0),
-                      getTitlesWidget: (val, _) => Text(
+                      getTitlesWidget: (val, _) => AppText.regular(
                         '${val.toInt()}°',
-                        style: const TextStyle(color: UIColors.textMuted, fontSize: 10),
+                        color: UIColors.textMuted,
+                        size: 10,
                       ),
                     ),
                   ),
@@ -120,9 +116,10 @@ class TwentyFourHourTempChart extends StatelessWidget {
                         if (idx >= 0 && idx < points.length) {
                           return Padding(
                             padding: const EdgeInsets.only(top: 8),
-                            child: Text(
+                            child: AppText.regular(
                               DateFormat('HH:mm').format(points[idx].time),
-                              style: const TextStyle(color: UIColors.textSecondary, fontSize: 10),
+                              color: UIColors.textSecondary,
+                              size: 10,
                             ),
                           );
                         }

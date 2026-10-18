@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/core/presentation/widgets/widgets.dart';
 import 'package:envivn/src/features/air_quality/domain/entities/air_quality_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
@@ -79,33 +80,25 @@ class _GlassPollutantCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
+          AppText.semiBold(
             label,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: UIColors.textSecondary,
-            ),
+            size: 13,
+            color: UIColors.textSecondary,
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
-              Text(
+              AppText.bold(
                 value,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: UIColors.textPrimary,
-                ),
+                size: 24,
+                color: UIColors.textPrimary,
               ),
               const SizedBox(width: 4),
-              Text(
+              AppText.regular(
                 unit,
-                style: const TextStyle(
-                  fontSize: 10,
-                  color: UIColors.textMuted,
-                ),
+                size: 10,
+                color: UIColors.textMuted,
               ),
             ],
           ),

@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/weather_code_helper.dart';
+import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
+import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
@@ -52,17 +54,14 @@ class HomeWeatherCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: const Text(
+                child: const AppText.bold(
                   'THỜI TIẾT HIỆN TẠI',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.8,
-                    color: UIColors.textSecondary,
-                  ),
+                  size: 11,
+                  letterSpacing: 0.8,
+                  color: UIColors.textSecondary,
                 ),
               ),
-              Icon(
+              AppIcon(
                 Icons.cloud_sync_rounded,
                 size: 16,
                 color: UIColors.secondary.withOpacity(0.9),
@@ -83,47 +82,35 @@ class HomeWeatherCard extends StatelessWidget {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        AppText.extraBold(
                           tempStr,
-                          style: const TextStyle(
-                            fontSize: 44,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
-                            letterSpacing: -1.0,
-                            height: 1.0,
-                          ),
+                          size: 44,
+                          color: Colors.white,
+                          letterSpacing: -1.0,
+                          height: 1.0,
                         ),
                         const SizedBox(width: 4),
                         const Padding(
                           padding: EdgeInsets.only(top: 4),
-                          child: Text(
+                          child: AppText.bold(
                             '°C',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: UIColors.textSecondary,
-                            ),
+                            size: 20,
+                            color: UIColors.textSecondary,
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 6),
-                    Text(
+                    AppText.bold(
                       weatherInfo.description,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: weatherInfo.color,
-                      ),
+                      size: 16,
+                      color: weatherInfo.color,
                     ),
                     const SizedBox(height: 4),
-                    Text(
+                    AppText.medium(
                       'Cảm giác như: $feelsLikeStr°C${highLowStr != null ? ' • $highLowStr' : ''}',
-                      style: const TextStyle(
-                        fontSize: 11,
-                        color: UIColors.textSecondary,
-                        fontWeight: FontWeight.w500,
-                      ),
+                      size: 11,
+                      color: UIColors.textSecondary,
                     ),
                   ],
                 ),
@@ -148,7 +135,7 @@ class HomeWeatherCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: Icon(
+                child: AppIcon(
                   weatherInfo.icon,
                   size: 38,
                   color: weatherInfo.color,
@@ -234,14 +221,11 @@ class HomeWeatherCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
+                const AppText.semiBold(
                   'DỰ BÁO CÁC GIỜ TIẾP THEO',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.6,
-                    color: UIColors.textMuted,
-                  ),
+                  size: 10,
+                  letterSpacing: 0.6,
+                  color: UIColors.textMuted,
                 ),
                 if (weather.hourlyForecast.any(
                   (h) => h.precipitationProbability >= 40,
@@ -258,19 +242,16 @@ class HomeWeatherCard extends StatelessWidget {
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
+                        AppIcon(
                           Icons.umbrella_rounded,
                           size: 10,
                           color: UIColors.secondary,
                         ),
                         SizedBox(width: 4),
-                        Text(
+                        AppText.bold(
                           'Sắp có mưa',
-                          style: TextStyle(
-                            fontSize: 9,
-                            fontWeight: FontWeight.bold,
-                            color: UIColors.secondary,
-                          ),
+                          size: 9,
+                          color: UIColors.secondary,
                         ),
                       ],
                     ),
@@ -322,35 +303,27 @@ class HomeWeatherCard extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          AppText(
                             timeStr,
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: isFirst
-                                  ? FontWeight.bold
-                                  : FontWeight.w500,
-                              color: isFirst
-                                  ? UIColors.primary
-                                  : UIColors.textSecondary,
-                            ),
+                            size: 10,
+                            fontWeight: isFirst
+                                ? FontWeight.bold
+                                : FontWeight.w500,
+                            color: isFirst
+                                ? UIColors.primary
+                                : UIColors.textSecondary,
                           ),
-                          Icon(itemInfo.icon, size: 18, color: itemInfo.color),
-                          Text(
+                          AppIcon(itemInfo.icon, size: 18, color: itemInfo.color),
+                          AppText.bold(
                             '${item.temperature.toStringAsFixed(0)}°',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                            size: 12,
+                            color: Colors.white,
                           ),
                           if (item.precipitationProbability > 0)
-                            Text(
+                            AppText.semiBold(
                               '${item.precipitationProbability}%',
-                              style: const TextStyle(
-                                fontSize: 9,
-                                fontWeight: FontWeight.w600,
-                                color: UIColors.secondary,
-                              ),
+                              size: 9,
+                              color: UIColors.secondary,
                             )
                           else
                             const SizedBox(height: 11),
@@ -368,9 +341,10 @@ class HomeWeatherCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const AppText.regular(
                 'Cập nhật: Vừa xong',
-                style: const TextStyle(fontSize: 11, color: UIColors.textMuted),
+                size: 11,
+                color: UIColors.textMuted,
               ),
               if (onDetailTap != null)
                 GestureDetector(
@@ -378,15 +352,12 @@ class HomeWeatherCard extends StatelessWidget {
                   behavior: HitTestBehavior.opaque,
                   child: Row(
                     children: const [
-                      Text(
+                      AppText.bold(
                         'Chi tiết 24h',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: UIColors.primary,
-                        ),
+                        size: 12,
+                        color: UIColors.primary,
                       ),
-                      Icon(
+                      AppIcon(
                         Icons.chevron_right_rounded,
                         size: 16,
                         color: UIColors.primary,
@@ -422,24 +393,20 @@ class _WeatherPillItem extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 14, color: iconColor),
+        AppIcon(icon, size: 14, color: iconColor),
         const SizedBox(height: 3),
-        Text(
+        AppText.bold(
           value,
-          style: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+          size: 12,
+          color: Colors.white,
           maxLines: 1,
-          overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 1),
-        Text(
+        AppText.regular(
           label,
-          style: const TextStyle(fontSize: 9, color: UIColors.textSecondary),
+          size: 9,
+          color: UIColors.textSecondary,
           maxLines: 1,
-          overflow: TextOverflow.ellipsis,
         ),
       ],
     );

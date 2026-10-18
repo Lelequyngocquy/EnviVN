@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/weather_code_helper.dart';
-import 'package:envivn/src/core/presentation/widgets/app_status_tag.dart';
+import 'package:envivn/src/core/presentation/widgets/widgets.dart';
 import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
@@ -28,16 +28,13 @@ class HourlyWeatherSlider extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Expanded(
-                child: Text(
+                child: AppText.bold(
                   'DỰ BÁO CHI TIẾT TỪNG MỐC GIỜ SẮP TỚI',
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.8,
-                    color: UIColors.textSecondary,
-                  ),
+                  size: 11,
+                  letterSpacing: 0.8,
+                  color: UIColors.textSecondary,
                 ),
               ),
               if (points.any((h) => h.precipitationProbability >= 40)) ...[
@@ -91,53 +88,43 @@ class HourlyWeatherSlider extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      AppText(
                         timeStr,
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: isFirst
-                              ? FontWeight.bold
-                              : FontWeight.w500,
-                          color: isFirst
-                              ? UIColors.secondary
-                              : UIColors.textSecondary,
-                        ),
+                        size: 10,
+                        fontWeight: isFirst
+                            ? FontWeight.bold
+                            : FontWeight.w500,
+                        color: isFirst
+                            ? UIColors.secondary
+                            : UIColors.textSecondary,
                       ),
-                      Icon(itemInfo.icon, size: 20, color: itemInfo.color),
-                      Text(
+                      AppIcon(itemInfo.icon, size: 20, color: itemInfo.color),
+                      AppText.bold(
                         '${item.temperature.toStringAsFixed(0)}°',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                        size: 13,
+                        color: Colors.white,
                       ),
                       if (item.precipitationProbability > 0)
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
+                            const AppIcon(
                               Icons.water_drop,
                               size: 8,
                               color: UIColors.secondary,
                             ),
-                            Text(
+                            AppText.semiBold(
                               '${item.precipitationProbability}%',
-                              style: const TextStyle(
-                                fontSize: 9,
-                                fontWeight: FontWeight.w600,
-                                color: UIColors.secondary,
-                              ),
+                              size: 9,
+                              color: UIColors.secondary,
                             ),
                           ],
                         )
                       else
-                        Text(
+                        AppText.regular(
                           '${item.humidity}% 💧',
-                          style: const TextStyle(
-                            fontSize: 8,
-                            color: UIColors.textMuted,
-                          ),
+                          size: 8,
+                          color: UIColors.textMuted,
                         ),
                     ],
                   ),

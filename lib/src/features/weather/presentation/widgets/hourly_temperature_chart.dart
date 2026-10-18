@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../common/constants/colors.dart';
+import '../../../../core/presentation/widgets/widgets.dart';
 import '../../domain/entities/weather_entity.dart';
 
 class HourlyTemperatureChart extends StatelessWidget {
@@ -54,15 +55,13 @@ class HourlyTemperatureChart extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            children: [
-              const Icon(Icons.show_chart_rounded, color: UIColors.secondary, size: 20),
-              const SizedBox(width: 8),
-              Text(
+            children: const [
+              AppIcon(Icons.show_chart_rounded, color: UIColors.secondary, size: 20),
+              SizedBox(width: 8),
+              AppText.bold(
                 'Biểu đồ nhiệt độ (12h tới)',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: UIColors.textPrimary,
-                    ),
+                size: 14,
+                color: UIColors.textPrimary,
               ),
             ],
           ),
@@ -105,13 +104,10 @@ class HourlyTemperatureChart extends StatelessWidget {
                         final time = points[index].time;
                         return Padding(
                           padding: const EdgeInsets.only(top: 8),
-                          child: Text(
+                          child: AppText.medium(
                             DateFormat('HH:mm').format(time),
-                            style: const TextStyle(
-                              color: UIColors.textSecondary,
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            color: UIColors.textSecondary,
+                            size: 10,
                           ),
                         );
                       },
@@ -166,27 +162,26 @@ class HourlyTemperatureChart extends StatelessWidget {
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
+                    AppText.regular(
                       DateFormat('HH:mm').format(pt.time),
-                      style: const TextStyle(fontSize: 11, color: UIColors.textSecondary),
+                      size: 11,
+                      color: UIColors.textSecondary,
                     ),
                     const SizedBox(height: 4),
-                    Text(
+                    AppText.bold(
                       '${pt.temperature.toStringAsFixed(0)}°',
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: UIColors.textPrimary,
-                      ),
+                      size: 13,
+                      color: UIColors.textPrimary,
                     ),
                     const SizedBox(height: 2),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(Icons.water_drop, size: 10, color: UIColors.secondary),
-                        Text(
+                        const AppIcon(Icons.water_drop, size: 10, color: UIColors.secondary),
+                        AppText.regular(
                           '${pt.humidity}%',
-                          style: const TextStyle(fontSize: 10, color: UIColors.textSecondary),
+                          size: 10,
+                          color: UIColors.textSecondary,
                         ),
                       ],
                     ),

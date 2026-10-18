@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../common/constants/colors.dart';
+import 'app_text.dart';
 
 class LoadingWidget extends StatelessWidget {
   final String? message;
@@ -17,13 +18,10 @@ class LoadingWidget extends StatelessWidget {
           ),
           if (message != null) ...[
             const SizedBox(height: 16),
-            Text(
+            AppText.medium(
               message!,
-              style: const TextStyle(
-                color: UIColors.textSecondary,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
+              color: UIColors.textSecondary,
+              size: 14,
             ),
           ],
         ],

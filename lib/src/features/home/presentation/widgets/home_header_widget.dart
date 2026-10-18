@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/weather_code_helper.dart';
+import 'package:envivn/src/core/presentation/widgets/widgets.dart';
 import 'package:envivn/src/features/home/domain/entities/city_entity.dart';
 import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
 import 'package:envivn/src/shared/router/router_key_manager.dart';
@@ -61,24 +62,21 @@ class HomeHeaderWidget extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
+                          AppIcon(
                             city.isGps ? Icons.my_location_rounded : Icons.location_on_rounded,
                             color: Colors.white,
                             size: 18,
                           ),
                           const SizedBox(width: 6),
                           Flexible(
-                            child: Text(
+                            child: AppText.bold(
                               city.name,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
+                              color: Colors.white,
+                              size: 14,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          const Icon(Icons.keyboard_arrow_down_rounded, color: Colors.white, size: 18),
+                          const AppIcon(Icons.keyboard_arrow_down_rounded, color: Colors.white, size: 18),
                         ],
                       ),
                     ),
@@ -87,7 +85,7 @@ class HomeHeaderWidget extends StatelessWidget {
                 const SizedBox(width: 8),
                 IconButton(
                   onPressed: onDetectGps,
-                  icon: const Icon(Icons.gps_fixed_rounded, color: Colors.white),
+                  icon: const AppIcon(Icons.gps_fixed_rounded, color: Colors.white),
                   tooltip: 'Định vị GPS của tôi',
                   style: IconButton.styleFrom(
                     backgroundColor: Colors.white.withOpacity(0.15),
@@ -98,7 +96,7 @@ class HomeHeaderWidget extends StatelessWidget {
                   onPressed: () {
                     Navigator.pushNamed(context, RouterPath.pollutionMap);
                   },
-                  icon: const Icon(Icons.map_rounded, color: Colors.white),
+                  icon: const AppIcon(Icons.map_rounded, color: Colors.white),
                   tooltip: 'Bản đồ ô nhiễm',
                   style: IconButton.styleFrom(
                     backgroundColor: Colors.white.withOpacity(0.15),
@@ -117,41 +115,30 @@ class HomeHeaderWidget extends StatelessWidget {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        AppText.bold(
                           '${weather.currentTemp.toStringAsFixed(0)}°',
-                          style: const TextStyle(
-                            fontSize: 48,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            height: 1.0,
-                          ),
+                          size: 48,
+                          color: Colors.white,
+                          height: 1.0,
                         ),
                         const SizedBox(width: 4),
-                        const Text(
+                        const AppText.bold(
                           'C',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white70,
-                          ),
+                          size: 20,
+                          color: Colors.white70,
                         ),
                       ],
                     ),
                     const SizedBox(height: 4),
-                    Text(
+                    AppText.regular(
                       'Cảm giác như: ${weather.apparentTemp.toStringAsFixed(0)}°C',
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: Colors.white70,
-                      ),
+                      size: 13,
+                      color: Colors.white70,
                     ),
-                    Text(
+                    AppText.semiBold(
                       weatherInfo.description,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
+                      size: 14,
+                      color: Colors.white,
                     ),
                   ],
                 ),
@@ -161,7 +148,7 @@ class HomeHeaderWidget extends StatelessWidget {
                     color: Colors.white.withOpacity(0.12),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(
+                  child: AppIcon(
                     weatherInfo.icon,
                     size: 48,
                     color: Colors.white,
@@ -173,11 +160,12 @@ class HomeHeaderWidget extends StatelessWidget {
             if (lastUpdated != null)
               Row(
                 children: [
-                  const Icon(Icons.access_time_rounded, size: 12, color: Colors.white60),
+                  const AppIcon(Icons.access_time_rounded, size: 12, color: Colors.white60),
                   const SizedBox(width: 4),
-                  Text(
+                  AppText.regular(
                     'Cập nhật: ${DateFormat('HH:mm - dd/MM/yyyy').format(lastUpdated!)}',
-                    style: const TextStyle(fontSize: 11, color: Colors.white60),
+                    size: 11,
+                    color: Colors.white60,
                   ),
                   if (weather.isOfflineCache) ...[
                     const SizedBox(width: 8),
@@ -187,9 +175,10 @@ class HomeHeaderWidget extends StatelessWidget {
                         color: Colors.white24,
                         borderRadius: BorderRadius.circular(4),
                       ),
-                      child: const Text(
+                      child: const AppText.regular(
                         'Ngoại tuyến',
-                        style: TextStyle(fontSize: 10, color: Colors.white),
+                        size: 10,
+                        color: Colors.white,
                       ),
                     ),
                   ],

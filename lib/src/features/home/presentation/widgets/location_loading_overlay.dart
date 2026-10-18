@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/core/presentation/widgets/app_dialog.dart';
+import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
+import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 
 /// Lớp phủ hiệu ứng kính mờ (Glass Overlay) hiển thị trong quá trình đổi vị trí GPS / Thành phố.
 /// Được xây dựng hoàn toàn dựa trên [AppDialog] dùng chung của core widgets.
@@ -87,7 +89,7 @@ class _LocationLoadingOverlayState extends State<LocationLoadingOverlay>
                   color: UIColors.primary.withOpacity(0.18),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: const AppIcon(
                   Icons.location_on_rounded,
                   color: UIColors.primary,
                   size: 22,
@@ -114,22 +116,18 @@ class _LocationLoadingOverlayState extends State<LocationLoadingOverlay>
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(
+                const AppIcon(
                   Icons.near_me_rounded,
                   color: UIColors.primary,
                   size: 13,
                 ),
                 const SizedBox(width: 6),
                 Flexible(
-                  child: Text(
+                  child: AppText.bold(
                     widget.cityName,
-                    style: const TextStyle(
-                      color: UIColors.primary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 13,
-                    ),
+                    color: UIColors.primary,
+                    size: 13,
                     maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
@@ -138,15 +136,13 @@ class _LocationLoadingOverlayState extends State<LocationLoadingOverlay>
           const SizedBox(height: 12),
 
           // Explanatory Subtitle
-          Text(
+          AppText.regular(
             widget.message ??
                 'Đang tải dữ liệu thời tiết & chỉ số không khí thời gian thực...',
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 12,
-              color: UIColors.textSecondary,
-              height: 1.45,
-            ),
+            size: 12,
+            color: UIColors.textSecondary,
+            height: 1.45,
           ),
           const SizedBox(height: 18),
 

@@ -11,6 +11,8 @@ class HomeDashboardState extends Equatable {
   final int currentTab;
   final bool isChangingLocation;
   final bool hasNotification;
+  final bool isLocationPermissionGranted;
+  final bool hasPendingMapSync;
 
   const HomeDashboardState({
     this.status = DashboardStatus.initial,
@@ -20,6 +22,8 @@ class HomeDashboardState extends Equatable {
     this.currentTab = 0,
     this.isChangingLocation = false,
     this.hasNotification = false,
+    this.isLocationPermissionGranted = false,
+    this.hasPendingMapSync = true,
   });
 
   bool isInitialLoading(int hourlyForecastLength) =>
@@ -34,6 +38,8 @@ class HomeDashboardState extends Equatable {
     int? currentTab,
     bool? isChangingLocation,
     bool? hasNotification,
+    bool? isLocationPermissionGranted,
+    bool? hasPendingMapSync,
   }) {
     return HomeDashboardState(
       status: status ?? this.status,
@@ -43,6 +49,9 @@ class HomeDashboardState extends Equatable {
       currentTab: currentTab ?? this.currentTab,
       isChangingLocation: isChangingLocation ?? this.isChangingLocation,
       hasNotification: hasNotification ?? this.hasNotification,
+      isLocationPermissionGranted:
+          isLocationPermissionGranted ?? this.isLocationPermissionGranted,
+      hasPendingMapSync: hasPendingMapSync ?? this.hasPendingMapSync,
     );
   }
 
@@ -55,5 +64,7 @@ class HomeDashboardState extends Equatable {
         currentTab,
         isChangingLocation,
         hasNotification,
+        isLocationPermissionGranted,
+        hasPendingMapSync,
       ];
 }

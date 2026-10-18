@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
+import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
 class LiquidGlassBottomBar extends StatelessWidget {
@@ -32,14 +34,14 @@ class LiquidGlassBottomBar extends StatelessWidget {
                   onTap: () => onTabSelected(0),
                 ),
                 NavBarItem(
-                  icon: Icons.map_outlined,
-                  label: 'Bản đồ',
+                  icon: Icons.bar_chart_rounded,
+                  label: 'Chi Tiết',
                   isActive: currentTab == 1,
                   onTap: () => onTabSelected(1),
                 ),
                 NavBarItem(
-                  icon: Icons.bar_chart_rounded,
-                  label: '24 Giờ',
+                  icon: Icons.map_outlined,
+                  label: 'Bản đồ',
                   isActive: currentTab == 2,
                   onTap: () => onTabSelected(2),
                 ),
@@ -60,7 +62,7 @@ class LiquidGlassBottomBar extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: NavBarItem(
             icon: Icons.wechat_outlined,
-            isActive: false,
+            isActive: true,
             onTap: () {},
           ),
         ),
@@ -95,20 +97,18 @@ class NavBarItem extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
+            AppIcon(
               icon,
               color: isActive ? UIColors.primary : UIColors.textMuted,
               size: label != null ? 22 : 40,
             ),
             if (label != null) ...{
               const SizedBox(height: 3),
-              Text(
+              AppText(
                 label ?? '',
-                style: TextStyle(
-                  fontSize: 10,
-                  fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
-                  color: isActive ? UIColors.primary : UIColors.textMuted,
-                ),
+                size: 10,
+                fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
+                color: isActive ? UIColors.primary : UIColors.primaryDark,
               ),
             },
           ],

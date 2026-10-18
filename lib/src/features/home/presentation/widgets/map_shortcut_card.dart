@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
+import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
 class MapShortcutCard extends StatelessWidget {
@@ -27,30 +29,28 @@ class MapShortcutCard extends StatelessWidget {
                 color: UIColors.secondary.withOpacity(0.18),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.map_rounded, color: UIColors.secondary, size: 24),
+              child: const AppIcon(Icons.map_rounded, color: UIColors.secondary, size: 24),
             ),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
-                  Text(
+                  AppText.bold(
                     'Bản đồ trạm quan trắc',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: UIColors.textPrimary,
-                    ),
+                    size: 14,
+                    color: UIColors.textPrimary,
                   ),
                   SizedBox(height: 3),
-                  Text(
+                  AppText.regular(
                     'Xem các trạm quan trắc chất lượng không khí trên toàn quốc',
-                    style: TextStyle(fontSize: 11, color: UIColors.textSecondary),
+                    size: 11,
+                    color: UIColors.textSecondary,
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: UIColors.textSecondary),
+            const AppIcon(Icons.arrow_forward_ios_rounded, size: 14, color: UIColors.textSecondary),
           ],
         ),
       ),
