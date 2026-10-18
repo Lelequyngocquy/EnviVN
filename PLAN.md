@@ -29,7 +29,7 @@
 | **Open-Meteo Weather API** | Dự báo nhiệt độ, độ ẩm, gió, UV, lượng mưa từng giờ/ngày | Miễn phí, Không cần Key | `http` / `dio` |
 | **Open-Meteo Air Quality API** | Chỉ số AQI (US & VN), nồng độ bụi PM2.5, PM10, $NO_2$, $O_3$, $SO_2$ | Miễn phí, Không cần Key | `http` / `dio` |
 | **Open-Meteo Geocoding API** | Tìm kiếm địa chỉ, xã/phường/quận/huyện trên 63 tỉnh thành | Miễn phí, Không cần Key | `http` / `dio` |
-| **Google Gemini Flash API** | Trợ lý ảo AI tư vấn sức khỏe & giải thích môi trường | Free Tier (Google AI Studio) | `google_generative_ai` |
+| **Smart Environmental Advisor** | Cố vấn môi trường tức thì (0ms latency, 100% offline, deterministic) | Miễn phí, 0đ quota, bảo mật tuyệt đối | Rule-Based Enum Engine (Clean Architecture) |
 | **WAQI / OpenAQ API** | Mạng lưới trạm quan trắc thực tế (Đại sứ quán, Tổng cục Môi trường) | Miễn phí (Đăng ký Token công khai) | `dio` |
 | **NASA FIRMS API** | Điểm vệ tinh đốt rơm rạ / cháy sinh khối thời gian thực | Miễn phí MAP_KEY | `dio` / GeoJSON |
 
@@ -45,28 +45,27 @@
          ┌───────────────────┬─────────────┴───────┬───────────────────┐
          │                   │                     │                   │
 ┌────────┴────────┐ ┌────────┴────────┐   ┌────────┴────────┐ ┌────────┴────────┐
-│  1. TRỢ LÝ AI   │ │  2. SỨC KHỎE    │   │  3. BẢN ĐỒ VỆ   │ │  4. NỘI NGOẠI     │
+│  1. CỐ VẤN ENUM │ │  2. SỨC KHỎE    │   │  3. BẢN ĐỒ VỆ   │ │  4. NỘI NGOẠI     │
 │  & LOCAL PROFILE│ │  & ĐIỂM NÓNG VN │   │  TINH & TRẠM ĐO │ │  WIDGET & SHARE │
 └─────────────────┘ └─────────────────┘   └─────────────────┘ └─────────────────┘
 ```
 
 ---
 
-### TRỤ CỘT 1: TRỢ LÝ AI & HỒ SƠ CÁ NHÂN HÓA NỘI BỘ
+### TRỤ CỘT 1: CỐ VẤN THÔNG MINH (RULE-BASED ENUM ENGINE) & HỒ SƠ NỘI BỘ
 
-#### 1.1. Kích hoạt Trợ lý Môi trường EnviBot (Google Gemini Flash)
+#### 1.1. Cố vấn Môi trường Thông minh (Rule-Based Enum Engine)
 - **Vị trí**: Kích hoạt khi bấm nút `Trợ lý` trên thanh điều hướng `LiquidGlassBottomBar`.
-- **Cơ chế Client-Direct**:
-    - Tích hợp trực tiếp thông qua SDK `google_generative_ai`.
-    - Quản lý API Key an toàn qua biến môi trường Dart (`--dart-define=GEMINI_API_KEY=your_key`).
-- **Context Injection thông minh (Prompt Engineering)**:
-    - Khi người dùng gửi câu hỏi, Flutter tự động đóng gói ngữ cảnh môi trường hiện tại vào System Prompt:
-        - Vị trí hiện tại, chỉ số AQI thực tế, nồng độ PM2.5, UV, nhiệt độ, độ ẩm.
-        - Hồ sơ sức khỏe của người dùng lưu trên máy (ví dụ: *Viêm xoang mãn tính, nhạy cảm với bụi mịn*).
-    - Tích hợp gợi ý nhanh các câu hỏi mẫu:
-        - *"Hôm nay có nên chạy bộ ngoài trời không?"*
-        - *"Nên mở cửa thông gió vào khung giờ nào sạch nhất?"*
-        - *"Giải thích hiện tượng nghịch nhiệt hôm nay."*
+- **Cơ chế 100% Client-Side / Rule-Based Enum Engine**:
+    - **0ms latency, 100% offline, không tốn quota API**: Thay thế việc gọi LLM bên ngoài bằng một Decision Engine hướng đối tượng khai thác triệt để sức mạnh của Dart Enum Getters và Clean Architecture.
+    - **100% Deterministic & Chuẩn y tế WHO/EPA**: Kết quả đánh giá khoa học, nhất quán, không xảy ra ảo giác (hallucination).
+    - **Dumb UI Principle**: Presentation layer không chứa chuỗi văn bản cứng hay logic rẽ nhánh. UI tự động cập nhật dynamic theo `QuickPromptType.values`.
+- **Cấu trúc kiến trúc**:
+    - **`SafetyLevel` (Enum)**: 4 cấp độ an toàn (`safe`, `caution`, `warning`, `danger`) đóng gói sẵn color và icon.
+    - **`QuickPromptType` (Enum)**: Danh mục câu hỏi nhanh (Chạy bộ ngoài trời, Mở cửa thông gió, Cho trẻ em/người già ra ngoài, Đi lại/Đi làm) kèm hàm `evaluate(aqi, pm25, temp, uv, healthProfile)`.
+    - **`AdvisorDecision` (Enum)**: Toàn bộ kịch bản tư vấn cung cấp qua getters (`headline`, `explanation`, `tips`, `alternativeHour`, `level`).
+    - **`AdvisorCubit` & `AdvisorState`**: Quản lý `availablePrompts`, `selectedPrompt`, `decision` và các trạng thái (`initial`, `loading`, `success`).
+    - **`AdvisorResultCard`**: Render thông tin cố vấn dạng Liquid Glass Card mượt mà.
 
 #### 1.2. Màn hình Cài đặt & Hồ sơ Sức khỏe Cục bộ (Local Health Profile)
 - **Vị trí**: Thay thế tab `LocationPermissionPage` hiện tại thành `SettingsPage`.
@@ -157,7 +156,7 @@ dependencies:
 
   # Mạng & API Public
   dio: ^5.7.0
-  google_generative_ai: ^0.4.6 # Trợ lý AI Gemini
+  # Không phụ thuộc cloud LLM (0đ quota, 100% offline, bảo mật tuyệt đối)
 
   # Bản đồ & Đồ họa
   flutter_map: ^7.0.2
@@ -186,7 +185,7 @@ lib/
 ├── injection_container.dart       # Cấu hình GetIt DI
 │
 ├── core/
-│   ├── config/env_config.dart     # Quản lý Gemini API Key, WAQI Token
+│   ├── config/env_config.dart     # Quản lý WAQI Token
 │   ├── constants/flooding_blackspots.dart # Tọa độ điểm đen ngập lụt cục bộ
 │   ├── theme/liquid_glass_theme.dart
 │   └── utils/
@@ -197,12 +196,19 @@ lib/
     ├── air_quality/               # Open-Meteo Air Quality & AQI logic
     ├── weather/                   # Open-Meteo Forecast
     │
-    ├── ai_advisor/                # [MỚI] Trợ lý ảo AI Môi trường
-    │   ├── domain/repositories/ai_advisor_repository.dart
-    │   ├── infrastructure/repositories/gemini_advisor_repository_impl.dart
+    ├── advisor/                   # [MỚI] Cố vấn Môi trường Thông minh (Rule-Based Enum Engine)
+    │   ├── domain/
+    │   │   └── entities/
+    │   │       ├── safety_level.dart
+    │   │       ├── quick_prompt_type.dart
+    │   │       └── advisor_decision.dart
     │   └── presentation/
-    │       ├── cubits/ai_advisor_cubit.dart
-    │       └── widgets/ai_advisor_bottom_sheet.dart
+    │       ├── cubits/
+    │       │   ├── advisor_cubit.dart
+    │       │   └── advisor_state.dart
+    │       └── widgets/
+    │           ├── advisor_modal_sheet.dart
+    │           └── advisor_result_card.dart
     │
     ├── settings/                  # [MỚI] Màn hình Cài đặt & Hồ sơ sức khỏe
     │   ├── domain/entities/user_profile_entity.dart
@@ -230,17 +236,18 @@ lib/
 ```
 Tuần 1: HOÀN THIỆN CORE            Tuần 2: NÂNG TẦM DỮ LIỆU          Tuần 3: VIRAL & TIỆN ÍCH
 ┌───────────────────────────┐      ┌───────────────────────────┐     ┌───────────────────────────┐
-│ • Tích hợp Gemini Flash   │      │ • Thêm NASA FIRMS (Điểm   │     │ • Tích hợp Home Widget    │
+│ • Cố vấn thông minh Enum  │      │ • Thêm NASA FIRMS (Điểm   │     │ • Tích hợp Home Widget    │
 │ • Hoàn thiện SettingsPage │ ───> │   nóng đốt rơm rạ)        │ ──> │ • Local Notification 6:30 │
 │ • Hồ sơ sức khỏe cá nhân  │      │ • Thêm trạm đo thực WAQI  │     │ • Xuất ảnh Story 9:16     │
 │ • Geocoding 63 tỉnh thành │      │ • Logic Cảnh báo ngập úng │     │ • Đóng gói README GitHub  │
 └───────────────────────────┘      └───────────────────────────┘     └───────────────────────────┘
 ```
 
-### Giai đoạn 1: Lấp đầy khoảng trống UI & Kích hoạt Trí tuệ Nhân tạo (Tuần 1)
-1. **Trợ lý AI Gemini**:
-    - Tạo `GeminiAdvisorRepositoryImpl` kết nối `google_generative_ai`.
-    - Viết giao diện Glassmorphism Bottom Sheet khi ấn nút "Trợ lý" ở thanh bar.
+### Giai đoạn 1: Lấp đầy khoảng trống UI & Kích hoạt Cố vấn Thông minh (Tuần 1)
+1. **Cố vấn Môi trường Thông minh (Rule-Based Enum Engine)**:
+    - Tạo các domain entities: `SafetyLevel`, `QuickPromptType`, `AdvisorDecision`.
+    - Viết `AdvisorCubit` và `AdvisorState` quản lý trạng thái tư vấn.
+    - Xây dựng giao diện Liquid Glass Modal Sheet khi bấm nút Trợ lý ở thanh Bottom Bar.
 2. **Settings & Hồ sơ Sức khỏe**:
     - Xây dựng `SettingsPage` thay thế tab cấp quyền vị trí.
     - Lưu cấu hình độ nhạy AQI và hồ sơ bệnh hô hấp vào `SharedPreferences`.

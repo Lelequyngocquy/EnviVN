@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/features/advisor/presentation/widgets/advisor_modal_sheet.dart';
+import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_cubit.dart';
 import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
 import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_state.dart';
 import 'package:envivn/src/features/home/presentation/pages/location_permission_page.dart';
@@ -9,6 +11,7 @@ import 'package:envivn/src/features/home/presentation/widgets/home_dashboard_vie
 import 'package:envivn/src/features/home/presentation/widgets/liquid_glass_bottom_bar.dart';
 import 'package:envivn/src/features/home/presentation/widgets/location_loading_overlay.dart';
 import 'package:envivn/src/features/map_pollution/presentation/pages/pollution_map_page.dart';
+import 'package:envivn/src/features/weather/presentation/cubits/weather_cubit.dart';
 import 'package:envivn/src/features/weather/presentation/pages/twenty_four_hour_detail_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -29,6 +32,18 @@ class _HomePageState extends State<HomePage> {
     if (widget.initialTab != 0) {
       cubit.setTab(widget.initialTab);
     }
+  }
+
+  void _openAdvisor(BuildContext context) {
+    final weatherState = context.read<WeatherCubit>().state;
+    final aqiState = context.read<AirQualityCubit>().state;
+    final homeState = context.read<HomeDashboardCubit>().state;
+    AdvisorModalSheet.show(
+      context,
+      airQuality: aqiState.airQuality,
+      weather: weatherState.weather,
+      cityName: homeState.currentCity.name,
+    );
   }
 
   @override
@@ -77,6 +92,7 @@ class _HomePageState extends State<HomePage> {
                     onTabSelected: (index) {
                       context.read<HomeDashboardCubit>().setTab(index);
                     },
+                    onAdvisorTap: () => _openAdvisor(context),
                   ),
                 );
               },

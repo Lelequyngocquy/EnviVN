@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/activity_advice_helper.dart';
 import 'package:envivn/src/common/utils/aqi_helper.dart';
+import 'package:envivn/src/common/utils/weather_code_helper.dart';
 import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_status_tag.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
@@ -13,11 +14,13 @@ import 'package:envivn/src/shared/widgets/glass.dart';
 class OutdoorActivityAdviceCard extends StatelessWidget {
   final AirQualityEntity airQuality;
   final WeatherEntity weather;
+  final bool isCompact;
 
   const OutdoorActivityAdviceCard({
     super.key,
     required this.airQuality,
     required this.weather,
+    this.isCompact = false,
   });
 
   @override
@@ -28,6 +31,10 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
     final rainProb = weather.hourlyForecast.isNotEmpty
         ? weather.hourlyForecast.first.precipitationProbability
         : 0;
+    final weatherCode = weather.weatherCode;
+    final weatherInfo = WeatherCodeHelper.getInfo(weatherCode);
+    final precipitation = weather.precipitation;
+    final isCurrentlyRaining = precipitation > 0.1 || weatherInfo.isRain;
 
     final adviceData = ActivityAdviceHelper.evaluate(
       aqi: aqi,
@@ -36,11 +43,13 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
       currentTime: DateTime.now(),
       hourlyWeather: weather.hourlyForecast,
       hourlyAqi: airQuality.hourlyAqi,
+      isRaining: isCurrentlyRaining,
+      precipitation: precipitation,
     );
 
     return AppGlass(
-      borderRadius: 22,
-      padding: const EdgeInsets.all(18),
+      borderRadius: isCompact ? 18 : 22,
+      padding: isCompact ? const EdgeInsets.all(13) : const EdgeInsets.all(18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -51,23 +60,23 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: EdgeInsets.all(isCompact ? 6 : 8),
                       decoration: BoxDecoration(
                         color: adviceData.statusColor.withOpacity(0.18),
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(isCompact ? 8 : 10),
                       ),
                       child: AppIcon(
                         Icons.directions_run_rounded,
                         color: adviceData.statusColor,
-                        size: 20,
+                        size: isCompact ? 16 : 20,
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    const Expanded(
+                    const SizedBox(width: 8),
+                    Expanded(
                       child: AppText.bold(
                         'Khuyến nghị hoạt động',
-                        maxLines: 3,
-                        size: 14,
+                        maxLines: 1,
+                        size: isCompact ? 13 : 14,
                         color: UIColors.textPrimary,
                       ),
                     ),
@@ -78,41 +87,21 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
               AppStatusTag(
                 label: adviceData.statusLabel,
                 color: adviceData.statusColor,
-                size: AppTagSize.medium,
+                size: isCompact ? AppTagSize.small : AppTagSize.medium,
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: isCompact ? 8 : 12),
           AppText.medium(
             adviceData.adviceText,
-            size: 13,
+            size: isCompact ? 12 : 13,
             color: UIColors.textPrimary,
-            height: 1.45,
+            height: isCompact ? 1.35 : 1.45,
           ),
-          const SizedBox(height: 14),
-          const AppText.bold(
-            'Khung giờ hoạt động gợi ý:',
-            size: 11,
-            color: UIColors.textSecondary,
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              for (int i = 0; i < adviceData.slots.length; i++) ...[
-                if (i > 0) const SizedBox(width: 8),
-                _TimeSlotGlassChip(
-                  time: adviceData.slots[i].timeRange,
-                  activity: adviceData.slots[i].activity,
-                  status: adviceData.slots[i].status,
-                  isOk: adviceData.slots[i].isOk,
-                ),
-              ],
-            ],
-          ),
-          const SizedBox(height: 14),
+          SizedBox(height: isCompact ? 8 : 14),
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: isCompact ? 6 : 8,
+            runSpacing: isCompact ? 6 : 8,
             children: [
               _ActionGlassPill(
                 icon: Icons.masks_rounded,
@@ -122,17 +111,57 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
                 color: info.wearMask
                     ? UIColors.aqiUnhealthySensitive
                     : UIColors.aqiGood,
+                isCompact: isCompact,
+              ),
+              _ActionGlassPill(
+                icon: isCurrentlyRaining
+                    ? Icons.water_drop_rounded
+                    : (rainProb >= 40
+                        ? Icons.umbrella_rounded
+                        : Icons.wb_sunny_outlined),
+                label: isCurrentlyRaining
+                    ? 'Đang mưa • Mang áo mưa'
+                    : (rainProb >= 40
+                        ? 'Chuẩn bị áo mưa ($rainProb%)'
+                        : 'Trời tạnh ráo'),
+                color: isCurrentlyRaining || rainProb >= 40
+                    ? const Color(0xFF38BDF8)
+                    : UIColors.aqiGood,
+                isCompact: isCompact,
               ),
               _ActionGlassPill(
                 icon: Icons.wb_sunny_rounded,
                 label: uv >= 6 ? 'Chống nắng SPF 30+' : 'UV an toàn',
                 color: uv >= 6 ? Colors.orange : UIColors.secondary,
+                isCompact: isCompact,
               ),
               _ActionGlassPill(
                 icon: Icons.air_rounded,
                 label: aqi <= 80 ? 'Mở cửa thông thoáng' : 'Bật máy lọc khí',
                 color: aqi <= 80 ? UIColors.aqiGood : Colors.deepOrange,
+                isCompact: isCompact,
               ),
+            ],
+          ),
+          SizedBox(height: isCompact ? 8 : 14),
+          AppText.bold(
+            'Khung giờ hoạt động gợi ý:',
+            size: isCompact ? 10.5 : 11,
+            color: UIColors.textSecondary,
+          ),
+          SizedBox(height: isCompact ? 6 : 8),
+          Row(
+            children: [
+              for (int i = 0; i < adviceData.slots.length; i++) ...[
+                if (i > 0) const SizedBox(width: 8),
+                _TimeSlotGlassChip(
+                  time: adviceData.slots[i].timeRange,
+                  activity: adviceData.slots[i].activity,
+                  status: adviceData.slots[i].status,
+                  isOk: adviceData.slots[i].isOk,
+                  isCompact: isCompact,
+                ),
+              ],
             ],
           ),
         ],
@@ -146,22 +175,26 @@ class _TimeSlotGlassChip extends StatelessWidget {
   final String activity;
   final String status;
   final bool isOk;
+  final bool isCompact;
 
   const _TimeSlotGlassChip({
     required this.time,
     required this.activity,
     required this.status,
     required this.isOk,
+    this.isCompact = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.all(10),
+        padding: isCompact
+            ? const EdgeInsets.symmetric(horizontal: 6, vertical: 5)
+            : const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.06),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(isCompact ? 10 : 12),
           border: Border.all(color: Colors.white.withOpacity(0.12)),
         ),
         child: Column(
@@ -171,7 +204,7 @@ class _TimeSlotGlassChip extends StatelessWidget {
               children: [
                 AppIcon(
                   Icons.schedule_rounded,
-                  size: 13,
+                  size: isCompact ? 11 : 13,
                   color: isOk ? UIColors.primary : UIColors.textSecondary,
                 ),
                 const SizedBox(width: 4),
@@ -179,24 +212,24 @@ class _TimeSlotGlassChip extends StatelessWidget {
                   child: AppText.bold(
                     time,
                     maxLines: 1,
-                    size: 11,
+                    size: isCompact ? 10 : 11,
                     color: Colors.white,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 3),
+            const SizedBox(height: 2),
             AppText.regular(
               activity,
               maxLines: 1,
-              size: 11,
+              size: isCompact ? 9.5 : 11,
               color: UIColors.textSecondary,
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 1),
             AppText.bold(
               status,
               maxLines: 1,
-              size: 10,
+              size: isCompact ? 9 : 10,
               color: isOk ? UIColors.primary : UIColors.aqiUnhealthySensitive,
             ),
           ],
@@ -210,11 +243,13 @@ class _ActionGlassPill extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
+  final bool isCompact;
 
   const _ActionGlassPill({
     required this.icon,
     required this.label,
     required this.color,
+    this.isCompact = false,
   });
 
   @override
@@ -223,7 +258,7 @@ class _ActionGlassPill extends StatelessWidget {
       label: label,
       icon: icon,
       color: color,
-      size: AppTagSize.medium,
+      size: isCompact ? AppTagSize.small : AppTagSize.medium,
       fontWeight: FontWeight.w600,
     );
   }

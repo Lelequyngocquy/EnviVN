@@ -74,10 +74,13 @@ class ActivityAdviceHelper {
     DateTime? currentTime,
     List<HourlyWeatherPoint> hourlyWeather = const [],
     List<HourlyAqiPoint> hourlyAqi = const [],
+    bool isRaining = false,
+    double precipitation = 0.0,
   }) {
     // 1. Phân loại theo Multi-factor Matrix thời điểm hiện tại
-    final bool isSafe = aqi <= 100 && uv <= 7 && rainProb <= 40;
-    final bool isAvoid = aqi > 150 || uv > 9 || rainProb > 70;
+    final bool actuallyRaining = isRaining || precipitation > 0.1;
+    final bool isSafe = !actuallyRaining && aqi <= 100 && uv <= 7 && rainProb <= 40;
+    final bool isAvoid = actuallyRaining || aqi > 150 || uv > 9 || rainProb > 70;
 
     final ActivitySafetyLevel level = isSafe
         ? ActivitySafetyLevel.safe
@@ -104,7 +107,10 @@ class ActivityAdviceHelper {
     // 2. Lời khuyên tổng hợp cho THỜI ĐIỂM HIỆN TẠI
     final String adviceText;
     if (level == ActivitySafetyLevel.avoid) {
-      if (aqi > 150) {
+      if (actuallyRaining) {
+        adviceText =
+            'Trời đang có mưa (${precipitation > 0 ? '${precipitation.toStringAsFixed(1)} mm' : 'mưa rào'}). Đường trơn trượt nguy hiểm, không nên chạy bộ ngoài trời. Hãy chuẩn bị áo mưa khi đi lại.';
+      } else if (aqi > 150) {
         adviceText =
             'Chất lượng không khí hiện tại ở mức Xấu (AQI $aqi). Không nên chạy bộ hoặc tập luyện gắng sức ngoài trời để bảo vệ đường hô hấp.';
       } else if (rainProb > 70) {

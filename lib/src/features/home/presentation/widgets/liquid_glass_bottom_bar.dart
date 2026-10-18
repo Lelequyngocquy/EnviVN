@@ -8,11 +8,13 @@ import 'package:envivn/src/shared/widgets/glass.dart';
 class LiquidGlassBottomBar extends StatelessWidget {
   final int currentTab;
   final void Function(int index) onTabSelected;
+  final VoidCallback? onAdvisorTap;
 
   const LiquidGlassBottomBar({
     super.key,
     required this.currentTab,
     required this.onTabSelected,
+    this.onAdvisorTap,
   });
 
   @override
@@ -61,9 +63,9 @@ class LiquidGlassBottomBar extends StatelessWidget {
           borderRadius: 100,
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: NavBarItem(
-            icon: Icons.wechat_outlined,
+            icon: Icons.lightbulb,
             isActive: true,
-            onTap: () {},
+            onTap: onAdvisorTap ?? () {},
           ),
         ),
       ],

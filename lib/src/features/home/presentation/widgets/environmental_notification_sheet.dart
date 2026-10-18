@@ -38,21 +38,24 @@ class EnvironmentalNotificationSheet extends StatelessWidget {
     return AppBottomSheet.show(
       context,
       title: 'Thông báo môi trường',
-      subtitle: cityName,
+      subtitle: cityName.isNotEmpty ? 'Điều kiện thực tế tại $cityName' : null,
       leading: Container(
-        padding: const EdgeInsets.all(8),
+        width: 42,
+        height: 42,
         decoration: BoxDecoration(
           color: (hasAqiWarning ? aqiInfo.color : UIColors.primary).withOpacity(
             0.18,
           ),
           shape: BoxShape.circle,
         ),
-        child: AppIcon(
-          hasAqiWarning
-              ? Icons.warning_amber_rounded
-              : Icons.notifications_active_rounded,
-          color: hasAqiWarning ? aqiInfo.color : UIColors.primary,
-          size: 20,
+        child: Center(
+          child: AppIcon(
+            hasAqiWarning
+                ? Icons.warning_amber_rounded
+                : Icons.notifications_active_rounded,
+            color: hasAqiWarning ? aqiInfo.color : UIColors.primary,
+            size: 22,
+          ),
         ),
       ),
       bottomButtonText: 'Đã hiểu',
