@@ -35,7 +35,7 @@ class MapPollutionCubit extends Cubit<MapPollutionState> {
         stations: stations,
       ));
 
-      await loadUserGpsLocation(fallbackCoords: initialCoords);
+      await loadUserGpsLocation();
 
       if (initialCoords != null) {
         selectLocationCoordinates(
@@ -54,26 +54,43 @@ class MapPollutionCubit extends Cubit<MapPollutionState> {
     }
   }
 
-  void setUserGpsLocation(LatLng coords) {
-    if (state.userGpsLocation != coords) {
+  void setUserGpsLocation(LatLng? coords) {
+    if (coords == null) {
+      clearUserGpsLocation();
+    } else if (state.userGpsLocation != coords) {
       emit(state.copyWith(userGpsLocation: coords));
     }
   }
 
-  Future<void> loadUserGpsLocation({LatLng? fallbackCoords}) async {
-    if (fallbackCoords != null && state.userGpsLocation == null) {
-      emit(state.copyWith(userGpsLocation: fallbackCoords));
+  void clearUserGpsLocation() {
+    if (state.userGpsLocation != null) {
+      emit(state.copyWith(clearUserGpsLocation: true));
     }
-    if (locationService == null) return;
+  }
+
+  Future<void> loadUserGpsLocation({LatLng? fallbackCoords}) async {
+    if (locationService == null) {
+      emit(state.copyWith(clearUserGpsLocation: true));
+      return;
+    }
     try {
       final isGranted = await locationService!.checkPermissionGranted();
-      if (isGranted) {
-        final loc = await locationService!.getCurrentLocation();
-        if (!loc.isDefault) {
-          emit(state.copyWith(userGpsLocation: LatLng(loc.latitude, loc.longitude)));
-        }
+      if (!isGranted) {
+        emit(state.copyWith(clearUserGpsLocation: true));
+        return;
       }
-    } catch (_) {}
+      if (fallbackCoords != null && state.userGpsLocation == null) {
+        emit(state.copyWith(userGpsLocation: fallbackCoords));
+      }
+      final loc = await locationService!.getCurrentLocation();
+      if (!loc.isDefault && !loc.isPermissionDenied) {
+        emit(state.copyWith(userGpsLocation: LatLng(loc.latitude, loc.longitude)));
+      } else {
+        emit(state.copyWith(clearUserGpsLocation: true));
+      }
+    } catch (_) {
+      emit(state.copyWith(clearUserGpsLocation: true));
+    }
   }
 
   void selectStation(StationPollutionEntity station) {

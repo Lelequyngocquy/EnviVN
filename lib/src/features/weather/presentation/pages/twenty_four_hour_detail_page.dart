@@ -114,7 +114,8 @@ class TwentyFourHourDetailPage extends StatelessWidget {
                                     onTap: () =>
                                         _openCitySelector(context, homeState),
                                     child: AppGlass(
-                                      borderRadius: 14,
+                                      isFixed: true,
+                                      borderRadius: 18,
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 12,
                                         vertical: 8,

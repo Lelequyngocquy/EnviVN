@@ -54,7 +54,10 @@ class HomeHeaderWidget extends StatelessWidget {
                     onTap: onSelectCity,
                     borderRadius: BorderRadius.circular(12),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(12),
@@ -63,7 +66,9 @@ class HomeHeaderWidget extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           AppIcon(
-                            city.isGps ? Icons.my_location_rounded : Icons.location_on_rounded,
+                            city.isGps
+                                ? Icons.my_location_rounded
+                                : Icons.location_on_rounded,
                             color: Colors.white,
                             size: 18,
                           ),
@@ -76,7 +81,11 @@ class HomeHeaderWidget extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          const AppIcon(Icons.keyboard_arrow_down_rounded, color: Colors.white, size: 18),
+                          const AppIcon(
+                            Icons.keyboard_arrow_down_rounded,
+                            color: Colors.white,
+                            size: 18,
+                          ),
                         ],
                       ),
                     ),
@@ -85,7 +94,10 @@ class HomeHeaderWidget extends StatelessWidget {
                 const SizedBox(width: 8),
                 IconButton(
                   onPressed: onDetectGps,
-                  icon: const AppIcon(Icons.gps_fixed_rounded, color: Colors.white),
+                  icon: const AppIcon(
+                    Icons.gps_fixed_rounded,
+                    color: Colors.white,
+                  ),
                   tooltip: 'Định vị GPS của tôi',
                   style: IconButton.styleFrom(
                     backgroundColor: Colors.white.withOpacity(0.15),
@@ -160,7 +172,11 @@ class HomeHeaderWidget extends StatelessWidget {
             if (lastUpdated != null)
               Row(
                 children: [
-                  const AppIcon(Icons.access_time_rounded, size: 12, color: Colors.white60),
+                  const AppIcon(
+                    Icons.access_time_rounded,
+                    size: 12,
+                    color: Colors.white60,
+                  ),
                   const SizedBox(width: 4),
                   AppText.regular(
                     'Cập nhật: ${DateFormat('HH:mm - dd/MM/yyyy').format(lastUpdated!)}',
@@ -170,7 +186,10 @@ class HomeHeaderWidget extends StatelessWidget {
                   if (weather.isOfflineCache) ...[
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 1,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white24,
                         borderRadius: BorderRadius.circular(4),

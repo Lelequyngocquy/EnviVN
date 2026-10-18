@@ -43,14 +43,15 @@ class MapTopControlBar extends StatelessWidget {
     // Loại bỏ khỏi danh sách các chip nếu thành phố đó đã được ghim ở đầu
     final effectiveQuickCities = hasHome
         ? quickCities
-            .where((target) => !target.matchesPinnedLocation(homeCityName))
-            .toList()
+              .where((target) => !target.matchesPinnedLocation(homeCityName))
+              .toList()
         : quickCities;
 
     return Column(
       children: [
         // 1. Filter Glass Bar
         AppGlass(
+          isFixed: true,
           borderRadius: 22,
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Row(
@@ -121,7 +122,8 @@ class MapTopControlBar extends StatelessWidget {
             separatorBuilder: (_, index) => const SizedBox(width: 6),
             itemBuilder: (context, index) {
               if (hasHome && index == 0) {
-                final isHomeActive = isHomeSelected ||
+                final isHomeActive =
+                    isHomeSelected ||
                     (curCity.isNotEmpty &&
                         (curCity == homeCityName ||
                             curCity.contains(homeCityName!) ||
@@ -136,7 +138,8 @@ class MapTopControlBar extends StatelessWidget {
 
               final targetIndex = hasHome ? index - 1 : index;
               final target = effectiveQuickCities[targetIndex];
-              final isTargetActive = !isHomeSelected && target.isSelected(curCity);
+              final isTargetActive =
+                  !isHomeSelected && target.isSelected(curCity);
               return _QuickCityGlassChip(
                 label: target.label,
                 isActive: isTargetActive,

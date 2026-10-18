@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/activity_advice_helper.dart';
 import 'package:envivn/src/common/utils/aqi_helper.dart';
@@ -10,6 +11,7 @@ import 'package:envivn/src/core/infrastructure/configs/env_config.dart';
 import 'package:envivn/src/core/presentation/widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:envivn/src/core/infrastructure/datasources/local/local_storage.dart';
+import 'package:envivn/src/core/infrastructure/services/location_service.dart';
 import 'package:envivn/src/features/air_quality/domain/entities/air_quality_entity.dart';
 import 'package:envivn/src/features/home/domain/entities/city_entity.dart';
 import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_state.dart';
@@ -1167,7 +1169,282 @@ APP_DEBUG=false
         expect(customIcon.color, UIColors.aqiGood);
       },
     );
+
+    test(
+      'HomeDashboardCubit fallback to default Hanoi when location permission is denied and never sets Ho Chi Minh IP fallback',
+      () async {
+        SharedPreferences.setMockInitialValues({
+          'location_permission_granted': true,
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final storage = LocalStorage(prefs: prefs);
+
+        // Simulated scenario: User clicked "Don't allow" in OS permission dialog
+        final fakeLocationService = _FakeLocationService(
+          isGranted: false,
+          result: const LocationResult(
+            latitude: 21.0285,
+            longitude: 105.8542,
+            cityName: 'Hà Nội',
+            isDefault: true,
+            isPermissionDenied: true,
+            errorMessage: 'Quyền truy cập vị trí bị từ chối. Sử dụng vị trí mặc định (Hà Nội).',
+          ),
+        );
+
+        final fakeWeatherCubit = _FakeWeatherCubit();
+        final fakeAqiCubit = _FakeAirQualityCubit();
+
+        final cubit = HomeDashboardCubit(
+          storage: storage,
+          locationService: fakeLocationService,
+          weatherCubit: fakeWeatherCubit,
+          airQualityCubit: fakeAqiCubit,
+        );
+
+        // User taps "Vị trí hiện tại"
+        await cubit.detectGpsLocation();
+
+        // Must strictly set default Hanoi, not GPS city, not Ho Chi Minh
+        expect(cubit.state.currentCity, CityEntity.defaultCity);
+        expect(cubit.state.currentCity.name, 'Hà Nội');
+        expect(cubit.state.currentCity.isGps, isFalse);
+        expect(cubit.state.isLocationPermissionGranted, isFalse);
+        expect(storage.isLocationPermissionGranted(), isFalse);
+        expect(cubit.state.currentCity.name.contains('Ho Chi Minh'), isFalse);
+        expect(cubit.state.currentCity.name.contains('Hồ Chí Minh'), isFalse);
+
+        cubit.close();
+        fakeWeatherCubit.close();
+        fakeAqiCubit.close();
+      },
+    );
+
+    test(
+      'HomeDashboardCubit emits Quyền truy cập vị trí đang bị tắt toast and retains default Hanoi when location permission is initially off',
+      () async {
+        SharedPreferences.setMockInitialValues({});
+        final prefs = await SharedPreferences.getInstance();
+        final storage = LocalStorage(prefs: prefs);
+
+        final fakeLocationService = _FakeLocationService(
+          isGranted: false,
+          result: const LocationResult(
+            latitude: 21.0285,
+            longitude: 105.8542,
+            cityName: 'Hà Nội',
+            isDefault: true,
+            isPermissionDenied: true,
+          ),
+        );
+
+        final fakeWeatherCubit = _FakeWeatherCubit();
+        final fakeAqiCubit = _FakeAirQualityCubit();
+
+        final cubit = HomeDashboardCubit(
+          storage: storage,
+          locationService: fakeLocationService,
+          weatherCubit: fakeWeatherCubit,
+          airQualityCubit: fakeAqiCubit,
+        );
+
+        final notices = <String>[];
+        final sub = cubit.stream.listen((state) {
+          if (state.noticeMessage != null) {
+            notices.add(state.noticeMessage!);
+          }
+        });
+
+        await cubit.detectGpsLocation();
+
+        // Must emit toast notice informing user that location permission is off
+        expect(notices, contains('Quyền truy cập vị trí đang bị tắt'));
+        // Must emit exactly 1 notification, NOT 2 notifications!
+        expect(notices.length, 1);
+        // And when user denies, retain Hanoi as default
+        expect(cubit.state.currentCity, CityEntity.defaultCity);
+        expect(cubit.state.isLocationPermissionGranted, isFalse);
+
+        await sub.cancel();
+        cubit.close();
+        fakeWeatherCubit.close();
+        fakeAqiCubit.close();
+      },
+    );
+
+    test(
+      'HomeDashboardCubit resets GPS location to default Hanoi on init when phone permission was turned off',
+      () async {
+        SharedPreferences.setMockInitialValues({
+          'selected_city_name': 'Vị trí hiện tại (Đà Nẵng)',
+          'selected_city_lat': 16.0544,
+          'selected_city_lon': 108.2022,
+          'location_permission_granted': true,
+        });
+        final prefs = await SharedPreferences.getInstance();
+        final storage = LocalStorage(prefs: prefs);
+
+        // OS Permission is now FALSE (User turned off in phone settings)
+        final fakeLocationService = _FakeLocationService(
+          isGranted: false,
+          result: const LocationResult(
+            latitude: 21.0285,
+            longitude: 105.8542,
+            isDefault: true,
+            isPermissionDenied: true,
+          ),
+        );
+
+        final fakeWeatherCubit = _FakeWeatherCubit();
+        final fakeAqiCubit = _FakeAirQualityCubit();
+
+        final cubit = HomeDashboardCubit(
+          storage: storage,
+          locationService: fakeLocationService,
+          weatherCubit: fakeWeatherCubit,
+          airQualityCubit: fakeAqiCubit,
+        );
+
+        await cubit.initDashboard();
+
+        // Must reset from previous GPS city to Hanoi
+        expect(cubit.state.currentCity, CityEntity.defaultCity);
+        expect(cubit.state.currentCity.name, 'Hà Nội');
+        expect(cubit.state.currentCity.isGps, isFalse);
+        expect(cubit.state.isLocationPermissionGranted, isFalse);
+        expect(storage.isLocationPermissionGranted(), isFalse);
+
+        cubit.close();
+        fakeWeatherCubit.close();
+        fakeAqiCubit.close();
+      },
+    );
+
+    test(
+      'HomeDashboardCubit sets GPS city only when location permission is successfully granted',
+      () async {
+        SharedPreferences.setMockInitialValues({});
+        final prefs = await SharedPreferences.getInstance();
+        final storage = LocalStorage(prefs: prefs);
+
+        // Location permission GRANTED with coordinates in HCMC
+        final fakeLocationService = _FakeLocationService(
+          isGranted: true,
+          result: const LocationResult(
+            latitude: 10.8231,
+            longitude: 106.6297,
+            cityName: 'TP. Hồ Chí Minh',
+            isDefault: false,
+            isPermissionDenied: false,
+          ),
+        );
+
+        final fakeWeatherCubit = _FakeWeatherCubit();
+        final fakeAqiCubit = _FakeAirQualityCubit();
+
+        final cubit = HomeDashboardCubit(
+          storage: storage,
+          locationService: fakeLocationService,
+          weatherCubit: fakeWeatherCubit,
+          airQualityCubit: fakeAqiCubit,
+        );
+
+        await cubit.detectGpsLocation();
+
+        expect(cubit.state.currentCity.isGps, isTrue);
+        expect(cubit.state.currentCity.name, 'Vị trí hiện tại (TP. Hồ Chí Minh)');
+        expect(cubit.state.isLocationPermissionGranted, isTrue);
+        expect(storage.isLocationPermissionGranted(), isTrue);
+
+        cubit.close();
+        fakeWeatherCubit.close();
+        fakeAqiCubit.close();
+      },
+    );
+
+    test(
+      'MapPollutionCubit clearUserGpsLocation removes user GPS coordinates',
+      () {
+        final fakeRepo = _FakeMapPollutionRepository([]);
+        final cubit = MapPollutionCubit(repository: fakeRepo);
+
+        cubit.setUserGpsLocation(const LatLng(21.0285, 105.8542));
+        expect(cubit.state.userGpsLocation, isNotNull);
+
+        cubit.clearUserGpsLocation();
+        expect(cubit.state.userGpsLocation, isNull);
+
+        cubit.close();
+      },
+    );
+
+    test(
+      'MapPollutionCubit loadUserGpsLocation clears userGpsLocation when location permission is false',
+      () async {
+        final fakeRepo = _FakeMapPollutionRepository([]);
+        final fakeLocationService = _FakeLocationService(
+          isGranted: false,
+          result: const LocationResult(
+            latitude: 21.0285,
+            longitude: 105.8542,
+            isDefault: true,
+            isPermissionDenied: true,
+          ),
+        );
+        final cubit = MapPollutionCubit(
+          repository: fakeRepo,
+          locationService: fakeLocationService,
+        );
+
+        cubit.setUserGpsLocation(const LatLng(10.8231, 106.6297));
+        expect(cubit.state.userGpsLocation, isNotNull);
+
+        await cubit.loadUserGpsLocation();
+        expect(cubit.state.userGpsLocation, isNull);
+
+        cubit.close();
+      },
+    );
+
+    test(
+      'MapPollutionCubit loadUserGpsLocation sets userGpsLocation when location permission is true',
+      () async {
+        final fakeRepo = _FakeMapPollutionRepository([]);
+        final fakeLocationService = _FakeLocationService(
+          isGranted: true,
+          result: const LocationResult(
+            latitude: 10.8231,
+            longitude: 106.6297,
+            cityName: 'TP. Hồ Chí Minh',
+            isDefault: false,
+            isPermissionDenied: false,
+          ),
+        );
+        final cubit = MapPollutionCubit(
+          repository: fakeRepo,
+          locationService: fakeLocationService,
+        );
+
+        await cubit.loadUserGpsLocation();
+        expect(cubit.state.userGpsLocation, const LatLng(10.8231, 106.6297));
+
+        cubit.close();
+      },
+    );
   });
+}
+
+class _FakeLocationService extends LocationService {
+  final bool isGranted;
+  final LocationResult result;
+
+  _FakeLocationService({required this.isGranted, required this.result});
+
+  @override
+  Future<bool> checkPermissionGranted() async => isGranted;
+
+  @override
+  Future<LocationResult> getCurrentLocation({bool allowIpFallback = false}) async => result;
 }
 
 class _FakeMapPollutionRepository implements IMapPollutionRepository {

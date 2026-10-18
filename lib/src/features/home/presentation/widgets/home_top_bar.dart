@@ -52,10 +52,11 @@ class HomeTopBar extends StatelessWidget {
                     GestureDetector(
                       onTap: onLocationTap,
                       child: AppGlass(
+                        isFixed: true,
                         borderRadius: 20,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 12,
-                          vertical: 7,
+                          vertical: 8,
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -77,7 +78,7 @@ class HomeTopBar extends StatelessWidget {
                             const AppIcon(
                               Icons.keyboard_arrow_down_rounded,
                               color: UIColors.textSecondary,
-                              size: 18,
+                              size: 16,
                             ),
                           ],
                         ),
@@ -90,10 +91,11 @@ class HomeTopBar extends StatelessWidget {
                       GestureDetector(
                         onTap: onSelectCurrentLocation,
                         child: AppGlass(
+                          isFixed: true,
                           borderRadius: 20,
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 7,
+                            horizontal: 12,
+                            vertical: 8,
                           ),
                           border: Border.all(
                             color: UIColors.primary.withValues(alpha: 0.35),
@@ -105,7 +107,7 @@ class HomeTopBar extends StatelessWidget {
                               AppIcon(
                                 Icons.my_location_rounded,
                                 color: UIColors.primary,
-                                size: 14,
+                                size: 16,
                               ),
                               SizedBox(width: 4),
                               AppText.semiBold(
@@ -137,6 +139,7 @@ class HomeTopBar extends StatelessWidget {
         // Notification Bell in Liquid Glass Button
         AppGlass(
           borderRadius: 22,
+          isFixed: true,
           child: SizedBox(
             width: 44,
             height: 44,

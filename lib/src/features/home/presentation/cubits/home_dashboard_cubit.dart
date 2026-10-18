@@ -36,17 +36,26 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
       );
     }
 
-    final isGrantedInStorage = storage.isLocationPermissionGranted();
     final isGrantedInOs = await locationService.checkPermissionGranted();
-    final isGranted = isGrantedInStorage || isGrantedInOs;
-    if (isGranted && !isGrantedInStorage) {
+
+    // If permission was revoked in OS settings, sync storage to false
+    if (!isGrantedInOs && storage.isLocationPermissionGranted()) {
+      await storage.saveLocationPermission(false);
+    } else if (isGrantedInOs && !storage.isLocationPermissionGranted()) {
       await storage.saveLocationPermission(true);
+    }
+
+    // If previously saved city was a GPS location but OS permission is now revoked:
+    // Reset to default city Hà Nội!
+    if ((targetCity.isGps || targetCity.name.startsWith('Vị trí hiện tại')) && !isGrantedInOs) {
+      targetCity = CityEntity.defaultCity;
+      await storage.saveSelectedCity(targetCity.name, targetCity.latitude, targetCity.longitude);
     }
 
     emit(state.copyWith(
       currentCity: targetCity,
       lastUpdated: storage.getLastUpdateTime() ?? DateTime.now(),
-      isLocationPermissionGranted: isGranted,
+      isLocationPermissionGranted: isGrantedInOs,
     ));
 
     await _fetchDataForCity(targetCity);
@@ -66,40 +75,83 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
   }
 
   Future<void> detectGpsLocation() async {
+    final isGranted = await locationService.checkPermissionGranted();
+
     emit(state.copyWith(
       status: DashboardStatus.loading,
       isChangingLocation: true,
-      clearNotice: true,
+      noticeMessage: isGranted ? null : 'Quyền truy cập vị trí đang bị tắt',
+      clearNotice: isGranted,
     ));
 
     final locationResult = await locationService.getCurrentLocation();
-    final displayName = locationResult.cityName != null && locationResult.cityName!.isNotEmpty
-        ? 'Vị trí hiện tại (${locationResult.cityName})'
-        : 'Vị trí hiện tại';
+
+    // Check if permission was denied or GPS unavailable:
+    // Fallback strictly to default Hà Nội, never to IP or GPS city!
+    if (locationResult.isDefault || locationResult.isPermissionDenied) {
+      await storage.saveLocationPermission(false);
+
+      final defaultCity = CityEntity.defaultCity;
+      await storage.saveSelectedCity(defaultCity.name, defaultCity.latitude, defaultCity.longitude);
+
+      emit(state.copyWith(
+        currentCity: defaultCity,
+        isLocationPermissionGranted: false,
+        hasPendingMapSync: true,
+        clearNotice: true,
+      ));
+
+      await _fetchDataForCity(defaultCity);
+      return;
+    }
+
+    // GPS location succeeded
+    final nearestCity = _resolveNearestCityName(locationResult.latitude, locationResult.longitude);
+    final displayName = nearestCity.isNotEmpty
+        ? 'Vị trí hiện tại ($nearestCity)'
+        : (locationResult.cityName != null && locationResult.cityName!.isNotEmpty
+            ? 'Vị trí hiện tại (${locationResult.cityName})'
+            : 'Vị trí hiện tại');
 
     final gpsCity = CityEntity(
       name: displayName,
-      province: locationResult.isDefault ? 'Mặc định' : 'Định vị GPS',
+      province: 'Định vị GPS',
       latitude: locationResult.latitude,
       longitude: locationResult.longitude,
-      isGps: !locationResult.isDefault,
+      isGps: true,
     );
 
-    final isGpsSuccessful = !locationResult.isDefault;
-    if (isGpsSuccessful) {
-      await storage.saveLocationPermission(true);
-    }
+    await storage.saveLocationPermission(true);
+    await storage.saveSelectedCity(gpsCity.name, gpsCity.latitude, gpsCity.longitude);
 
     emit(state.copyWith(
       currentCity: gpsCity,
-      isLocationPermissionGranted:
-          isGpsSuccessful || storage.isLocationPermissionGranted(),
+      isLocationPermissionGranted: true,
       hasPendingMapSync: true,
-      noticeMessage: locationResult.errorMessage,
-      clearNotice: locationResult.errorMessage == null,
+      noticeMessage: null,
+      clearNotice: true,
     ));
 
     await _fetchDataForCity(gpsCity);
+  }
+
+  String _resolveNearestCityName(double lat, double lon) {
+    CityEntity? nearest;
+    double minDistanceSq = double.infinity;
+    for (final city in CityEntity.popularCities) {
+      final dLat = lat - city.latitude;
+      final dLon = lon - city.longitude;
+      final dSq = dLat * dLat + dLon * dLon;
+      if (dSq < minDistanceSq) {
+        minDistanceSq = dSq;
+        nearest = city;
+      }
+    }
+    // If within ~50km (0.45 degree squared is ~0.20)
+    if (nearest != null && minDistanceSq < 0.25) {
+      return nearest.name;
+    }
+    return '';
   }
 
   void clearNotice() {
@@ -150,14 +202,14 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
   }
 
   Future<void> checkLocationPermissionStatus() async {
-    final isGrantedInStorage = storage.isLocationPermissionGranted();
     final isGrantedInOs = await locationService.checkPermissionGranted();
-    final isGranted = isGrantedInStorage || isGrantedInOs;
-    if (isGranted != state.isLocationPermissionGranted) {
-      if (isGranted && !isGrantedInStorage) {
-        await storage.saveLocationPermission(true);
-      }
-      emit(state.copyWith(isLocationPermissionGranted: isGranted));
+    if (!isGrantedInOs && storage.isLocationPermissionGranted()) {
+      await storage.saveLocationPermission(false);
+    } else if (isGrantedInOs && !storage.isLocationPermissionGranted()) {
+      await storage.saveLocationPermission(true);
+    }
+    if (isGrantedInOs != state.isLocationPermissionGranted) {
+      emit(state.copyWith(isLocationPermissionGranted: isGrantedInOs));
     }
   }
 
@@ -183,9 +235,9 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
 
   Future<void> requestLocationPermission({void Function()? onCompleted}) async {
     await detectGpsLocation();
-    await storage.saveLocationPermission(true);
-    emit(state.copyWith(isLocationPermissionGranted: true));
-    setTab(0);
+    if (state.isLocationPermissionGranted) {
+      setTab(0);
+    }
     onCompleted?.call();
   }
 

@@ -39,16 +39,23 @@ class _PollutionMapPageState extends State<PollutionMapPage> {
       final homeCubit = context.read<HomeDashboardCubit>();
       final initialCity = homeCubit.state.currentCity;
 
-      if (initialCity.isGps) {
+      final isPermissionGranted = homeCubit.state.isLocationPermissionGranted;
+
+      if (isPermissionGranted && initialCity.isGps) {
         mapCubit.setUserGpsLocation(
           LatLng(initialCity.latitude, initialCity.longitude),
         );
+      } else {
+        mapCubit.clearUserGpsLocation();
       }
-      mapCubit.loadUserGpsLocation(
-        fallbackCoords: initialCity.isGps
-            ? LatLng(initialCity.latitude, initialCity.longitude)
-            : null,
-      );
+
+      if (isPermissionGranted) {
+        mapCubit.loadUserGpsLocation(
+          fallbackCoords: initialCity.isGps
+              ? LatLng(initialCity.latitude, initialCity.longitude)
+              : null,
+        );
+      }
 
       if (mapCubit.state.stations.isEmpty) {
         mapCubit
@@ -95,12 +102,17 @@ class _PollutionMapPageState extends State<PollutionMapPage> {
       listenWhen: (prev, curr) {
         final switchedToMap = prev.currentTab != 1 && curr.currentTab == 1;
         final cityChanged = prev.currentCity != curr.currentCity;
+        final permissionChanged =
+            prev.isLocationPermissionGranted != curr.isLocationPermissionGranted;
         return (switchedToMap && curr.hasPendingMapSync) ||
-            (curr.currentTab == 1 && cityChanged);
+            (curr.currentTab == 1 && (cityChanged || permissionChanged));
       },
       listener: (context, homeState) {
-        if (homeState.currentCity.isGps) {
-          context.read<MapPollutionCubit>().setUserGpsLocation(
+        final mapCubit = context.read<MapPollutionCubit>();
+        if (!homeState.isLocationPermissionGranted) {
+          mapCubit.clearUserGpsLocation();
+        } else if (homeState.currentCity.isGps) {
+          mapCubit.setUserGpsLocation(
             LatLng(homeState.currentCity.latitude, homeState.currentCity.longitude),
           );
         }
@@ -110,7 +122,10 @@ class _PollutionMapPageState extends State<PollutionMapPage> {
       child: Scaffold(
         backgroundColor: UIColors.bg,
         body: BlocBuilder<HomeDashboardCubit, HomeDashboardState>(
-          buildWhen: (prev, curr) => prev.currentCity != curr.currentCity,
+          buildWhen: (prev, curr) =>
+              prev.currentCity != curr.currentCity ||
+              prev.isLocationPermissionGranted !=
+                  curr.isLocationPermissionGranted,
           builder: (context, homeState) {
             return BlocConsumer<MapPollutionCubit, MapPollutionState>(
               listenWhen: (prev, curr) =>
@@ -131,11 +146,16 @@ class _PollutionMapPageState extends State<PollutionMapPage> {
 
                 final filteredStations = state.filteredStations;
 
-                // User GPS location (always available if state or home has it)
-                final userGps = state.userGpsLocation ??
-                    (homeState.currentCity.isGps
-                        ? LatLng(homeState.currentCity.latitude, homeState.currentCity.longitude)
-                        : null);
+                // User GPS location (ONLY show if location permission is granted)
+                final isPermissionGranted =
+                    homeState.isLocationPermissionGranted;
+                final userGps = isPermissionGranted
+                    ? (state.userGpsLocation ??
+                        (homeState.currentCity.isGps
+                            ? LatLng(homeState.currentCity.latitude,
+                                homeState.currentCity.longitude)
+                            : null))
+                    : null;
 
                 // Heatmap & GPS Accuracy Halo Circles
                 final circles = <CircleMarker>[];
