@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
+import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
 class LiquidGlassBottomBar extends StatelessWidget {
   final int currentTab;
   final void Function(int index) onTabSelected;
+  final VoidCallback? onAdvisorTap;
 
   const LiquidGlassBottomBar({
     super.key,
     required this.currentTab,
     required this.onTabSelected,
+    this.onAdvisorTap,
   });
 
   @override
@@ -32,14 +36,14 @@ class LiquidGlassBottomBar extends StatelessWidget {
                   onTap: () => onTabSelected(0),
                 ),
                 NavBarItem(
-                  icon: Icons.map_outlined,
-                  label: 'Bản đồ',
+                  icon: Icons.bar_chart_rounded,
+                  label: 'Chi Tiết',
                   isActive: currentTab == 1,
                   onTap: () => onTabSelected(1),
                 ),
                 NavBarItem(
-                  icon: Icons.bar_chart_rounded,
-                  label: '24 Giờ',
+                  icon: Icons.map_outlined,
+                  label: 'Bản đồ',
                   isActive: currentTab == 2,
                   onTap: () => onTabSelected(2),
                 ),
@@ -53,11 +57,17 @@ class LiquidGlassBottomBar extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 8,)
-        ,AppGlass( isFixed: true,
-            borderRadius: 100,
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            child: NavBarItem(icon: Icons.message_outlined, label: 'Trợ lý', isActive: false, onTap: (){},),),
+        const SizedBox(width: 8),
+        AppGlass(
+          isFixed: true,
+          borderRadius: 100,
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: NavBarItem(
+            icon: Icons.lightbulb,
+            isActive: true,
+            onTap: onAdvisorTap ?? () {},
+          ),
+        ),
       ],
     );
   }
@@ -65,14 +75,14 @@ class LiquidGlassBottomBar extends StatelessWidget {
 
 class NavBarItem extends StatelessWidget {
   final IconData icon;
-  final String label;
+  final String? label;
   final bool isActive;
   final VoidCallback onTap;
 
   const NavBarItem({
     super.key,
     required this.icon,
-    required this.label,
+    this.label,
     required this.isActive,
     required this.onTap,
   });
@@ -83,24 +93,26 @@ class NavBarItem extends StatelessWidget {
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+        padding: label != null
+            ? const EdgeInsets.symmetric(horizontal: 12, vertical: 4)
+            : const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
+            AppIcon(
               icon,
               color: isActive ? UIColors.primary : UIColors.textMuted,
-              size: 22,
+              size: label != null ? 22 : 40,
             ),
-            const SizedBox(height: 3),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 10,
+            if (label != null) ...{
+              const SizedBox(height: 3),
+              AppText(
+                label ?? '',
+                size: 10,
                 fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
-                color: isActive ? UIColors.primary : UIColors.textMuted ,
+                color: isActive ? UIColors.primary : UIColors.primaryDark,
               ),
-            ),
+            },
           ],
         ),
       ),

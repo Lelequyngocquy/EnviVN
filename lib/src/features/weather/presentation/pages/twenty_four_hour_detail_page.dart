@@ -3,10 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/aqi_helper.dart';
+import 'package:envivn/src/core/presentation/widgets/widgets.dart';
 import 'package:envivn/src/common/utils/date_helper.dart';
 import 'package:envivn/src/common/utils/weather_code_helper.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_cubit.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_state.dart';
+import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
+import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_state.dart';
+import 'package:envivn/src/features/home/presentation/widgets/city_selector_sheet.dart';
 import 'package:envivn/src/features/weather/presentation/cubits/weather_cubit.dart';
 import 'package:envivn/src/features/weather/presentation/cubits/weather_state.dart';
 import 'package:envivn/src/features/weather/presentation/widgets/aqi_24h_chart_card.dart';
@@ -19,15 +23,25 @@ import 'package:envivn/src/features/weather/presentation/widgets/twenty_four_hou
 import 'package:envivn/src/features/weather/presentation/widgets/weather_hero_detail_card.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
-class TwentyFourHourDetailPage extends StatefulWidget {
+class TwentyFourHourDetailPage extends StatelessWidget {
   const TwentyFourHourDetailPage({super.key});
 
-  @override
-  State<TwentyFourHourDetailPage> createState() => _TwentyFourHourDetailPageState();
-}
-
-class _TwentyFourHourDetailPageState extends State<TwentyFourHourDetailPage> {
-  DetailTab _activeTab = DetailTab.all;
+  void _openCitySelector(BuildContext context, HomeDashboardState state) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => CitySelectorSheet(
+        currentCity: state.currentCity,
+        onCitySelected: (city) {
+          context.read<HomeDashboardCubit>().changeCity(city);
+        },
+        onSelectGps: () {
+          context.read<HomeDashboardCubit>().detectGpsLocation();
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +57,9 @@ class _TwentyFourHourDetailPageState extends State<TwentyFourHourDetailPage> {
               builder: (context, weatherState) {
                 final aqi = aqiState.airQuality;
                 final weather = weatherState.weather;
-                final weatherInfo = WeatherCodeHelper.getInfo(weather.weatherCode);
+                final weatherInfo = WeatherCodeHelper.getInfo(
+                  weather.weatherCode,
+                );
                 final aqiInfo = AQIHelper.getAQIInfo(aqi.usAqi);
 
                 return Column(
@@ -68,44 +84,73 @@ class _TwentyFourHourDetailPageState extends State<TwentyFourHourDetailPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'Chi tiết 24 giờ',
-                                    style: TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const AppText.bold(
+                                      'Chi tiết 24 giờ',
+                                      size: 22,
                                       color: UIColors.textPrimary,
                                     ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    dateStr,
-                                    style: const TextStyle(
-                                      fontSize: 12,
+                                    const SizedBox(height: 2),
+                                    AppText.regular(
+                                      dateStr,
+                                      size: 12,
                                       color: UIColors.textSecondary,
                                     ),
-                                  ),
-                                ],
-                              ),
-                              AppGlass(
-                                borderRadius: 14,
-                                padding: const EdgeInsets.all(10),
-                                child: const Icon(
-                                  Icons.insights_rounded,
-                                  color: UIColors.primary,
-                                  size: 20,
+                                  ],
                                 ),
+                              ),
+                              const SizedBox(width: 8),
+                              BlocBuilder<
+                                HomeDashboardCubit,
+                                HomeDashboardState
+                              >(
+                                buildWhen: (prev, curr) =>
+                                    prev.currentCity != curr.currentCity,
+                                builder: (context, homeState) {
+                                  return GestureDetector(
+                                    onTap: () =>
+                                        _openCitySelector(context, homeState),
+                                    child: AppGlass(
+                                      isFixed: true,
+                                      borderRadius: 18,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 8,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          AppText.semiBold(
+                                            homeState.currentCity.name,
+                                            size: 13,
+                                            color: UIColors.primaryDark,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          const AppIcon(
+                                            Icons.keyboard_arrow_down_rounded,
+                                            color: Colors.grey,
+                                            size: 18,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
                             ],
                           ),
                           const SizedBox(height: 12),
 
-                          // Segmented Filter Pills
+                          // Segmented Filter Pills (State managed via WeatherCubit)
                           DetailSegmentedFilter(
-                            activeTab: _activeTab,
-                            onTabChanged: (tab) => setState(() => _activeTab = tab),
+                            activeTab: weatherState.activeDetailTab,
+                            onTabChanged: (tab) =>
+                                context.read<WeatherCubit>().setDetailTab(tab),
                           ),
                         ],
                       ),
@@ -122,8 +167,8 @@ class _TwentyFourHourDetailPageState extends State<TwentyFourHourDetailPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // 3. WEATHER SECTION (Visible if 'all' or 'weather')
-                              if (_activeTab == DetailTab.all || _activeTab == DetailTab.weather) ...[
+                              // 3. WEATHER SECTION (Controlled by WeatherState getter)
+                              if (weatherState.showWeatherSection) ...[
                                 _buildSectionHeader(
                                   title: 'DỰ BÁO THỜI TIẾT 24 GIỜ TỚI',
                                   icon: Icons.wb_sunny_rounded,
@@ -134,18 +179,24 @@ class _TwentyFourHourDetailPageState extends State<TwentyFourHourDetailPage> {
                                 const SizedBox(height: 12),
                                 WeatherHeroDetailCard(weather: weather),
                                 const SizedBox(height: 16),
-                                TwentyFourHourTempChart(hourlyList: weather.hourlyForecast),
+                                TwentyFourHourTempChart(
+                                  hourlyList: weather.hourlyForecast,
+                                ),
                                 const SizedBox(height: 16),
-                                HourlyWeatherSlider(hourlyList: weather.hourlyForecast),
+                                HourlyWeatherSlider(
+                                  hourlyList: weather.hourlyForecast,
+                                ),
                                 const SizedBox(height: 16),
                                 if (weather.dailyForecast.isNotEmpty) ...[
-                                  SevenDayForecastCard(dailyForecast: weather.dailyForecast),
+                                  SevenDayForecastCard(
+                                    dailyForecast: weather.dailyForecast,
+                                  ),
                                   const SizedBox(height: 18),
                                 ],
                               ],
 
-                              // 4. AIR QUALITY SECTION (Visible if 'all' or 'airQuality')
-                              if (_activeTab == DetailTab.all || _activeTab == DetailTab.airQuality) ...[
+                              // 4. AIR QUALITY SECTION (Controlled by WeatherState getter)
+                              if (weatherState.showAirQualitySection) ...[
                                 _buildSectionHeader(
                                   title: 'CHẤT LƯỢNG KHÔNG KHÍ & BỤI MỊN',
                                   icon: Icons.air_rounded,
@@ -185,37 +236,26 @@ class _TwentyFourHourDetailPageState extends State<TwentyFourHourDetailPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            Icon(icon, size: 16, color: iconColor),
-            const SizedBox(width: 6),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.8,
-                color: UIColors.textSecondary,
+        Expanded(
+          child: Row(
+            children: [
+              AppIcon(icon, size: 16, color: iconColor),
+              const SizedBox(width: 6),
+              Expanded(
+                child: AppText.bold(
+                  title,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  size: 11,
+                  letterSpacing: 0.8,
+                  color: UIColors.textSecondary,
+                ),
               ),
-            ),
-          ],
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-          decoration: BoxDecoration(
-            color: tagColor.withOpacity(0.15),
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: tagColor.withOpacity(0.4), width: 0.8),
-          ),
-          child: Text(
-            tag,
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-              color: tagColor,
-            ),
+            ],
           ),
         ),
+        const SizedBox(width: 8),
+        AppStatusTag(label: tag, color: tagColor, size: AppTagSize.small),
       ],
     );
   }

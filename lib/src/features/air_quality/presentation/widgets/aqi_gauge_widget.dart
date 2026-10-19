@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../common/constants/colors.dart';
 import '../../../../common/utils/aqi_helper.dart';
+import '../../../../core/presentation/widgets/widgets.dart';
 
 class AQIGaugeWidget extends StatefulWidget {
   final int aqi;
@@ -80,42 +81,35 @@ class _AQIGaugeWidgetState extends State<AQIGaugeWidget>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: info.color.withOpacity(0.15),
-                          shape: BoxShape.circle,
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: info.color.withOpacity(0.15),
+                            shape: BoxShape.circle,
+                          ),
+                          child: AppIcon(Icons.eco_rounded, color: info.color, size: 20),
                         ),
-                        child: Icon(Icons.eco_rounded, color: info.color, size: 20),
-                      ),
-                      const SizedBox(width: 8),
-                      const Text(
-                        'Chỉ số AQI (US)',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold,
-                          color: UIColors.textPrimary,
+                        const SizedBox(width: 8),
+                        const Expanded(
+                          child: AppText.bold(
+                            'Chỉ số AQI (US)',
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                            size: 15,
+                            color: UIColors.textPrimary,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: info.color.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: info.color.withOpacity(0.3)),
-                    ),
-                    child: Text(
-                      info.label,
-                      style: TextStyle(
-                        color: info.color,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
-                    ),
+                  const SizedBox(width: 8),
+                  AppStatusTag(
+                    label: info.label,
+                    color: info.color,
+                    size: AppTagSize.medium,
                   ),
                 ],
               ),
@@ -134,24 +128,18 @@ class _AQIGaugeWidgetState extends State<AQIGaugeWidget>
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
+                          AppText.extraBold(
                             '$animatedAqi',
-                            style: TextStyle(
-                              fontSize: 52,
-                              fontWeight: FontWeight.w800,
-                              color: info.color,
-                              height: 1.0,
-                            ),
+                            size: 52,
+                            color: info.color,
+                            height: 1.0,
                           ),
                           const SizedBox(height: 4),
-                          Text(
+                          const AppText.semiBold(
                             'US AQI',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: UIColors.textLight,
-                              letterSpacing: 1.2,
-                            ),
+                            size: 12,
+                            color: UIColors.textLight,
+                            letterSpacing: 1.2,
                           ),
                         ],
                       ),
@@ -160,14 +148,11 @@ class _AQIGaugeWidgetState extends State<AQIGaugeWidget>
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
+              AppText.medium(
                 info.description,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 13,
-                  color: UIColors.textSecondary,
-                  fontWeight: FontWeight.w500,
-                ),
+                size: 13,
+                color: UIColors.textSecondary,
               ),
             ],
           ),

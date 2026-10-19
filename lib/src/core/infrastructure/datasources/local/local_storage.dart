@@ -10,6 +10,7 @@ class LocalStorage {
   static const String _keyCachedAQI = 'cached_aqi_data';
   static const String _keySelectedCity = 'selected_city';
   static const String _keyLastUpdate = 'last_update_timestamp';
+  static const String _keyLocationPermission = 'location_permission_granted';
 
   Future<void> saveCachedWeather(Map<String, dynamic> data) async {
     await prefs.setString(_keyCachedWeather, jsonEncode(data));
@@ -67,6 +68,14 @@ class LocalStorage {
     final millis = prefs.getInt(_keyLastUpdate);
     if (millis == null) return null;
     return DateTime.fromMillisecondsSinceEpoch(millis);
+  }
+
+  Future<void> saveLocationPermission(bool isGranted) async {
+    await prefs.setBool(_keyLocationPermission, isGranted);
+  }
+
+  bool isLocationPermissionGranted() {
+    return prefs.getBool(_keyLocationPermission) ?? false;
   }
 
   Future<void> clearAll() async {

@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../features/advisor/presentation/cubits/advisor_cubit.dart';
 import '../../features/air_quality/domain/interfaces/i_air_quality_repository.dart';
 import '../../features/air_quality/infrastructure/repositories/air_quality_repository.dart';
 import '../../features/air_quality/presentation/cubits/air_quality_cubit.dart';
@@ -73,6 +74,7 @@ Future<void> setupGetIt() async {
     () => MapPollutionCubit(
       repository: sl<IMapPollutionRepository>(),
       weatherRepository: sl<IWeatherRepository>(),
+      locationService: sl<LocationService>(),
     ),
   );
 
@@ -85,4 +87,7 @@ Future<void> setupGetIt() async {
       airQualityCubit: sl<AirQualityCubit>(),
     ),
   );
+
+  //! 7. Feature: Smart Advisor
+  sl.registerFactory<AdvisorCubit>(() => AdvisorCubit());
 }

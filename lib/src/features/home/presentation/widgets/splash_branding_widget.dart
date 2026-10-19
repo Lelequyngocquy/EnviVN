@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/constants/strings.dart';
+import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 
 class SplashBrandingWidget extends StatelessWidget {
   const SplashBrandingWidget({super.key});
@@ -15,44 +16,33 @@ class SplashBrandingWidget extends StatelessWidget {
           width: 96,
           height: 96,
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [UIColors.primary, Color(0xFF10B981)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            shape: BoxShape.circle,
+            borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: UIColors.primary.withOpacity(0.4),
+                color: UIColors.primary.withOpacity(0.35),
                 blurRadius: 30,
                 offset: const Offset(0, 10),
               ),
             ],
           ),
-          child: const Icon(
-            Icons.eco_rounded,
-            size: 52,
-            color: Color(0xFF0B1220),
+          clipBehavior: Clip.antiAlias,
+          child: Image.asset(
+            'assets/images/png/app_logo/envivn_logo.png',
+            fit: BoxFit.cover,
           ),
         ),
         const SizedBox(height: 24),
-        const Text(
+        const AppText.extraBold(
           AppStrings.appName,
-          style: TextStyle(
-            fontSize: 34,
-            fontWeight: FontWeight.w800,
-            color: Colors.white,
-            letterSpacing: 2.0,
-          ),
+          size: 34,
+          color: Colors.white,
+          letterSpacing: 2.0,
         ),
         const SizedBox(height: 6),
-        const Text(
+        const AppText.medium(
           AppStrings.appSlogan,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w500,
-            color: UIColors.textSecondary,
-          ),
+          size: 13,
+          color: UIColors.textSecondary,
         ),
         const SizedBox(height: 36),
         const SizedBox(

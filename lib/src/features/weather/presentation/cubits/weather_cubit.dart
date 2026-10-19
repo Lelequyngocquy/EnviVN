@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/interfaces/i_weather_repository.dart';
+import '../widgets/detail_segmented_filter.dart';
 import 'weather_state.dart';
 
 class WeatherCubit extends Cubit<WeatherState> {
@@ -14,6 +15,12 @@ class WeatherCubit extends Cubit<WeatherState> {
         weather: cached,
         noticeMessage: 'Dữ liệu đã lưu ngoại tuyến',
       ));
+    }
+  }
+
+  void setDetailTab(DetailTab tab) {
+    if (state.activeDetailTab != tab) {
+      emit(state.copyWith(activeDetailTab: tab));
     }
   }
 

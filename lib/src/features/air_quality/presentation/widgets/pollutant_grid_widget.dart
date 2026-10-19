@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../common/constants/colors.dart';
+import '../../../../core/presentation/widgets/widgets.dart';
 import '../../domain/entities/air_quality_entity.dart';
 
 class PollutantGridWidget extends StatelessWidget {
@@ -21,15 +22,13 @@ class PollutantGridWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            children: [
-              const Icon(Icons.grain_rounded, color: UIColors.primary, size: 20),
-              const SizedBox(width: 8),
-              Text(
+            children: const [
+              AppIcon(Icons.grain_rounded, color: UIColors.primary, size: 20),
+              SizedBox(width: 8),
+              AppText.bold(
                 'Nồng độ các chất ô nhiễm',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: UIColors.textPrimary,
-                    ),
+                size: 14,
+                color: UIColors.textPrimary,
               ),
             ],
           ),
@@ -113,29 +112,21 @@ class _PollutantItem extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
+          AppText.semiBold(
             name,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: isWarning ? Colors.red.shade800 : UIColors.textSecondary,
-            ),
+            size: 11,
+            color: isWarning ? Colors.red.shade800 : UIColors.textSecondary,
           ),
           const SizedBox(height: 4),
-          Text(
+          AppText.bold(
             value,
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-              color: isWarning ? Colors.red.shade900 : UIColors.textPrimary,
-            ),
+            size: 15,
+            color: isWarning ? Colors.red.shade900 : UIColors.textPrimary,
           ),
-          Text(
+          AppText.regular(
             unit,
-            style: TextStyle(
-              fontSize: 9,
-              color: isWarning ? Colors.red.shade700 : UIColors.textLight,
-            ),
+            size: 9,
+            color: isWarning ? Colors.red.shade700 : UIColors.textLight,
           ),
         ],
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../common/constants/colors.dart';
-import '../../../../common/utils/aqi_helper.dart';
+import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/common/utils/aqi_helper.dart';
+import 'package:envivn/src/core/presentation/widgets/widgets.dart';
 import '../../domain/entities/station_pollution_entity.dart';
 
 class StationDetailSheet extends StatelessWidget {
@@ -12,71 +13,22 @@ class StationDetailSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final info = AQIHelper.getAQIInfo(station.aqi);
 
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+    return AppBottomSheet(
+      title: station.name,
+      subtitle: 'Khu vực: ${station.province}',
+      trailing: AppStatusTag(
+        label: info.label,
+        color: info.color,
+        size: AppTagSize.large,
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: UIColors.border,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    station.name,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: UIColors.textPrimary,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'Khu vực: ${station.province}',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: UIColors.textSecondary,
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: info.color.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: info.color.withOpacity(0.3)),
-                ),
-                child: Text(
-                  info.label,
-                  style: TextStyle(
-                    color: info.color,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Row(
+      bottomButtonText: 'Đóng',
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
             children: [
               Container(
                 padding: const EdgeInsets.all(16),
@@ -86,23 +38,17 @@ class StationDetailSheet extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
-                    Text(
+                    AppText.extraBold(
                       '${station.aqi}',
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.w800,
-                        color: info.color,
-                        height: 1.0,
-                      ),
+                      size: 36,
+                      color: info.color,
+                      height: 1.0,
                     ),
                     const SizedBox(height: 4),
-                    const Text(
+                    const AppText.semiBold(
                       'US AQI',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: UIColors.textLight,
-                      ),
+                      size: 11,
+                      color: UIColors.textLight,
                     ),
                   ],
                 ),
@@ -137,42 +83,24 @@ class StationDetailSheet extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
+                AppIcon(
                   info.wearMask ? Icons.masks_rounded : Icons.check_circle_rounded,
                   color: info.color,
                   size: 20,
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text(
+                  child: AppText.medium(
                     info.healthAdvice,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: UIColors.textPrimary,
-                      fontWeight: FontWeight.w500,
-                    ),
+                    size: 12,
+                    color: UIColors.textPrimary,
                   ),
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 20),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: UIColors.primary,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text('Đóng'),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -194,17 +122,15 @@ class _MetricRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
+        AppText.regular(
           label,
-          style: const TextStyle(fontSize: 13, color: UIColors.textSecondary),
+          size: 13,
+          color: UIColors.textSecondary,
         ),
-        Text(
+        AppText.bold(
           value,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: isHigh ? UIColors.error : UIColors.textPrimary,
-          ),
+          size: 14,
+          color: isHigh ? UIColors.error : UIColors.textPrimary,
         ),
       ],
     );

@@ -5,6 +5,7 @@ import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/extensions/context_x.dart';
 import 'package:envivn/src/common/utils/date_helper.dart';
 import 'package:envivn/src/core/presentation/widgets/loading.dart';
+import 'package:envivn/src/features/home/presentation/widgets/environmental_notification_sheet.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_cubit.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_state.dart';
 import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
@@ -14,7 +15,6 @@ import 'package:envivn/src/features/home/presentation/widgets/hero_aqi_card.dart
 import 'package:envivn/src/features/home/presentation/widgets/home_top_bar.dart';
 import 'package:envivn/src/features/home/presentation/widgets/home_weather_card.dart';
 import 'package:envivn/src/features/home/presentation/widgets/map_shortcut_card.dart';
-import 'package:envivn/src/features/home/presentation/widgets/outdoor_activity_advice_card.dart';
 import 'package:envivn/src/features/weather/presentation/cubits/weather_cubit.dart';
 import 'package:envivn/src/features/weather/presentation/cubits/weather_state.dart';
 
@@ -26,6 +26,7 @@ class HomeDashboardView extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withOpacity(0.65),
       builder: (_) => CitySelectorSheet(
         currentCity: state.currentCity,
         onCitySelected: (city) {
@@ -86,7 +87,8 @@ class HomeDashboardView extends StatelessWidget {
           bottom: false,
           child: BlocConsumer<HomeDashboardCubit, HomeDashboardState>(
             listener: (context, state) {
-              if (state.noticeMessage != null && state.noticeMessage!.isNotEmpty) {
+              if (state.noticeMessage != null &&
+                  state.noticeMessage!.isNotEmpty) {
                 context.showSnackBar(state.noticeMessage!);
                 context.read<HomeDashboardCubit>().clearNotice();
               }
@@ -96,11 +98,14 @@ class HomeDashboardView extends StatelessWidget {
                 builder: (context, weatherState) {
                   return BlocBuilder<AirQualityCubit, AirQualityState>(
                     builder: (context, aqiState) {
-                      final isInitialLoading = dashState.status == DashboardStatus.loading &&
-                          weatherState.weather.hourlyForecast.isEmpty;
+                      final isInitialLoading = dashState.isInitialLoading(
+                        weatherState.weather.hourlyForecast.length,
+                      );
 
                       if (isInitialLoading) {
-                        return const LoadingWidget(message: 'Đang tải dữ liệu môi trường...');
+                        return const LoadingWidget(
+                          message: 'Đang tải dữ liệu môi trường...',
+                        );
                       }
 
                       return Column(
@@ -122,10 +127,21 @@ class HomeDashboardView extends StatelessWidget {
                               cityName: dashState.currentCity.name,
                               isGps: dashState.currentCity.isGps,
                               dateText: dateStr,
-                              onLocationTap: () => _openCitySelector(context, dashState),
-                              onNotificationTap: () {
-                                context.showSnackBar('Chất lượng không khí đang ổn định.');
+                              hasNotification: dashState.hasNotification,
+                              onLocationTap: () =>
+                                  _openCitySelector(context, dashState),
+                              onSelectCurrentLocation: () {
+                                context
+                                    .read<HomeDashboardCubit>()
+                                    .detectGpsLocation();
                               },
+                              onNotificationTap: () =>
+                                  EnvironmentalNotificationSheet.show(
+                                    context,
+                                    cityName: dashState.currentCity.name,
+                                    airQuality: aqiState.airQuality,
+                                    weather: weatherState.weather,
+                                  ),
                             ),
                           ),
 
@@ -134,22 +150,30 @@ class HomeDashboardView extends StatelessWidget {
                             child: RefreshIndicator(
                               color: UIColors.primary,
                               backgroundColor: UIColors.cardBg,
-                              onRefresh: () => context.read<HomeDashboardCubit>().refresh(),
+                              onRefresh: () =>
+                                  context.read<HomeDashboardCubit>().refresh(),
                               child: ClipRect(
                                 child: SingleChildScrollView(
                                   physics: const AlwaysScrollableScrollPhysics(
                                     parent: ClampingScrollPhysics(),
                                   ),
-                                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
+                                  padding: const EdgeInsets.fromLTRB(
+                                    16,
+                                    16,
+                                    16,
+                                    120,
+                                  ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-
                                       // 1. Weather Overview Liquid Glass Card (Mưa gió giông bão nắng mây, dự báo giờ & chỉ số)
                                       HomeWeatherCard(
                                         weather: weatherState.weather,
                                         onDetailTap: () {
-                                          context.read<HomeDashboardCubit>().setTab(2);
+                                          context
+                                              .read<HomeDashboardCubit>()
+                                              .setTab(1);
                                         },
                                       ),
                                       const SizedBox(height: 16),
@@ -157,23 +181,20 @@ class HomeDashboardView extends StatelessWidget {
                                       HeroAQICard(
                                         airQuality: aqiState.airQuality,
                                         onDetailTap: () {
-                                          context.read<HomeDashboardCubit>().setTab(2);
+                                          context
+                                              .read<HomeDashboardCubit>()
+                                              .setTab(1);
                                         },
                                       ),
                                       const SizedBox(height: 16),
 
-
-                                      // 3. Outdoor Sports & Activity Advice Card
-                                      OutdoorActivityAdviceCard(
-                                        airQuality: aqiState.airQuality,
-                                        weather: weatherState.weather,
-                                      ),
-                                      const SizedBox(height: 16),
-
-                                      // 4. Map Shortcut Card
+                                      // 3. Map Shortcut Card
                                       MapShortcutCard(
                                         onTap: () {
-                                          context.read<HomeDashboardCubit>().setTab(1);
+                                          final cubit = context
+                                              .read<HomeDashboardCubit>();
+                                          cubit.markPendingMapSync();
+                                          cubit.setTab(2);
                                         },
                                       ),
                                     ],

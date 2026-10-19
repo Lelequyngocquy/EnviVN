@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/date_helper.dart';
 import 'package:envivn/src/common/utils/weather_code_helper.dart';
+import 'package:envivn/src/core/presentation/widgets/widgets.dart';
 import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
@@ -28,16 +29,13 @@ class SevenDayForecastCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: const [
-              Text(
+              AppText.bold(
                 'DỰ BÁO THỜI TIẾT 7 NGÀY TỚI',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 0.8,
-                  color: UIColors.textSecondary,
-                ),
+                size: 11,
+                letterSpacing: 0.8,
+                color: UIColors.textSecondary,
               ),
-              Icon(Icons.calendar_month_rounded, size: 16, color: UIColors.textSecondary),
+              AppIcon(Icons.calendar_month_rounded, size: 16, color: UIColors.textSecondary),
             ],
           ),
           const SizedBox(height: 14),
@@ -52,27 +50,26 @@ class SevenDayForecastCard extends StatelessWidget {
             itemBuilder: (context, index) {
               final day = days[index];
               final dayName = DateHelper.formatWeekday(day.date);
-              final info = WeatherCodeHelper.getInfo(day.weatherCode);
+              final info = WeatherCodeHelper.getInfo(day.weatherCode, isDay: true);
 
               return Row(
                 children: [
                   SizedBox(
                     width: 78,
-                    child: Text(
+                    child: AppText(
                       dayName,
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: index == 0 ? FontWeight.bold : FontWeight.w500,
-                        color: index == 0 ? Colors.white : UIColors.textSecondary,
-                      ),
+                      size: 13,
+                      fontWeight: index == 0 ? FontWeight.bold : FontWeight.w500,
+                      color: index == 0 ? Colors.white : UIColors.textSecondary,
                     ),
                   ),
-                  Icon(info.icon, size: 18, color: info.color),
+                  AppIcon(info.icon, size: 18, color: info.color),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(
+                    child: AppText.regular(
                       info.shortLabel,
-                      style: const TextStyle(fontSize: 12, color: Colors.white70),
+                      size: 12,
+                      color: Colors.white70,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -84,22 +81,16 @@ class SevenDayForecastCard extends StatelessWidget {
                         color: UIColors.secondary.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: Text(
+                      child: AppText.semiBold(
                         '💧 ${day.precipitationSum.toStringAsFixed(1)}mm',
-                        style: const TextStyle(
-                          fontSize: 10,
-                          color: UIColors.secondary,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        size: 10,
+                        color: UIColors.secondary,
                       ),
                     ),
-                  Text(
+                  AppText.bold(
                     '${day.minTemp.toStringAsFixed(0)}° / ${day.maxTemp.toStringAsFixed(0)}°',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                    size: 12,
+                    color: Colors.white,
                   ),
                 ],
               );

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:latlong2/latlong.dart';
+import '../../domain/entities/quick_city_target.dart';
 import '../../domain/entities/station_pollution_entity.dart';
 
 enum MapPollutionStatus { initial, loading, success, failure }
@@ -11,9 +12,12 @@ class MapPollutionState extends Equatable {
   final LatLng? targetLocation;
   final double? targetZoom;
   final String? selectedCityName;
-  final String activeFilter; // 'all', 'good', 'warning'
+  final String activeFilter; // 'all', 'good', 'moderate', 'unhealthy' (hoặc 'warning')
   final bool showHeatmap;
   final String? errorMessage;
+  final List<QuickCityTarget> quickCities;
+  final bool isHomeSelected;
+  final LatLng? userGpsLocation;
 
   const MapPollutionState({
     this.status = MapPollutionStatus.initial,
@@ -25,7 +29,23 @@ class MapPollutionState extends Equatable {
     this.activeFilter = 'all',
     this.showHeatmap = true,
     this.errorMessage,
+    this.quickCities = QuickCityTarget.values,
+    this.isHomeSelected = false,
+    this.userGpsLocation,
   });
+
+  List<StationPollutionEntity> get filteredStations {
+    if (activeFilter == 'good') {
+      return stations.where((st) => st.aqi <= 50).toList();
+    }
+    if (activeFilter == 'moderate') {
+      return stations.where((st) => st.aqi > 50 && st.aqi <= 100).toList();
+    }
+    if (activeFilter == 'unhealthy' || activeFilter == 'warning') {
+      return stations.where((st) => st.aqi > 100).toList();
+    }
+    return stations;
+  }
 
   MapPollutionState copyWith({
     MapPollutionStatus? status,
@@ -40,6 +60,10 @@ class MapPollutionState extends Equatable {
     String? activeFilter,
     bool? showHeatmap,
     String? errorMessage,
+    List<QuickCityTarget>? quickCities,
+    bool? isHomeSelected,
+    LatLng? userGpsLocation,
+    bool clearUserGpsLocation = false,
   }) {
     return MapPollutionState(
       status: status ?? this.status,
@@ -51,6 +75,9 @@ class MapPollutionState extends Equatable {
       activeFilter: activeFilter ?? this.activeFilter,
       showHeatmap: showHeatmap ?? this.showHeatmap,
       errorMessage: errorMessage ?? this.errorMessage,
+      quickCities: quickCities ?? this.quickCities,
+      isHomeSelected: isHomeSelected ?? this.isHomeSelected,
+      userGpsLocation: clearUserGpsLocation ? null : (userGpsLocation ?? this.userGpsLocation),
     );
   }
 
@@ -65,6 +92,9 @@ class MapPollutionState extends Equatable {
         activeFilter,
         showHeatmap,
         errorMessage,
+        quickCities,
+        isHomeSelected,
+        userGpsLocation,
       ];
 }
 

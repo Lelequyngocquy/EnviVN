@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
+import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
 class AppTopToast {
@@ -146,7 +148,7 @@ class _TopToastOverlayWidgetState extends State<_TopToastOverlayWidget>
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
+                        AppIcon(
                           widget.isError
                               ? Icons.error_outline_rounded
                               : Icons.info_outline_rounded,
@@ -155,13 +157,10 @@ class _TopToastOverlayWidgetState extends State<_TopToastOverlayWidget>
                         ),
                         const SizedBox(width: 10),
                         Flexible(
-                          child: Text(
+                          child: AppText.semiBold(
                             widget.message,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            color: Colors.white,
+                            size: 13,
                           ),
                         ),
                       ],

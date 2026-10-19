@@ -1,6 +1,8 @@
+import 'package:envivn/src/core/infrastructure/configs/env_config.dart';
+
 class AirQualityPaths {
   AirQualityPaths._();
 
-  static const String airQualityBaseUrl = 'https://air-quality-api.open-meteo.com';
+  static String get airQualityBaseUrl => EnvConfig.openMeteoAirQualityBaseUrl;
   static const String airQuality = '/v1/air-quality';
 }

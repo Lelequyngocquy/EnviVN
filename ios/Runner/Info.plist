@@ -6,6 +6,8 @@
 	<string>EnviVN cần vị trí để cập nhật thời tiết và chất lượng không khí chính xác tại khu vực của bạn.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>EnviVN cần vị trí để cảnh báo ô nhiễm không khí tại nơi bạn đang sinh sống.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>EnviVN cần vị trí để cập nhật thời tiết và chất lượng không khí chính xác tại khu vực của bạn.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

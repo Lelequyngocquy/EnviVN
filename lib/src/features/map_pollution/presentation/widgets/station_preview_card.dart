@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/aqi_helper.dart';
 import 'package:envivn/src/common/utils/weather_code_helper.dart';
+import 'package:envivn/src/core/presentation/widgets/widgets.dart';
 import 'package:envivn/src/features/map_pollution/domain/entities/station_pollution_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
@@ -38,21 +39,19 @@ class StationPreviewCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Flexible(
-                      child: Text(
+                      child: AppText.bold(
                         station.name,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: UIColors.textPrimary,
-                        ),
+                        size: 14,
+                        color: UIColors.textPrimary,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     const SizedBox(width: 6),
-                    Text(
+                    AppText.regular(
                       '• ${station.province}',
-                      style: const TextStyle(fontSize: 12, color: UIColors.textSecondary),
+                      size: 12,
+                      color: UIColors.textSecondary,
                     ),
                   ],
                 ),
@@ -66,7 +65,7 @@ class StationPreviewCard extends StatelessWidget {
                     color: Colors.white.withOpacity(0.08),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child: const AppIcon(
                     Icons.close_rounded,
                     color: UIColors.textSecondary,
                     size: 16,
@@ -91,23 +90,17 @@ class StationPreviewCard extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
+                    AppText.extraBold(
                       '${station.aqi}',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                        color: aqiInfo.color,
-                        height: 1.0,
-                      ),
+                      size: 20,
+                      color: aqiInfo.color,
+                      height: 1.0,
                     ),
                     const SizedBox(height: 2),
-                    Text(
+                    AppText.bold(
                       aqiInfo.label,
-                      style: TextStyle(
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.bold,
-                        color: aqiInfo.color,
-                      ),
+                      size: 9.5,
+                      color: aqiInfo.color,
                     ),
                   ],
                 ),
@@ -119,8 +112,8 @@ class StationPreviewCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  RichText(
-                    text: TextSpan(
+                  AppText.rich(
+                    TextSpan(
                       text: 'PM2.5: ',
                       style: const TextStyle(fontSize: 11, color: UIColors.textSecondary),
                       children: [
@@ -135,8 +128,8 @@ class StationPreviewCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 3),
-                  RichText(
-                    text: TextSpan(
+                  AppText.rich(
+                    TextSpan(
                       text: 'PM10:  ',
                       style: const TextStyle(fontSize: 11, color: UIColors.textSecondary),
                       children: [
@@ -170,24 +163,19 @@ class StationPreviewCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(weatherInfo.icon, size: 16, color: weatherInfo.color),
+                        AppIcon(weatherInfo.icon, size: 16, color: weatherInfo.color),
                         const SizedBox(width: 4),
-                        Text(
+                        AppText.bold(
                           '${temp.toStringAsFixed(0)}°C',
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                          size: 13,
+                          color: Colors.white,
                         ),
                         const SizedBox(width: 5),
                         Flexible(
-                          child: Text(
+                          child: AppText.regular(
                             weatherInfo.shortLabel,
-                            style: const TextStyle(
-                              fontSize: 10.5,
-                              color: UIColors.textSecondary,
-                            ),
+                            size: 10.5,
+                            color: UIColors.textSecondary,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -197,20 +185,16 @@ class StationPreviewCard extends StatelessWidget {
                     const SizedBox(height: 3),
                     Row(
                       children: [
-                        Text(
+                        AppText.regular(
                           '💧 $humidity%',
-                          style: const TextStyle(
-                            fontSize: 10,
-                            color: UIColors.textSecondary,
-                          ),
+                          size: 10,
+                          color: UIColors.textSecondary,
                         ),
                         const SizedBox(width: 8),
-                        Text(
+                        AppText.regular(
                           '💨 ${wind.toStringAsFixed(0)}km/h',
-                          style: const TextStyle(
-                            fontSize: 10,
-                            color: UIColors.textSecondary,
-                          ),
+                          size: 10,
+                          color: UIColors.textSecondary,
                         ),
                       ],
                     ),
@@ -230,16 +214,17 @@ class StationPreviewCard extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(
+                AppIcon(
                   aqiInfo.wearMask ? Icons.masks_rounded : Icons.check_circle_outline_rounded,
                   color: aqiInfo.color,
                   size: 13,
                 ),
                 const SizedBox(width: 6),
                 Expanded(
-                  child: Text(
+                  child: AppText.regular(
                     aqiInfo.healthAdvice,
-                    style: const TextStyle(fontSize: 10, color: UIColors.textPrimary),
+                    size: 10,
+                    color: UIColors.textPrimary,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
