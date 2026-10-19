@@ -9,6 +9,7 @@ class LocationActionPanel extends StatelessWidget {
   final VoidCallback onSkip;
   final String primaryButtonText;
   final String? secondaryButtonText;
+  final bool isLoading;
 
   const LocationActionPanel({
     super.key,
@@ -16,6 +17,7 @@ class LocationActionPanel extends StatelessWidget {
     required this.onSkip,
     this.primaryButtonText = 'Cho phép truy cập vị trí',
     this.secondaryButtonText = 'Để sau (Chọn thành phố thủ công)',
+    this.isLoading = false,
   });
 
   @override
@@ -31,20 +33,30 @@ class LocationActionPanel extends StatelessWidget {
             width: double.infinity,
             height: 52,
             child: ElevatedButton(
-              onPressed: onAllow,
+              onPressed: isLoading ? null : onAllow,
               style: ElevatedButton.styleFrom(
                 backgroundColor: UIColors.primary,
                 foregroundColor: const Color(0xFF0B1220),
+                disabledBackgroundColor: UIColors.primary.withOpacity(0.6),
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
               ),
-              child: AppText.bold(
-                primaryButtonText,
-                size: 15,
-                color: const Color(0xFF0B1220),
-              ),
+              child: isLoading
+                  ? const SizedBox(
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        color: Color(0xFF0B1220),
+                      ),
+                    )
+                  : AppText.bold(
+                      primaryButtonText,
+                      size: 15,
+                      color: const Color(0xFF0B1220),
+                    ),
             ),
           ),
           if (secondaryButtonText != null && secondaryButtonText!.isNotEmpty) ...[
@@ -54,7 +66,7 @@ class LocationActionPanel extends StatelessWidget {
               width: double.infinity,
               height: 48,
               child: TextButton(
-                onPressed: onSkip,
+                onPressed: isLoading ? null : onSkip,
                 style: TextButton.styleFrom(
                   foregroundColor: UIColors.textSecondary,
                   shape: RoundedRectangleBorder(

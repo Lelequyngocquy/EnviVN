@@ -237,11 +237,17 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
     await detectGpsLocation();
     if (state.isLocationPermissionGranted) {
       setTab(0);
+      onCompleted?.call();
     }
-    onCompleted?.call();
   }
 
-  void skipLocationPermission({void Function()? onCompleted}) {
+  Future<void> skipLocationPermission({void Function()? onCompleted}) async {
+    final defaultCity = CityEntity.defaultCity;
+    await storage.saveLocationPermission(false);
+    await storage.saveSelectedCity(defaultCity.name, defaultCity.latitude, defaultCity.longitude);
+    if (state.currentCity != defaultCity) {
+      await changeCity(defaultCity);
+    }
     setTab(0);
     onCompleted?.call();
   }
