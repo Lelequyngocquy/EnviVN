@@ -44,6 +44,8 @@ class UIColors {
   static const Color gpsBlue = Color(0xFF2979FF);
   static const Color markerRed = Color(0xFFFF5252);
   static const Color markerRedDark = Color(0xFFFF1744);
+  static const Color pinPurple = Color(0xFFA855F7); // Purple Discovery Pin
+  static const Color pinPurpleDark = Color(0xFF7E22CE); // Deep Purple
 
   static void setSystemUIOverlay() {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(

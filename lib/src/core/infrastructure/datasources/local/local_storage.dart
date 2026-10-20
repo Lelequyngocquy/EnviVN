@@ -11,6 +11,9 @@ class LocalStorage {
   static const String _keySelectedCity = 'selected_city';
   static const String _keyLastUpdate = 'last_update_timestamp';
   static const String _keyLocationPermission = 'location_permission_granted';
+  static const String _keyCachedThermalHotspots = 'cached_nasa_firms_hotspots';
+  static const String _keyThermalLastUpdate =
+      'nasa_firms_last_update_timestamp';
 
   Future<void> saveCachedWeather(Map<String, dynamic> data) async {
     await prefs.setString(_keyCachedWeather, jsonEncode(data));
@@ -76,6 +79,33 @@ class LocalStorage {
 
   bool isLocationPermissionGranted() {
     return prefs.getBool(_keyLocationPermission) ?? false;
+  }
+
+  Future<void> saveCachedThermalHotspots(
+    List<Map<String, dynamic>> spots,
+  ) async {
+    await prefs.setString(_keyCachedThermalHotspots, jsonEncode(spots));
+    await prefs.setInt(
+      _keyThermalLastUpdate,
+      DateTime.now().millisecondsSinceEpoch,
+    );
+  }
+
+  List<Map<String, dynamic>>? getCachedThermalHotspots() {
+    final raw = prefs.getString(_keyCachedThermalHotspots);
+    if (raw == null) return null;
+    try {
+      final list = jsonDecode(raw) as List<dynamic>;
+      return list.map((e) => e as Map<String, dynamic>).toList();
+    } catch (_) {
+      return null;
+    }
+  }
+
+  DateTime? getThermalLastUpdateTime() {
+    final millis = prefs.getInt(_keyThermalLastUpdate);
+    if (millis == null) return null;
+    return DateTime.fromMillisecondsSinceEpoch(millis);
   }
 
   Future<void> clearAll() async {

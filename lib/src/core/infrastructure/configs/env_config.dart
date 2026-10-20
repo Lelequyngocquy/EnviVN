@@ -156,4 +156,16 @@ class EnvConfig {
   /// User Agent cho dịch vụ bản đồ
   static String get mapUserAgent =>
       get('MAP_USER_AGENT', defaultValue: 'com.envivn.envivn');
+
+  /// URL NASA FIRMS API
+  static String get nasaFirmsBaseUrl => get(
+    'NASA_FIRMS_BASE_URL',
+    defaultValue: 'https://firms.modaps.eosdis.nasa.gov/api',
+  );
+
+  /// Key xác thực dịch vụ vệ tinh NASA FIRMS (5000 transactions / 10 phút)
+  static String get nasaFirmsMapKey => get(
+    'NASA_FIRMS_MAP_KEY',
+    defaultValue: 'aaa04b831a37f75677607b924c5df1de',
+  );
 }
