@@ -16,6 +16,7 @@ class MapTopControlBar extends StatelessWidget {
   final String? homeCityName;
   final VoidCallback? onSelectHomeCity;
   final bool isHomeSelected;
+  final QuickCityTarget? selectedQuickCity;
   final List<QuickCityTarget> quickCities;
   final ValueChanged<QuickCityTarget>? onSelectQuickCity;
 
@@ -31,13 +32,13 @@ class MapTopControlBar extends StatelessWidget {
     this.homeCityName,
     this.onSelectHomeCity,
     this.isHomeSelected = false,
+    this.selectedQuickCity,
     this.quickCities = QuickCityTarget.values,
     this.onSelectQuickCity,
   });
 
   @override
   Widget build(BuildContext context) {
-    final curCity = selectedCityName ?? '';
     final hasHome = homeCityName != null && homeCityName!.isNotEmpty;
 
     // Loại bỏ khỏi danh sách các chip nếu thành phố đó đã được ghim ở đầu
@@ -122,16 +123,10 @@ class MapTopControlBar extends StatelessWidget {
             separatorBuilder: (_, index) => const SizedBox(width: 6),
             itemBuilder: (context, index) {
               if (hasHome && index == 0) {
-                final isHomeActive =
-                    isHomeSelected ||
-                    (curCity.isNotEmpty &&
-                        (curCity == homeCityName ||
-                            curCity.contains(homeCityName!) ||
-                            homeCityName!.contains(curCity)));
                 return _QuickCityGlassChip(
                   icon: Icons.my_location_rounded,
                   label: homeCityName!,
-                  isActive: isHomeActive,
+                  isActive: isHomeSelected,
                   onTap: onSelectHomeCity ?? () => onSelectCity(homeCityName!),
                 );
               }
@@ -139,7 +134,7 @@ class MapTopControlBar extends StatelessWidget {
               final targetIndex = hasHome ? index - 1 : index;
               final target = effectiveQuickCities[targetIndex];
               final isTargetActive =
-                  !isHomeSelected && target.isSelected(curCity);
+                  !isHomeSelected && (selectedQuickCity == target);
               return _QuickCityGlassChip(
                 label: target.label,
                 isActive: isTargetActive,
@@ -179,16 +174,16 @@ class _FilterGlassChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: isActive ? UIColors.primary : Colors.white.withOpacity(0.08),
+          color: isActive ? UIColors.primary : UIColors.white.withOpacity(0.08),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isActive ? UIColors.primary : Colors.white.withOpacity(0.2),
+            color: isActive ? UIColors.primary : UIColors.white.withOpacity(0.2),
           ),
         ),
         child: AppText.bold(
           label,
           size: 12,
-          color: isActive ? const Color(0xFF0B1220) : Colors.white,
+          color: isActive ? UIColors.bg : UIColors.textPrimary,
         ),
       ),
     );
@@ -215,10 +210,10 @@ class _QuickCityGlassChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 6),
         decoration: BoxDecoration(
-          color: isActive ? UIColors.primary : Colors.black.withOpacity(0.25),
+          color: isActive ? UIColors.primary : UIColors.black.withOpacity(0.25),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isActive ? UIColors.primary : Colors.white.withOpacity(0.18),
+            color: isActive ? UIColors.primary : UIColors.white.withOpacity(0.18),
             width: isActive ? 1.5 : 1.0,
           ),
         ),
@@ -229,7 +224,7 @@ class _QuickCityGlassChip extends StatelessWidget {
               AppIcon(
                 icon!,
                 size: 13,
-                color: isActive ? const Color(0xFF0B1220) : UIColors.primary,
+                color: isActive ? UIColors.bg : UIColors.primary,
               ),
               const SizedBox(width: 4),
             ],
@@ -237,7 +232,7 @@ class _QuickCityGlassChip extends StatelessWidget {
               label,
               size: 12,
               fontWeight: isActive ? FontWeight.bold : FontWeight.w600,
-              color: isActive ? const Color(0xFF0B1220) : Colors.white,
+              color: isActive ? UIColors.bg : UIColors.textPrimary,
             ),
           ],
         ),
