@@ -68,8 +68,8 @@ class AppBottomSheet extends StatelessWidget {
     return showModalBottomSheet<T>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      barrierColor: Colors.black.withOpacity(0.65),
+      backgroundColor: UIColors.transparent,
+      barrierColor: UIColors.black.withOpacity(0.65),
       isDismissible: isDismissible,
       enableDrag: enableDrag,
       builder: (sheetContext) => AppBottomSheet(
@@ -126,7 +126,7 @@ class AppBottomSheet extends StatelessWidget {
                     width: 44,
                     height: 4,
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.25),
+                      color: UIColors.white.withOpacity(0.25),
                       borderRadius: BorderRadius.circular(2),
                     ),
                   ),
@@ -197,7 +197,7 @@ class AppBottomSheet extends StatelessWidget {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: UIColors.primary,
-                      foregroundColor: const Color(0xFF0B1220),
+                      foregroundColor: UIColors.bg,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
@@ -210,7 +210,7 @@ class AppBottomSheet extends StatelessWidget {
                     child: AppText.bold(
                       bottomButtonText!,
                       size: 14,
-                      color: const Color(0xFF0B1220),
+                      color: UIColors.bg,
                     ),
                   ),
                 ),

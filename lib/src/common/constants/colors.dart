@@ -34,11 +34,22 @@ class UIColors {
   static const Color warning = Color(0xFFFBBF24);
   static const Color error = Color(0xFFF87171);
 
+  // Base Primitives
+  static const Color white = Colors.white;
+  static const Color white70 = Colors.white70;
+  static const Color black = Colors.black;
+  static const Color transparent = Colors.transparent;
+
+  // Map & Pin Accents
+  static const Color gpsBlue = Color(0xFF2979FF);
+  static const Color markerRed = Color(0xFFFF5252);
+  static const Color markerRedDark = Color(0xFFFF1744);
+
   static void setSystemUIOverlay() {
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
+      statusBarColor: UIColors.transparent,
       statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: Color(0xFF0B1220),
+      systemNavigationBarColor: UIColors.bg,
       systemNavigationBarIconBrightness: Brightness.light,
     ));
   }

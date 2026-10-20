@@ -175,7 +175,7 @@ class AppStatusTag extends StatelessWidget {
 
     if (onTap != null) {
       return Material(
-        color: Colors.transparent,
+        color: UIColors.transparent,
         child: InkWell(
           onTap: onTap,
           borderRadius: effectiveBorderRadius,
