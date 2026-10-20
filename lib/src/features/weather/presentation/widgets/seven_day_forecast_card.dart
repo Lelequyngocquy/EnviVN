@@ -44,7 +44,7 @@ class SevenDayForecastCard extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: days.length,
             separatorBuilder: (context, index) => Divider(
-              color: Colors.white.withOpacity(0.06),
+              color: UIColors.white.withOpacity(0.06),
               height: 16,
             ),
             itemBuilder: (context, index) {
@@ -60,7 +60,7 @@ class SevenDayForecastCard extends StatelessWidget {
                       dayName,
                       size: 13,
                       fontWeight: index == 0 ? FontWeight.bold : FontWeight.w500,
-                      color: index == 0 ? Colors.white : UIColors.textSecondary,
+                      color: index == 0 ? UIColors.textPrimary : UIColors.textSecondary,
                     ),
                   ),
                   AppIcon(info.icon, size: 18, color: info.color),
@@ -69,7 +69,7 @@ class SevenDayForecastCard extends StatelessWidget {
                     child: AppText.regular(
                       info.shortLabel,
                       size: 12,
-                      color: Colors.white70,
+                      color: UIColors.white70,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -90,7 +90,7 @@ class SevenDayForecastCard extends StatelessWidget {
                   AppText.bold(
                     '${day.minTemp.toStringAsFixed(0)}° / ${day.maxTemp.toStringAsFixed(0)}°',
                     size: 12,
-                    color: Colors.white,
+                    color: UIColors.textPrimary,
                   ),
                 ],
               );

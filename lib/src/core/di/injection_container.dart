@@ -74,6 +74,7 @@ Future<void> setupGetIt() async {
     () => MapPollutionCubit(
       repository: sl<IMapPollutionRepository>(),
       weatherRepository: sl<IWeatherRepository>(),
+      airQualityRepository: sl<IAirQualityRepository>(),
       locationService: sl<LocationService>(),
     ),
   );

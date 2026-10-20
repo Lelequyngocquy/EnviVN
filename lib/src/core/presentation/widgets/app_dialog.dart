@@ -135,7 +135,10 @@ class AppDialog extends StatelessWidget {
     Color? glowColor,
     double maxWidth = 310.0,
     double borderRadius = 28.0,
-    EdgeInsetsGeometry padding = const EdgeInsets.symmetric(horizontal: 24, vertical: 26),
+    EdgeInsetsGeometry padding = const EdgeInsets.symmetric(
+      horizontal: 24,
+      vertical: 26,
+    ),
     double blurSigma = 10.0,
     Color? barrierColor,
   }) {
@@ -143,7 +146,7 @@ class AppDialog extends StatelessWidget {
       context: context,
       barrierDismissible: barrierDismissible,
       barrierLabel: 'AppDialog',
-      barrierColor: Colors.transparent, // Được xử lý bên trong AppDialog bằng BackdropFilter
+      barrierColor: UIColors.transparent,
       transitionDuration: const Duration(milliseconds: 240),
       pageBuilder: (dialogContext, animation, secondaryAnimation) {
         return AppDialog(
@@ -174,7 +177,10 @@ class AppDialog extends StatelessWidget {
         );
       },
       transitionBuilder: (context, animation, secondaryAnimation, child) {
-        final curved = CurvedAnimation(parent: animation, curve: Curves.easeOutCubic);
+        final curved = CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutCubic,
+        );
         return FadeTransition(
           opacity: curved,
           child: ScaleTransition(
@@ -188,11 +194,16 @@ class AppDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool hasRightButton = rightButtonTitle != null && rightButtonTitle!.isNotEmpty;
-    final bool hasLeftButton = showLeftButton && (leftButtonTitle != null || hasRightButton || !showButtons);
+    final bool hasRightButton =
+        rightButtonTitle != null && rightButtonTitle!.isNotEmpty;
+    final bool hasLeftButton =
+        showLeftButton &&
+        (leftButtonTitle != null || hasRightButton || !showButtons);
 
-    final String effectiveLeftTitle = leftButtonTitle ?? (hasRightButton ? 'Hủy' : 'Đóng');
-    final VoidCallback effectiveLeftFunc = leftButtonFunc ?? () => Navigator.of(context).maybePop();
+    final String effectiveLeftTitle =
+        leftButtonTitle ?? (hasRightButton ? 'Hủy' : 'Đóng');
+    final VoidCallback effectiveLeftFunc =
+        leftButtonFunc ?? () => Navigator.of(context).maybePop();
 
     return PopScope(
       canPop: canPop,
@@ -201,10 +212,12 @@ class AppDialog extends StatelessWidget {
         children: [
           // 1. Chặn tương tác màn hình bên dưới & bắt sự kiện chạm ra ngoài
           GestureDetector(
-            onTap: barrierDismissible ? (onDismiss ?? () => Navigator.of(context).maybePop()) : null,
+            onTap: barrierDismissible
+                ? (onDismiss ?? () => Navigator.of(context).maybePop())
+                : null,
             child: const ModalBarrier(
               dismissible: false,
-              color: Colors.transparent,
+              color: UIColors.transparent,
             ),
           ),
 
@@ -212,7 +225,7 @@ class AppDialog extends StatelessWidget {
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
             child: Container(
-              color: barrierColor ?? Colors.black.withOpacity(0.62),
+              color: barrierColor ?? UIColors.black.withOpacity(0.62),
             ),
           ),
 
@@ -248,9 +261,12 @@ class AppDialog extends StatelessWidget {
                           height: 60,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: (iconColor ?? UIColors.primary).withOpacity(0.12),
+                            color: (iconColor ?? UIColors.primary).withOpacity(
+                              0.12,
+                            ),
                             border: Border.all(
-                              color: (iconColor ?? UIColors.primary).withOpacity(0.3),
+                              color: (iconColor ?? UIColors.primary)
+                                  .withOpacity(0.3),
                               width: 1.2,
                             ),
                           ),
@@ -327,7 +343,7 @@ class AppDialog extends StatelessWidget {
         children: [
           Expanded(
             child: Material(
-              color: Colors.transparent,
+              color: UIColors.transparent,
               child: InkWell(
                 onTap: leftFunc,
                 borderRadius: BorderRadius.circular(16),
@@ -335,17 +351,17 @@ class AppDialog extends StatelessWidget {
                   height: 44,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.08),
+                    color: UIColors.white.withOpacity(0.08),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.14),
+                      color: UIColors.white.withOpacity(0.14),
                       width: 0.8,
                     ),
                   ),
                   child: AppText.semiBold(
                     leftTitle,
                     size: 13.5,
-                    color: Colors.white70,
+                    color: UIColors.white70,
                   ),
                 ),
               ),
@@ -354,7 +370,7 @@ class AppDialog extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(
             child: Material(
-              color: Colors.transparent,
+              color: UIColors.transparent,
               child: InkWell(
                 onTap: rightButtonFunc,
                 borderRadius: BorderRadius.circular(16),
@@ -368,10 +384,11 @@ class AppDialog extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: (isDestructive
-                                ? UIColors.error
-                                : (rightButtonColor ?? UIColors.primary))
-                            .withOpacity(0.35),
+                        color:
+                            (isDestructive
+                                    ? UIColors.error
+                                    : (rightButtonColor ?? UIColors.primary))
+                                .withOpacity(0.35),
                         blurRadius: 12,
                         offset: const Offset(0, 3),
                       ),
@@ -380,7 +397,7 @@ class AppDialog extends StatelessWidget {
                   child: AppText.bold(
                     rightButtonTitle!,
                     size: 13.5,
-                    color: isDestructive ? Colors.white : Colors.black,
+                    color: isDestructive ? UIColors.white : UIColors.bg,
                   ),
                 ),
               ),
@@ -398,7 +415,7 @@ class AppDialog extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: Material(
-        color: Colors.transparent,
+        color: UIColors.transparent,
         child: InkWell(
           onTap: func,
           borderRadius: BorderRadius.circular(16),
@@ -407,22 +424,26 @@ class AppDialog extends StatelessWidget {
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: isLeftOnly
-                  ? Colors.white.withOpacity(0.1)
+                  ? UIColors.white.withOpacity(0.1)
                   : (isDestructive
-                      ? UIColors.error
-                      : (rightButtonColor ?? UIColors.primary)),
+                        ? UIColors.error
+                        : (rightButtonColor ?? UIColors.primary)),
               borderRadius: BorderRadius.circular(16),
               border: isLeftOnly
-                  ? Border.all(color: Colors.white.withOpacity(0.14), width: 0.8)
+                  ? Border.all(
+                      color: UIColors.white.withOpacity(0.14),
+                      width: 0.8,
+                    )
                   : null,
               boxShadow: isLeftOnly
                   ? null
                   : [
                       BoxShadow(
-                        color: (isDestructive
-                                ? UIColors.error
-                                : (rightButtonColor ?? UIColors.primary))
-                            .withOpacity(0.35),
+                        color:
+                            (isDestructive
+                                    ? UIColors.error
+                                    : (rightButtonColor ?? UIColors.primary))
+                                .withOpacity(0.35),
                         blurRadius: 12,
                         offset: const Offset(0, 3),
                       ),
@@ -433,8 +454,8 @@ class AppDialog extends StatelessWidget {
               size: 13.5,
               fontWeight: isLeftOnly ? FontWeight.w600 : FontWeight.bold,
               color: isLeftOnly
-                  ? Colors.white
-                  : (isDestructive ? Colors.white : Colors.black),
+                  ? UIColors.white
+                  : (isDestructive ? UIColors.white : UIColors.bg),
             ),
           ),
         ),

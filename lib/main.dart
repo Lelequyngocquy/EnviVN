@@ -77,7 +77,7 @@ class EnviVNApp extends StatelessWidget {
             elevation: 0,
             centerTitle: false,
             backgroundColor: UIColors.bg,
-            foregroundColor: Colors.white,
+            foregroundColor: UIColors.textPrimary,
           ),
         ),
         initialRoute: RouterPath.splash,

@@ -159,7 +159,7 @@ class _TopToastOverlayWidgetState extends State<_TopToastOverlayWidget>
                         Flexible(
                           child: AppText.semiBold(
                             widget.message,
-                            color: Colors.white,
+                            color: UIColors.white,
                             size: 13,
                           ),
                         ),

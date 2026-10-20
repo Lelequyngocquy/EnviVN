@@ -45,14 +45,14 @@ class CustomErrorView extends StatelessWidget {
                 onPressed: onRetry,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: UIColors.primary,
-                  foregroundColor: Colors.white,
+                  foregroundColor: UIColors.bg,
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                icon: const AppIcon(Icons.refresh_rounded, size: 18, color: Colors.white),
-                label: const AppText.bold('Thử lại', size: 14, color: Colors.white),
+                icon: const AppIcon(Icons.refresh_rounded, size: 18, color: UIColors.bg),
+                label: const AppText.bold('Thử lại', size: 14, color: UIColors.bg),
               ),
             ],
           ],

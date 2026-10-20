@@ -36,14 +36,14 @@ class WeatherMetricCards extends StatelessWidget {
           ),
           _MetricCard(
             icon: Icons.wb_sunny_outlined,
-            iconColor: Colors.orange,
+            iconColor: UIColors.warning,
             title: 'Chỉ số UV',
             value: weather.uvIndex.toStringAsFixed(1),
             subText: weather.uvIndex >= 6 ? 'Cần chống nắng' : 'Mức an toàn',
           ),
           _MetricCard(
             icon: Icons.speed_rounded,
-            iconColor: Colors.indigo,
+            iconColor: UIColors.gpsBlue,
             title: 'Áp suất khí quyển',
             value: '${weather.surfacePressure.toStringAsFixed(0)} hPa',
             subText: 'Chuẩn khí quyển',
@@ -79,7 +79,7 @@ class _MetricCard extends StatelessWidget {
         border: Border.all(color: UIColors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: UIColors.black.withOpacity(0.02),
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),

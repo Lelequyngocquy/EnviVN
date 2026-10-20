@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_renderer/liquid_glass_renderer.dart';
+import '../../common/constants/colors.dart';
 
 class AppGlass extends StatelessWidget {
   final Widget child;
@@ -43,7 +44,7 @@ class AppGlass extends StatelessWidget {
           frost: 3,
           lightAngle: -pi / 4,
           lightIntensity: 65,
-          glassColor: color ?? const Color.fromARGB(10, 255, 255, 255),
+          glassColor: color ?? UIColors.white.withValues(alpha: 0.04),
         ),
         child: LiquidGlass(
           shape: LiquidRoundedSuperellipse(borderRadius: borderRadius),
@@ -55,15 +56,15 @@ class AppGlass extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16, tileMode: TileMode.mirror),
         child: Container(
           decoration: BoxDecoration(
-            color: color ?? Colors.white.withValues(alpha: 0.04), // Ultra transparent
+            color: color ?? UIColors.white.withValues(alpha: 0.04), // Ultra transparent
             borderRadius: BorderRadius.circular(borderRadius),
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white.withValues(alpha: 0.16), // Top-left specular highlight
-                Colors.white.withValues(alpha: 0.02), // Crystal clear liquid center
-                Colors.white.withValues(alpha: 0.06), // Bottom-right subtle rim light
+                UIColors.white.withValues(alpha: 0.16), // Top-left specular highlight
+                UIColors.white.withValues(alpha: 0.02), // Crystal clear liquid center
+                UIColors.white.withValues(alpha: 0.06), // Bottom-right subtle rim light
               ],
               stops: const [0.0, 0.45, 1.0],
             ),
@@ -77,7 +78,7 @@ class AppGlass extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius),
         border: border ??
             Border.all(
-              color: Colors.white.withValues(alpha: isFixed ? 0.0 : 0.14),
+              color: UIColors.white.withValues(alpha: isFixed ? 0.0 : 0.14),
               width: 0.8,
             ),
       ),
