@@ -45,7 +45,7 @@ class HourlyTemperatureChart extends StatelessWidget {
         border: Border.all(color: UIColors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: UIColors.black.withOpacity(0.03),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -127,7 +127,7 @@ class HourlyTemperatureChart extends StatelessWidget {
                       show: true,
                       getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
                         radius: 3.5,
-                        color: Colors.white,
+                        color: UIColors.white,
                         strokeWidth: 2,
                         strokeColor: UIColors.secondary,
                       ),

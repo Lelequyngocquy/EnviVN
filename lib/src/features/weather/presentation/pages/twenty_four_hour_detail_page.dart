@@ -30,7 +30,7 @@ class TwentyFourHourDetailPage extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: UIColors.transparent,
       builder: (_) => CitySelectorSheet(
         currentCity: state.currentCity,
         onCitySelected: (city) {
@@ -72,7 +72,7 @@ class TwentyFourHourDetailPage extends StatelessWidget {
                         color: UIColors.bg.withOpacity(0.92),
                         border: Border(
                           bottom: BorderSide(
-                            color: Colors.white.withOpacity(0.06),
+                            color: UIColors.white.withOpacity(0.06),
                             width: 0.8,
                           ),
                         ),
@@ -133,7 +133,7 @@ class TwentyFourHourDetailPage extends StatelessWidget {
                                           const SizedBox(width: 4),
                                           const AppIcon(
                                             Icons.keyboard_arrow_down_rounded,
-                                            color: Colors.grey,
+                                            color: UIColors.textSecondary,
                                             size: 18,
                                           ),
                                         ],

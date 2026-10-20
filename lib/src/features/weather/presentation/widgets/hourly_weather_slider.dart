@@ -76,12 +76,12 @@ class HourlyWeatherSlider extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: isFirst
                         ? UIColors.secondary.withOpacity(0.12)
-                        : Colors.white.withOpacity(0.03),
+                        : UIColors.white.withOpacity(0.03),
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
                       color: isFirst
                           ? UIColors.secondary.withOpacity(0.4)
-                          : Colors.white.withOpacity(0.06),
+                          : UIColors.white.withOpacity(0.06),
                       width: 0.8,
                     ),
                   ),
@@ -102,7 +102,7 @@ class HourlyWeatherSlider extends StatelessWidget {
                       AppText.bold(
                         '${item.temperature.toStringAsFixed(0)}°',
                         size: 13,
-                        color: Colors.white,
+                        color: UIColors.textPrimary,
                       ),
                       if (item.precipitationProbability > 0)
                         Row(

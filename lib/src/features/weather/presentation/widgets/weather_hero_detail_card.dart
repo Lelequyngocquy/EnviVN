@@ -49,7 +49,7 @@ class WeatherHeroDetailCard extends StatelessWidget {
                         AppText.extraBold(
                           tempStr,
                           size: 44,
-                          color: Colors.white,
+                          color: UIColors.white,
                           letterSpacing: -1.0,
                           height: 1.0,
                         ),
@@ -111,10 +111,10 @@ class WeatherHeroDetailCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.04),
+              color: UIColors.white.withOpacity(0.04),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: Colors.white.withOpacity(0.08),
+                color: UIColors.white.withOpacity(0.08),
                 width: 0.8,
               ),
             ),
@@ -143,7 +143,7 @@ class WeatherHeroDetailCard extends StatelessWidget {
                 Expanded(
                   child: _MetricItem(
                     icon: Icons.opacity_rounded,
-                    iconColor: const Color(0xFF67E8F9),
+                    iconColor: UIColors.secondary,
                     label: 'Độ ẩm',
                     value: '${weather.relativeHumidity}%',
                   ),
@@ -169,7 +169,7 @@ class WeatherHeroDetailCard extends StatelessWidget {
     return Container(
       width: 1,
       height: 32,
-      color: Colors.white.withOpacity(0.08),
+      color: UIColors.white.withOpacity(0.08),
     );
   }
 }
@@ -197,7 +197,7 @@ class _MetricItem extends StatelessWidget {
         AppText.bold(
           value,
           size: 12,
-          color: Colors.white,
+          color: UIColors.white,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
