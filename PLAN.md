@@ -31,7 +31,7 @@
 | **Open-Meteo Geocoding API** | Tìm kiếm địa chỉ, xã/phường/quận/huyện trên 63 tỉnh thành | Miễn phí, Không cần Key | `http` / `dio` |
 | **Smart Environmental Advisor** | Cố vấn môi trường tức thì (0ms latency, 100% offline, deterministic) | Miễn phí, 0đ quota, bảo mật tuyệt đối | Rule-Based Enum Engine (Clean Architecture) |
 | **WAQI / OpenAQ API** | Mạng lưới trạm quan trắc thực tế (Đại sứ quán, Tổng cục Môi trường) | Miễn phí (Đăng ký Token công khai) | `dio` |
-| **NASA FIRMS API** | Điểm vệ tinh đốt rơm rạ / cháy sinh khối thời gian thực | Miễn phí MAP_KEY | `dio` / GeoJSON |
+| **NASA FIRMS API** | Điểm vệ tinh đốt rơm rạ / cháy sinh khối thời gian thực (NOAA-20/21) | Miễn phí MAP_KEY | `dio` / CSV / GeoJSON |
 
 ---
 
@@ -88,7 +88,7 @@
 #### 2.1. Cảnh báo Điểm nóng Đốt rơm rạ Mùa vụ (NASA FIRMS)
 - **Vấn đề**: Tình trạng đốt rơm rạ sau mùa gặt ở ngoại thành Hà Nội và ĐBSCL gây ô nhiễm diện rộng cục bộ.
 - **Giải pháp No-BE**:
-    - Gọi trực tiếp API mở từ **NASA FIRMS (Fire Information for Resource Management System)** lấy dữ liệu phát hiện nhiệt từ vệ tinh VIIRS/MODIS trong 24h qua cho khu vực Việt Nam (`area: 8.0,102.0,24.0,110.0`).
+    - Gọi trực tiếp API mở từ **NASA FIRMS (Fire Information for Resource Management System)** sử dụng dòng vệ tinh thế hệ mới **NOAA-20 (`VIIRS_NOAA20_NRT`)** và **NOAA-21 (`VIIRS_NOAA21_NRT`)** (thay thế Suomi NPP ngừng hoạt động từ 02/11/2026) lấy dữ liệu phát hiện nhiệt độ phân giải 375m trong 24h qua cho khu vực Việt Nam (`VNM/1`).
     - Render các điểm phát thải nhiệt độ cao dưới dạng các đốm phát sáng màu cam/đỏ trên bản đồ `flutter_map`.
     - Kết hợp vector hướng gió từ Open-Meteo để trực quan hóa luồng khói bụi hướng về khu đô thị.
 
