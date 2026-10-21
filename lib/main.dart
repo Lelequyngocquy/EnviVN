@@ -24,10 +24,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   UIColors.setSystemUIOverlay();
 
-  // Load environment configuration (.env with fallback to .env_example)
+  
   await EnvConfig.init();
 
-  // Initialize Vietnamese locale data for intl DateFormat
+  
   await initializeDateFormatting('vi_VN', null);
   await initializeDateFormatting('vi', null);
   Intl.defaultLocale = 'vi_VN';

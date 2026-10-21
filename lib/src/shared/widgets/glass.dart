@@ -56,15 +56,15 @@ class AppGlass extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16, tileMode: TileMode.mirror),
         child: Container(
           decoration: BoxDecoration(
-            color: color ?? UIColors.white.withValues(alpha: 0.04), // Ultra transparent
+            color: color ?? UIColors.white.withValues(alpha: 0.04), 
             borderRadius: BorderRadius.circular(borderRadius),
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                UIColors.white.withValues(alpha: 0.16), // Top-left specular highlight
-                UIColors.white.withValues(alpha: 0.02), // Crystal clear liquid center
-                UIColors.white.withValues(alpha: 0.06), // Bottom-right subtle rim light
+                UIColors.white.withValues(alpha: 0.16), 
+                UIColors.white.withValues(alpha: 0.02), 
+                UIColors.white.withValues(alpha: 0.06), 
               ],
               stops: const [0.0, 0.45, 1.0],
             ),
@@ -87,11 +87,11 @@ class AppGlass extends StatelessWidget {
         child: Stack(
           fit: StackFit.passthrough,
           children: [
-            // 1. Persistent Glass Surface (stays underneath)
+            
             Positioned.fill(child: glassBackground),
 
-            // 2. Foreground Content: Directly rendered in Flutter paint tree.
-            // Never detached, never unlinked, never disappears during scroll or refresh!
+            
+            
             content,
           ],
         ),
