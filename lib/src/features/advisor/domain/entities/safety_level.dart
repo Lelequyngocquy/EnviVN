@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Đại diện cho 4 cấp độ an toàn môi trường theo chuẩn WHO & EPA
 enum SafetyLevel {
   safe(
     label: 'An toàn & Lý tưởng',

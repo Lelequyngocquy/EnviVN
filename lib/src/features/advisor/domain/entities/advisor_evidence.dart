@@ -1,11 +1,7 @@
-import 'package:equatable/equatable.dart';
-
 import 'package:envivn/src/common/utils/weather_code_helper.dart';
 import 'quick_prompt_type.dart';
 
-/// Đại diện cho một mục dẫn chứng dữ liệu cụ thể dùng để tính toán quyết định tư vấn.
-/// Tuân thủ yêu cầu hiển thị tường minh các chỉ số thực tế so sánh với ngưỡng chuẩn (WHO/QCVN).
-class AdvisorEvidence extends Equatable {
+class AdvisorEvidence {
   final String metricName;
   final String formattedValue;
   final String standardBenchmark;
@@ -22,12 +18,9 @@ class AdvisorEvidence extends Equatable {
     this.isDanger = false,
   });
 
-  /// Chuỗi tóm tắt dẫn chứng theo mẫu:
-  /// (PM2.5: 14.3 µg/m³ cao hơn mức cho phép là 15.0 µg/m³ theo chuẩn WHO)
   String get summaryText =>
       '$metricName: $formattedValue ($detailComparison • Chuẩn: $standardBenchmark)';
 
-  /// Đánh giá và sinh danh sách dẫn chứng khoa học dựa trên dữ liệu môi trường thực tế.
   static List<AdvisorEvidence> evaluate({
     required QuickPromptType prompt,
     required int aqi,
@@ -42,7 +35,6 @@ class AdvisorEvidence extends Equatable {
   }) {
     final list = <AdvisorEvidence>[];
 
-    // 1. Dẫn chứng Bụi mịn PM2.5 (Chuẩn WHO 24h: 15.0 µg/m³, QCVN: 25.0 µg/m³)
     final pm25Str = '${pm25.toStringAsFixed(1)} µg/m³';
     const pm25Benchmark = '≤ 15.0 µg/m³ (WHO)';
 
@@ -89,14 +81,14 @@ class AdvisorEvidence extends Equatable {
           metricName: 'Bụi mịn PM2.5',
           formattedValue: pm25Str,
           standardBenchmark: pm25Benchmark,
-          detailComparison: 'Đạt chuẩn không khí sạch lý tưởng theo khuyến nghị WHO',
+          detailComparison:
+              'Đạt chuẩn không khí sạch lý tưởng theo khuyến nghị WHO',
           isExceeded: false,
           isDanger: false,
         ),
       );
     }
 
-    // 2. Dẫn chứng Chỉ số Chất lượng Không khí (US AQI: Chuẩn an toàn ≤ 50)
     final aqiStr = '$aqi US AQI';
     const aqiBenchmark = '≤ 50 (Mức Tốt)';
 
@@ -142,16 +134,15 @@ class AdvisorEvidence extends Equatable {
           metricName: 'Chỉ số AQI',
           formattedValue: aqiStr,
           standardBenchmark: aqiBenchmark,
-          detailComparison:
-              'Mức Xanh (0-50), không khí an toàn và trong lành',
+          detailComparison: 'Mức Xanh (0-50), không khí an toàn và trong lành',
           isExceeded: false,
           isDanger: false,
         ),
       );
     }
 
-    // 3. Dẫn chứng Nhiệt độ môi trường (ngưỡng chịu đựng vận động thể thao an toàn < 34.0°C)
-    final isSportOrChild = prompt == QuickPromptType.running ||
+    final isSportOrChild =
+        prompt == QuickPromptType.running ||
         prompt == QuickPromptType.childrenOutdoor;
     if (isSportOrChild || temperature > 34.0) {
       final tempStr = '${temperature.toStringAsFixed(1)}°C';
@@ -187,7 +178,8 @@ class AdvisorEvidence extends Equatable {
             metricName: 'Nhiệt độ môi trường',
             formattedValue: tempStr,
             standardBenchmark: tempBenchmark,
-            detailComparison: 'Nhiệt độ mát mẻ thuận lợi cho hoạt động thể chất',
+            detailComparison:
+                'Nhiệt độ mát mẻ thuận lợi cho hoạt động thể chất',
             isExceeded: false,
             isDanger: false,
           ),
@@ -195,7 +187,6 @@ class AdvisorEvidence extends Equatable {
       }
     }
 
-    // 4. Dẫn chứng Bức xạ cực tím UV (Ngưỡng an toàn cho da < 6.0)
     if (uvIndex != null && (uvIndex >= 6.0 || isSportOrChild)) {
       final uvStr = 'UV ${uvIndex.toStringAsFixed(1)}';
       const uvBenchmark = '< 6.0 (An toàn da)';
@@ -230,7 +221,8 @@ class AdvisorEvidence extends Equatable {
             metricName: 'Bức xạ tia cực tím',
             formattedValue: uvStr,
             standardBenchmark: uvBenchmark,
-            detailComparison: 'Bức xạ UV ở ngưỡng an toàn, ít rủi ro tổn thương da',
+            detailComparison:
+                'Bức xạ UV ở ngưỡng an toàn, ít rủi ro tổn thương da',
             isExceeded: false,
             isDanger: false,
           ),
@@ -238,7 +230,6 @@ class AdvisorEvidence extends Equatable {
       }
     }
 
-    // 5. Dẫn chứng Tình trạng bệnh nền hô hấp (nếu có)
     if (hasRespiratoryCondition) {
       list.add(
         const AdvisorEvidence(
@@ -253,8 +244,6 @@ class AdvisorEvidence extends Equatable {
       );
     }
 
-    // 6. Dẫn chứng Hiện trạng thời tiết & Mưa: CHỈ ÁP DỤNG CHO CÁC CASE RA ĐƯỜNG (running, commute, childrenOutdoor).
-    // Riêng case mở cửa thông gió (ventilation) hoàn toàn không tính đến thời tiết mưa.
     final isOutdoorCase = prompt != QuickPromptType.ventilation;
     if (isOutdoorCase) {
       final weatherInfo = WeatherCodeHelper.getInfo(weatherCode);
@@ -273,8 +262,8 @@ class AdvisorEvidence extends Equatable {
             detailComparison: prompt == QuickPromptType.running
                 ? 'Đang có mưa, mặt đường trơn trượt nguy hiểm, không nên chạy bộ ngoài trời'
                 : (prompt == QuickPromptType.commute
-                    ? 'Trời đang có mưa, bắt buộc mang theo áo mưa và giảm tốc độ lái xe'
-                    : 'Đang có mưa ẩm ngoài trời, hạn chế để trẻ em và người già ra ngoài'),
+                      ? 'Trời đang có mưa, bắt buộc mang theo áo mưa và giảm tốc độ lái xe'
+                      : 'Đang có mưa ẩm ngoài trời, hạn chế để trẻ em và người già ra ngoài'),
             isExceeded: true,
             isDanger: weatherInfo.isThunder || precipitation >= 10.0,
           ),
@@ -309,14 +298,4 @@ class AdvisorEvidence extends Equatable {
 
     return list;
   }
-
-  @override
-  List<Object?> get props => [
-        metricName,
-        formattedValue,
-        standardBenchmark,
-        detailComparison,
-        isExceeded,
-        isDanger,
-      ];
 }

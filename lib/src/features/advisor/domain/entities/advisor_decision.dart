@@ -1,9 +1,6 @@
 import 'safety_level.dart';
 
-/// Toàn bộ các kịch bản kết luận tư vấn điều kiện môi trường & sức khỏe.
-/// Tuân thủ nguyên lý Dumb UI: toàn bộ thông tin hiển thị được cung cấp qua Getters chuẩn.
 enum AdvisorDecision {
-  // --- CHẠY BỘ / HOẠT ĐỘNG THỂ THAO NGOÀI TRỜI ---
   runningIdeal(
     level: SafetyLevel.safe,
     headline: 'Thời điểm vàng để chạy bộ & tập thể thao',
@@ -78,7 +75,6 @@ enum AdvisorDecision {
     alternativeHour: 'Chờ sau khi tạnh mưa và mặt đường khô ráo',
   ),
 
-  // --- THÔNG GIÓ & MỞ CỬA SỔ ---
   ventilationOptimal(
     level: SafetyLevel.safe,
     headline: 'Nên mở toang cửa để đón không khí tươi mới',
@@ -116,7 +112,6 @@ enum AdvisorDecision {
     alternativeHour: 'Chờ sau cơn mưa hoặc khi hướng gió đổi sạch hơn',
   ),
 
-  // --- TRẺ EM & NGƯỜI CAO TUỔI RA NGOÀI ---
   childrenSafeToGo(
     level: SafetyLevel.safe,
     headline: 'Thời điểm rất tốt để trẻ em & người già vận động ngoài trời',
@@ -166,7 +161,6 @@ enum AdvisorDecision {
     alternativeHour: 'Ra ngoài sau khi trời ráo và có nắng ấm',
   ),
 
-  // --- ĐI LẠI & ĐI LÀM NGOÀI ĐƯỜNG ---
   commuteSafeConditions(
     level: SafetyLevel.safe,
     headline: 'Đường thông thoáng, không khí trong lành',

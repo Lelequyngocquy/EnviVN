@@ -6,7 +6,7 @@ import 'advisor_state.dart';
 class AdvisorCubit extends Cubit<AdvisorState> {
   AdvisorCubit() : super(const AdvisorState());
 
-  /// Người dùng chạm vào một câu hỏi mẫu
+  
   void selectPrompt(
     QuickPromptType prompt, {
     required int aqi,
@@ -24,7 +24,7 @@ class AdvisorCubit extends Cubit<AdvisorState> {
       selectedPrompt: prompt,
     ));
 
-    // Thực thi đánh giá logic nghiệp vụ tại Domain Layer (0ms latency, deterministic)
+    
     final decision = prompt.evaluate(
       aqi: aqi,
       pm25: pm25,

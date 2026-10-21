@@ -51,7 +51,7 @@ class AdvisorModalSheet extends StatelessWidget {
           shape: BoxShape.circle,
         ),
         child: const Center(
-          child: AppIcon(Icons.lightbulb, color: Colors.white, size: 22),
+          child: AppIcon(Icons.wechat_sharp, color: UIColors.white, size: 22),
         ),
       ),
       child: BlocProvider(
@@ -84,7 +84,6 @@ class AdvisorModalSheet extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 1. Scrollable content area: Compact Activity Advice (Default) + Advisor Result Card (if selected)
         Flexible(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
@@ -92,14 +91,12 @@ class AdvisorModalSheet extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // A. Compact Activity Advice Card (Displayed by default)
                 OutdoorActivityAdviceCard(
                   airQuality: airQuality,
                   weather: weather,
                   isCompact: true,
                 ),
 
-                // B. Detailed Advisor Response (when user selects a prompt chip)
                 BlocBuilder<AdvisorCubit, AdvisorState>(
                   builder: (context, state) {
                     if (state.status == AdvisorStatus.loading) {
@@ -134,7 +131,6 @@ class AdvisorModalSheet extends StatelessWidget {
                       );
                     }
 
-                    // Gentle guide banner when no prompt selected
                     return Padding(
                       padding: const EdgeInsets.only(top: 12, bottom: 4),
                       child: Row(
@@ -163,7 +159,6 @@ class AdvisorModalSheet extends StatelessWidget {
         ),
         const SizedBox(height: 12),
 
-        // 2. Quick Prompt Chips - ALWAYS PINNED AT THE BOTTOM
         BlocBuilder<AdvisorCubit, AdvisorState>(
           buildWhen: (prev, curr) =>
               prev.selectedPrompt != curr.selectedPrompt ||
@@ -227,12 +222,14 @@ class _PromptChip extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? UIColors.primary : Colors.white.withOpacity(0.08),
+          color: isSelected
+              ? UIColors.primary
+              : UIColors.white.withOpacity(0.08),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected
                 ? UIColors.primary
-                : Colors.white.withOpacity(0.18),
+                : UIColors.white.withOpacity(0.18),
             width: 1.2,
           ),
           boxShadow: isSelected
@@ -251,13 +248,13 @@ class _PromptChip extends StatelessWidget {
             AppIcon(
               prompt.icon,
               size: 16,
-              color: isSelected ? const Color(0xFF0B1220) : Colors.white,
+              color: isSelected ? UIColors.bg : UIColors.textPrimary,
             ),
             const SizedBox(width: 8),
             AppText.bold(
               prompt.label,
               size: 12.5,
-              color: isSelected ? const Color(0xFF0B1220) : Colors.white,
+              color: isSelected ? UIColors.bg : UIColors.textPrimary,
             ),
           ],
         ),

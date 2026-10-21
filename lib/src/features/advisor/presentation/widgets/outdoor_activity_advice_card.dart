@@ -125,20 +125,20 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
                         ? 'Chuẩn bị áo mưa ($rainProb%)'
                         : 'Trời tạnh ráo'),
                 color: isCurrentlyRaining || rainProb >= 40
-                    ? const Color(0xFF38BDF8)
+                    ? UIColors.secondary
                     : UIColors.aqiGood,
                 isCompact: isCompact,
               ),
               _ActionGlassPill(
                 icon: Icons.wb_sunny_rounded,
                 label: uv >= 6 ? 'Chống nắng SPF 30+' : 'UV an toàn',
-                color: uv >= 6 ? Colors.orange : UIColors.secondary,
+                color: uv >= 6 ? UIColors.warning : UIColors.secondary,
                 isCompact: isCompact,
               ),
               _ActionGlassPill(
                 icon: Icons.air_rounded,
                 label: aqi <= 80 ? 'Mở cửa thông thoáng' : 'Bật máy lọc khí',
-                color: aqi <= 80 ? UIColors.aqiGood : Colors.deepOrange,
+                color: aqi <= 80 ? UIColors.aqiGood : UIColors.aqiUnhealthySensitive,
                 isCompact: isCompact,
               ),
             ],
@@ -193,9 +193,9 @@ class _TimeSlotGlassChip extends StatelessWidget {
             ? const EdgeInsets.symmetric(horizontal: 6, vertical: 5)
             : const EdgeInsets.all(10),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.06),
+          color: UIColors.white.withOpacity(0.06),
           borderRadius: BorderRadius.circular(isCompact ? 10 : 12),
-          border: Border.all(color: Colors.white.withOpacity(0.12)),
+          border: Border.all(color: UIColors.white.withOpacity(0.12)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,7 +213,7 @@ class _TimeSlotGlassChip extends StatelessWidget {
                     time,
                     maxLines: 1,
                     size: isCompact ? 10 : 11,
-                    color: Colors.white,
+                    color: UIColors.textPrimary,
                   ),
                 ),
               ],

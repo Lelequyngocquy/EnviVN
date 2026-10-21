@@ -8,8 +8,8 @@ import 'package:envivn/src/features/advisor/domain/entities/advisor_evidence.dar
 import 'package:envivn/src/features/advisor/domain/entities/quick_prompt_type.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
-/// Thẻ kết quả tư vấn môi trường hiển thị dạng Liquid Glass.
-/// Tuân thủ Dumb UI: Đọc trực tiếp các getters từ [AdvisorDecision] và [AdvisorEvidence].
+
+
 class AdvisorResultCard extends StatelessWidget {
   final AdvisorDecision decision;
   final QuickPromptType? prompt;
@@ -67,7 +67,7 @@ class AdvisorResultCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // 1. Safety Level Tag
+          
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
@@ -86,7 +86,7 @@ class AdvisorResultCard extends StatelessWidget {
           ),
           const SizedBox(height: 14),
 
-          // 2. Headline
+          
           AppText.bold(
             decision.headline,
             size: 18,
@@ -95,7 +95,7 @@ class AdvisorResultCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
 
-          // 3. Scientific Explanation
+          
           AppText.regular(
             decision.explanation,
             size: 13.5,
@@ -104,15 +104,15 @@ class AdvisorResultCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          // 4. Data & Scientific Evidences Section
+          
           if (effectiveEvidences.isNotEmpty) ...[
             Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.04),
+                color: UIColors.white.withOpacity(0.04),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.08),
+                  color: UIColors.white.withOpacity(0.08),
                   width: 0.8,
                 ),
               ),
@@ -166,7 +166,7 @@ class AdvisorResultCard extends StatelessWidget {
                                 Expanded(
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment
-                                        .center, // Hoặc CrossAxisAlignment.start nếu muốn hình tròn canh đỉnh khi text xuống nhiều hàng
+                                        .center, 
                                     children: [
                                       Container(
                                         width: 6,
@@ -177,12 +177,12 @@ class AdvisorResultCard extends StatelessWidget {
                                         ),
                                       ),
                                       const SizedBox(width: 6),
-                                      // Bọc Expanded trực tiếp quanh text tại đây:
+                                      
                                       Expanded(
                                         child: AppText.bold(
                                           '${evidence.metricName}: ${evidence.formattedValue}',
                                           size: 12.5,
-                                          color: Colors.white,
+                                          color: UIColors.textPrimary,
                                           maxLines: 3,
                                         ),
                                       ),
@@ -196,7 +196,7 @@ class AdvisorResultCard extends StatelessWidget {
                                     vertical: 2,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.06),
+                                    color: UIColors.white.withOpacity(0.06),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: AppText.medium(
@@ -225,14 +225,14 @@ class AdvisorResultCard extends StatelessWidget {
             const SizedBox(height: 14),
           ],
 
-          // 5. Actionable Tips Section
+          
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.04),
+              color: UIColors.white.withOpacity(0.04),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: Colors.white.withOpacity(0.08),
+                color: UIColors.white.withOpacity(0.08),
                 width: 0.8,
               ),
             ),
@@ -274,7 +274,7 @@ class AdvisorResultCard extends StatelessWidget {
                           child: AppText.regular(
                             tip,
                             size: 12.5,
-                            color: Colors.white.withOpacity(0.9),
+                            color: UIColors.white.withOpacity(0.9),
                             height: 1.45,
                           ),
                         ),
@@ -286,16 +286,16 @@ class AdvisorResultCard extends StatelessWidget {
             ),
           ),
 
-          // 5. Alternative Golden Hour (if available)
+          
           if (decision.alternativeHour != null) ...[
             const SizedBox(height: 14),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFD600).withOpacity(0.10),
+                color: UIColors.warning.withOpacity(0.10),
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
-                  color: const Color(0xFFFFD600).withOpacity(0.35),
+                  color: UIColors.warning.withOpacity(0.35),
                   width: 1,
                 ),
               ),
@@ -304,7 +304,7 @@ class AdvisorResultCard extends StatelessWidget {
                   const AppIcon(
                     Icons.access_time_filled_rounded,
                     size: 18,
-                    color: Color(0xFFFFD600),
+                    color: UIColors.warning,
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -314,13 +314,13 @@ class AdvisorResultCard extends StatelessWidget {
                         const AppText.bold(
                           'Khung giờ vàng thay thế:',
                           size: 11.5,
-                          color: Color(0xFFFFD600),
+                          color: UIColors.warning,
                         ),
                         const SizedBox(height: 2),
                         AppText.medium(
                           decision.alternativeHour!,
                           size: 13,
-                          color: Colors.white,
+                          color: UIColors.textPrimary,
                         ),
                       ],
                     ),
