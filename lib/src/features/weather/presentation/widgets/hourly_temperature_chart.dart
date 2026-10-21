@@ -20,7 +20,7 @@ class HourlyTemperatureChart extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final points = hourlyData.take(12).toList(); // Show next 12 hours for clarity
+    final points = hourlyData.take(12).toList(); 
     final spots = <FlSpot>[];
     double minTemp = 100.0;
     double maxTemp = -50.0;
@@ -32,7 +32,7 @@ class HourlyTemperatureChart extends StatelessWidget {
       if (t > maxTemp) maxTemp = t;
     }
 
-    // Add padding to bounds
+    
     minTemp = (minTemp - 2).floorToDouble();
     maxTemp = (maxTemp + 2).ceilToDouble();
 
@@ -149,7 +149,7 @@ class HourlyTemperatureChart extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          // Horizontal list of hours with weather icons
+          
           SizedBox(
             height: 70,
             child: ListView.separated(

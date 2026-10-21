@@ -43,13 +43,13 @@ class WeatherRepository implements IWeatherRepository {
         final dataMap = Map<String, dynamic>.from(response.data as Map);
         final weather = WeatherModel.fromJson(dataMap);
 
-        // Cache into local storage for offline-first resilience
+        
         await storage.saveCachedWeather(dataMap);
 
         return BaseResult(success: true, data: weather);
       }
 
-      // If network response was not successful, fallback to offline cache
+      
       final cached = getCachedWeather();
       if (cached != null) {
         return BaseResult(

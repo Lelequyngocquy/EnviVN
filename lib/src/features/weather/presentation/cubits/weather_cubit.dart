@@ -7,7 +7,7 @@ class WeatherCubit extends Cubit<WeatherState> {
   final IWeatherRepository repository;
 
   WeatherCubit({required this.repository}) : super(const WeatherState()) {
-    // Load cached weather right away if available
+    
     final cached = repository.getCachedWeather();
     if (cached != null) {
       emit(state.copyWith(

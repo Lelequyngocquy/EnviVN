@@ -65,7 +65,7 @@ class TwentyFourHourDetailPage extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 1. Fixed Top Header & Filter Bar
+                    
                     Container(
                       padding: const EdgeInsets.fromLTRB(16, 6, 16, 12),
                       decoration: BoxDecoration(
@@ -80,7 +80,7 @@ class TwentyFourHourDetailPage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Top Header Row
+                          
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -146,7 +146,7 @@ class TwentyFourHourDetailPage extends StatelessWidget {
                           ),
                           const SizedBox(height: 12),
 
-                          // Segmented Filter Pills (State managed via WeatherCubit)
+                          
                           DetailSegmentedFilter(
                             activeTab: weatherState.activeDetailTab,
                             onTabChanged: (tab) =>
@@ -156,7 +156,7 @@ class TwentyFourHourDetailPage extends StatelessWidget {
                       ),
                     ),
 
-                    // 2. Scrollable Body
+                    
                     Expanded(
                       child: ClipRect(
                         child: SingleChildScrollView(
@@ -167,7 +167,7 @@ class TwentyFourHourDetailPage extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // 3. WEATHER SECTION (Controlled by WeatherState getter)
+                              
                               if (weatherState.showWeatherSection) ...[
                                 _buildSectionHeader(
                                   title: 'DỰ BÁO THỜI TIẾT 24 GIỜ TỚI',
@@ -195,7 +195,7 @@ class TwentyFourHourDetailPage extends StatelessWidget {
                                 ],
                               ],
 
-                              // 4. AIR QUALITY SECTION (Controlled by WeatherState getter)
+                              
                               if (weatherState.showAirQualitySection) ...[
                                 _buildSectionHeader(
                                   title: 'CHẤT LƯỢNG KHÔNG KHÍ & BỤI MỊN',

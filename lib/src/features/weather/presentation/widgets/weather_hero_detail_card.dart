@@ -107,7 +107,7 @@ class WeatherHeroDetailCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          // 4-Pill Metric Grid
+          
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(

@@ -20,7 +20,7 @@ class WeatherModel extends WeatherEntity {
     final hourly = (json['hourly'] is Map) ? json['hourly'] as Map<String, dynamic> : <String, dynamic>{};
     final daily = (json['daily'] is Map) ? json['daily'] as Map<String, dynamic> : <String, dynamic>{};
 
-    // Parse Hourly (take next 24 hours)
+    
     final hourlyList = <HourlyWeatherPoint>[];
     if (hourly['time'] is List) {
       final times = hourly['time'] as List;
@@ -35,7 +35,7 @@ class WeatherModel extends WeatherEntity {
       int count = 0;
       for (int i = 0; i < times.length && count < 24; i++) {
         final pointTime = DateTime.tryParse(times[i].toString()) ?? now;
-        // Start from current hour or nearest
+        
         if (pointTime.isAfter(now.subtract(const Duration(hours: 1)))) {
           hourlyList.add(
             HourlyWeatherPoint(
@@ -51,7 +51,7 @@ class WeatherModel extends WeatherEntity {
       }
     }
 
-    // Parse Daily (7-day forecast)
+    
     final dailyList = <DailyWeatherPoint>[];
     if (daily['time'] is List) {
       final dates = daily['time'] as List;
