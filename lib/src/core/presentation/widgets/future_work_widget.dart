@@ -5,6 +5,7 @@ import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubi
 import 'package:envivn/src/shared/widgets/glass.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 
 /// Đại diện cho một điểm nổi bật của tính năng sắp ra mắt trong lộ trình
 class FutureWorkHighlight {
@@ -123,12 +124,12 @@ class FutureWorkWidget extends StatelessWidget {
                       children: [
                         const Spacer(),
                         _FutureWorkRadarIllustration(centerIcon: centerIcon),
-                        const SizedBox(height: 32),
+                        const Gap(32),
 
                         // 2. Status Badge Pill
                         if (badgeText != null && badgeText!.isNotEmpty) ...[
                           _buildStatusBadge(),
-                          const SizedBox(height: 16),
+                          const Gap(16),
                         ],
                         AppText.bold(
                           title,
@@ -137,7 +138,7 @@ class FutureWorkWidget extends StatelessWidget {
                           color: UIColors.textPrimary,
                           height: 1.3,
                         ),
-                        const SizedBox(height: 14),
+                        const Gap(14),
                         AppText.regular(
                           subtitle,
                           textAlign: TextAlign.center,
@@ -146,12 +147,12 @@ class FutureWorkWidget extends StatelessWidget {
                           height: 1.5,
                         ),
                         if (highlights != null && highlights!.isNotEmpty) ...[
-                          const SizedBox(height: 20),
+                          const Gap(20),
                           _buildHighlightsCard(),
                         ],
                         const Spacer(),
                         _buildActionPanel(context),
-                        const SizedBox(height: 14),
+                        const Gap(14),
                       ],
                     ),
                   ),
@@ -190,7 +191,7 @@ class FutureWorkWidget extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 8),
+          const Gap(8),
           AppText.bold(
             badgeText!,
             size: 11,
@@ -239,7 +240,7 @@ class FutureWorkWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const Gap(12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -249,7 +250,7 @@ class FutureWorkWidget extends StatelessWidget {
                         size: 13,
                         color: UIColors.textPrimary,
                       ),
-                      const SizedBox(height: 2),
+                      const Gap(2),
                       AppText.regular(
                         item.description,
                         size: 11,
@@ -292,7 +293,7 @@ class FutureWorkWidget extends StatelessWidget {
                 size: 18,
                 color: UIColors.bg,
               ),
-              const SizedBox(width: 8),
+              const Gap(8),
               AppText.bold(backButtonText, size: 15, color: UIColors.bg),
             ],
           ),

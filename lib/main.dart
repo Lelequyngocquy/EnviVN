@@ -17,7 +17,9 @@ import 'src/features/home/presentation/pages/home_page.dart';
 import 'src/features/home/presentation/pages/location_permission_page.dart';
 import 'src/features/home/presentation/pages/splash_page.dart';
 import 'src/features/map/presentation/cubits/map_cubit.dart';
-import 'src/features/weather/presentation/cubits/weather_cubit.dart';
+import 'src/features/story_share/presentation/pages/story_preview_page.dart';
+import 'src/features/details/presentation/cubits/details_cubit.dart';
+import 'src/features/details/presentation/pages/twenty_four_hour_detail_page.dart';
 import 'src/shared/router/router_key_manager.dart';
 
 void main() async {
@@ -44,7 +46,7 @@ class EnviVNApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<WeatherCubit>.value(value: di.sl<WeatherCubit>()),
+        BlocProvider<DetailsCubit>.value(value: di.sl<DetailsCubit>()),
         BlocProvider<AirQualityCubit>.value(value: di.sl<AirQualityCubit>()),
         BlocProvider<HomeDashboardCubit>.value(value: di.sl<HomeDashboardCubit>()),
         BlocProvider<MapCubit>(create: (_) => di.sl<MapCubit>()),
@@ -96,7 +98,10 @@ class EnviVNApp extends StatelessWidget {
               return FadeRoute(page: const HomePage(initialTab: 1));
 
             case RouterPath.twentyFourHours:
-              return FadeRoute(page: const HomePage(initialTab: 2));
+              return FadeRoute(page: const TwentyFourHourDetailPage());
+
+            case RouterPath.storyShare:
+              return FadeRoute(page: const StoryPreviewPage());
 
             default:
               return MaterialPageRoute(

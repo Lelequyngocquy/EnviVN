@@ -5,6 +5,7 @@ import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
+import 'package:gap/gap.dart';
 
 /// Hộp thoại Popup Dialog dùng chung cho toàn bộ ứng dụng EnviVN.
 /// Thiết kế theo ngôn ngữ Liquid Glass / Dark Navy đồng bộ: nền mờ viền sáng,
@@ -254,7 +255,7 @@ class AppDialog extends StatelessWidget {
                       // Header Widget / Icon
                       if (header != null) ...[
                         header!,
-                        const SizedBox(height: 20),
+                        const Gap(20),
                       ] else if (icon != null) ...[
                         Container(
                           width: 60,
@@ -276,13 +277,13 @@ class AppDialog extends StatelessWidget {
                             color: iconColor ?? UIColors.primary,
                           ),
                         ),
-                        const SizedBox(height: 18),
+                        const Gap(18),
                       ],
 
                       // Title
                       if (titleWidget != null) ...[
                         titleWidget!,
-                        const SizedBox(height: 8),
+                        const Gap(8),
                       ] else if (title != null) ...[
                         AppText.bold(
                           title!,
@@ -290,7 +291,7 @@ class AppDialog extends StatelessWidget {
                           size: 16.5,
                           letterSpacing: 0.2,
                         ),
-                        const SizedBox(height: 8),
+                        const Gap(8),
                       ],
 
                       // Children Widget (nếu có)
@@ -298,7 +299,7 @@ class AppDialog extends StatelessWidget {
 
                       // Text Content (nếu có và không truyền childrenWidget, hoặc dùng độc lập)
                       if (content != null) ...[
-                        if (childrenWidget != null) const SizedBox(height: 8),
+                        if (childrenWidget != null) const Gap(8),
                         AppText.regular(
                           content!,
                           textAlign: TextAlign.center,
@@ -310,7 +311,7 @@ class AppDialog extends StatelessWidget {
 
                       // Action Buttons
                       if (showButtons && (hasLeftButton || hasRightButton)) ...[
-                        const SizedBox(height: 22),
+                        const Gap(22),
                         _buildButtonsRow(
                           context,
                           hasLeft: hasLeftButton,
@@ -367,7 +368,7 @@ class AppDialog extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(width: 10),
+          const Gap(10),
           Expanded(
             child: Material(
               color: UIColors.transparent,

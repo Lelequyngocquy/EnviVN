@@ -11,4 +11,5 @@ class RouterPath {
   static const home = '/home';
   static const map = '/map';
   static const twentyFourHours = '/twenty_four_hours';
+  static const storyShare = '/story_share';
 }

@@ -12,9 +12,9 @@ import '../../features/map/domain/interfaces/i_nasa_firms_repository.dart';
 import '../../features/map/infrastructure/repositories/map_repository.dart';
 import '../../features/map/infrastructure/repositories/nasa_firms_repository.dart';
 import '../../features/map/presentation/cubits/map_cubit.dart';
-import '../../features/weather/domain/interfaces/i_weather_repository.dart';
-import '../../features/weather/infrastructure/repositories/weather_repository.dart';
-import '../../features/weather/presentation/cubits/weather_cubit.dart';
+import '../../features/details/domain/interfaces/i_details_repository.dart';
+import '../../features/details/infrastructure/repositories/details_repository.dart';
+import '../../features/details/presentation/cubits/details_cubit.dart';
 import '../infrastructure/datasources/local/local_storage.dart';
 import '../infrastructure/datasources/network/api/restful_request.dart';
 import '../infrastructure/services/location_service.dart';
@@ -43,16 +43,16 @@ Future<void> setupGetIt() async {
 
   sl.registerLazySingleton<LocationService>(() => LocationService());
 
-  //! 3. Feature: Weather
-  sl.registerLazySingleton<IWeatherRepository>(
-    () => WeatherRepository(
+  //! 3. Feature: Details
+  sl.registerLazySingleton<IDetailsRepository>(
+    () => DetailsRepository(
       network: sl<RestfulRequest>(),
       storage: sl<LocalStorage>(),
     ),
   );
 
-  sl.registerLazySingleton<WeatherCubit>(
-    () => WeatherCubit(repository: sl<IWeatherRepository>()),
+  sl.registerLazySingleton<DetailsCubit>(
+    () => DetailsCubit(repository: sl<IDetailsRepository>()),
   );
 
   //! 4. Feature: Air Quality
@@ -82,7 +82,7 @@ Future<void> setupGetIt() async {
   sl.registerFactory<MapCubit>(
     () => MapCubit(
       repository: sl<IMapRepository>(),
-      weatherRepository: sl<IWeatherRepository>(),
+      detailsRepository: sl<IDetailsRepository>(),
       airQualityRepository: sl<IAirQualityRepository>(),
       locationService: sl<LocationService>(),
       nasaFirmsRepository: sl<INasaFirmsRepository>(),
@@ -94,7 +94,7 @@ Future<void> setupGetIt() async {
     () => HomeDashboardCubit(
       storage: sl<LocalStorage>(),
       locationService: sl<LocationService>(),
-      weatherCubit: sl<WeatherCubit>(),
+      detailsCubit: sl<DetailsCubit>(),
       airQualityCubit: sl<AirQualityCubit>(),
     ),
   );

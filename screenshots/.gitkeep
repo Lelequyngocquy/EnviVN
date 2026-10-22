@@ -1,0 +1,9 @@
+# Screenshots Directory
+
+Place your application screenshots here:
+
+- `dashboard_screen.png`: Overview Dashboard with AQI Gauge, Temperature, Weather Details
+- `map_layers_screen.png`: 4-Layer GIS Environmental Map view
+- `location_picker_screen.png`: Dropped custom pin with nearest province resolution
+- `thermal_hotspots_screen.png`: NASA FIRMS satellite thermal radiance map
+- `advisor_screen.png`: Health & Outdoor Activity modal sheet

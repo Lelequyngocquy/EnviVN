@@ -1,7 +1,7 @@
-import '../../domain/entities/weather_entity.dart';
+import '../../domain/entities/details_entity.dart';
 
-class WeatherModel extends WeatherEntity {
-  const WeatherModel({
+class DetailsModel extends DetailsEntity {
+  const DetailsModel({
     super.currentTemp,
     super.apparentTemp,
     super.relativeHumidity,
@@ -15,13 +15,12 @@ class WeatherModel extends WeatherEntity {
     super.isOfflineCache,
   });
 
-  factory WeatherModel.fromJson(Map<String, dynamic> json, {bool isOfflineCache = false}) {
+  factory DetailsModel.fromJson(Map<String, dynamic> json, {bool isOfflineCache = false}) {
     final current = (json['current'] is Map) ? json['current'] as Map<String, dynamic> : <String, dynamic>{};
     final hourly = (json['hourly'] is Map) ? json['hourly'] as Map<String, dynamic> : <String, dynamic>{};
     final daily = (json['daily'] is Map) ? json['daily'] as Map<String, dynamic> : <String, dynamic>{};
 
-    
-    final hourlyList = <HourlyWeatherPoint>[];
+    final hourlyList = <HourlyDetailsPoint>[];
     if (hourly['time'] is List) {
       final times = hourly['time'] as List;
       final temps = (hourly['temperature_2m'] is List) ? hourly['temperature_2m'] as List : [];
@@ -38,7 +37,7 @@ class WeatherModel extends WeatherEntity {
         
         if (pointTime.isAfter(now.subtract(const Duration(hours: 1)))) {
           hourlyList.add(
-            HourlyWeatherPoint(
+            HourlyDetailsPoint(
               time: pointTime,
               temperature: (i < temps.length) ? (double.tryParse(temps[i].toString()) ?? 0.0) : 0.0,
               humidity: (i < humids.length) ? (int.tryParse(humids[i].toString()) ?? 0) : 0,
@@ -51,8 +50,7 @@ class WeatherModel extends WeatherEntity {
       }
     }
 
-    
-    final dailyList = <DailyWeatherPoint>[];
+    final dailyList = <DailyDetailsPoint>[];
     if (daily['time'] is List) {
       final dates = daily['time'] as List;
       final codes = (daily['weather_code'] is List) ? daily['weather_code'] as List : [];
@@ -62,7 +60,7 @@ class WeatherModel extends WeatherEntity {
 
       for (int i = 0; i < dates.length && i < 7; i++) {
         dailyList.add(
-          DailyWeatherPoint(
+          DailyDetailsPoint(
             date: DateTime.tryParse(dates[i].toString()) ?? DateTime.now(),
             weatherCode: (i < codes.length) ? (int.tryParse(codes[i].toString()) ?? 0) : 0,
             maxTemp: (i < maxTemps.length) ? (double.tryParse(maxTemps[i].toString()) ?? 0.0) : 0.0,
@@ -73,7 +71,7 @@ class WeatherModel extends WeatherEntity {
       }
     }
 
-    return WeatherModel(
+    return DetailsModel(
       currentTemp: double.tryParse(current['temperature_2m']?.toString() ?? '0') ?? 0.0,
       apparentTemp: double.tryParse(current['apparent_temperature']?.toString() ?? '0') ?? 0.0,
       relativeHumidity: int.tryParse(current['relative_humidity_2m']?.toString() ?? '0') ?? 0,
@@ -88,3 +86,6 @@ class WeatherModel extends WeatherEntity {
     );
   }
 }
+
+// Backward-compatibility alias
+typedef WeatherModel = DetailsModel;

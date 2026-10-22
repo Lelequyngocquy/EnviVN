@@ -31,7 +31,7 @@
 | **Open-Meteo Geocoding API** | Tìm kiếm địa chỉ, xã/phường/quận/huyện trên 63 tỉnh thành | Miễn phí, Không cần Key | `http` / `dio` |
 | **Smart Environmental Advisor** | Cố vấn môi trường tức thì (0ms latency, 100% offline, deterministic) | Miễn phí, 0đ quota, bảo mật tuyệt đối | Rule-Based Enum Engine (Clean Architecture) |
 | **WAQI / OpenAQ API** | Mạng lưới trạm quan trắc thực tế (Đại sứ quán, Tổng cục Môi trường) | Miễn phí (Đăng ký Token công khai) | `dio` |
-| **NASA FIRMS API** | Điểm vệ tinh đốt rơm rạ / cháy sinh khối thời gian thực (NOAA-20/21) | Miễn phí MAP_KEY | `dio` / CSV / GeoJSON |
+| **NASA FIRMS API** | Điểm vệ tinh phát xạ nhiệt bề mặt / dị thường nhiệt (NOAA-20/21) | Miễn phí MAP_KEY | `dio` / CSV / GeoJSON |
 
 ---
 
@@ -85,8 +85,8 @@
 
 ### TRỤ CỘT 2: GIẢI QUYẾT ĐẶC THÙ MÔI TRƯỜNG VIỆT NAM (KHÔNG CẦN BE)
 
-#### 2.1. Cảnh báo Điểm nóng Đốt rơm rạ Mùa vụ (NASA FIRMS)
-- **Vấn đề**: Tình trạng đốt rơm rạ sau mùa gặt ở ngoại thành Hà Nội và ĐBSCL gây ô nhiễm diện rộng cục bộ.
+#### 2.1. Cảnh báo Điểm phát xạ nhiệt vệ tinh (NASA FIRMS)
+- **Vấn đề**: Hiện tượng gia tăng bức xạ nhiệt bề mặt theo vùng địa hình (vùng cao / đồi núi hoặc đồng bằng) gây biến động chất lượng không khí cục bộ.
 - **Giải pháp No-BE**:
     - Gọi trực tiếp API mở từ **NASA FIRMS (Fire Information for Resource Management System)** sử dụng dòng vệ tinh thế hệ mới **NOAA-20 (`VIIRS_NOAA20_NRT`)** và **NOAA-21 (`VIIRS_NOAA21_NRT`)** (thay thế Suomi NPP ngừng hoạt động từ 02/11/2026) lấy dữ liệu phát hiện nhiệt độ phân giải 375m trong 24h qua cho khu vực Việt Nam (`VNM/1`).
     - Render các điểm phát thải nhiệt độ cao dưới dạng các đốm phát sáng màu cam/đỏ trên bản đồ `flutter_map`.
@@ -237,7 +237,7 @@ lib/
 Tuần 1: HOÀN THIỆN CORE            Tuần 2: NÂNG TẦM DỮ LIỆU          Tuần 3: VIRAL & TIỆN ÍCH
 ┌───────────────────────────┐      ┌───────────────────────────┐     ┌───────────────────────────┐
 │ • Cố vấn thông minh Enum  │      │ • Thêm NASA FIRMS (Điểm   │     │ • Tích hợp Home Widget    │
-│ • Hoàn thiện SettingsPage │ ───> │   nóng đốt rơm rạ)        │ ──> │ • Local Notification 6:30 │
+│ • Hoàn thiện SettingsPage │ ───> │   nhiệt bề mặt vệ tinh)   │ ──> │ • Local Notification 6:30 │
 │ • Hồ sơ sức khỏe cá nhân  │      │ • Thêm trạm đo thực WAQI  │     │ • Xuất ảnh Story 9:16     │
 │ • Geocoding 63 tỉnh thành │      │ • Logic Cảnh báo ngập úng │     │ • Đóng gói README GitHub  │
 └───────────────────────────┘      └───────────────────────────┘     └───────────────────────────┘

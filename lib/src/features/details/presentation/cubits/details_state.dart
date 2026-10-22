@@ -1,23 +1,25 @@
 import 'package:equatable/equatable.dart';
-import '../../domain/entities/weather_entity.dart';
+import '../../domain/entities/details_entity.dart';
 import '../widgets/detail_segmented_filter.dart';
 
-enum WeatherStatus { initial, loading, success, failure }
+enum DetailsStatus { initial, loading, success, failure }
 
-class WeatherState extends Equatable {
-  final WeatherStatus status;
-  final WeatherEntity weather;
+class DetailsState extends Equatable {
+  final DetailsStatus status;
+  final DetailsEntity details;
   final String? errorMessage;
   final String? noticeMessage;
   final DetailTab activeDetailTab;
 
-  const WeatherState({
-    this.status = WeatherStatus.initial,
-    this.weather = const WeatherEntity(),
+  const DetailsState({
+    this.status = DetailsStatus.initial,
+    this.details = const DetailsEntity(),
     this.errorMessage,
     this.noticeMessage,
     this.activeDetailTab = DetailTab.all,
   });
+
+  DetailsEntity get weather => details;
 
   bool get showWeatherSection =>
       activeDetailTab == DetailTab.all || activeDetailTab == DetailTab.weather;
@@ -25,16 +27,17 @@ class WeatherState extends Equatable {
   bool get showAirQualitySection =>
       activeDetailTab == DetailTab.all || activeDetailTab == DetailTab.airQuality;
 
-  WeatherState copyWith({
-    WeatherStatus? status,
-    WeatherEntity? weather,
+  DetailsState copyWith({
+    DetailsStatus? status,
+    DetailsEntity? details,
+    DetailsEntity? weather,
     String? errorMessage,
     String? noticeMessage,
     DetailTab? activeDetailTab,
   }) {
-    return WeatherState(
+    return DetailsState(
       status: status ?? this.status,
-      weather: weather ?? this.weather,
+      details: details ?? weather ?? this.details,
       errorMessage: errorMessage ?? this.errorMessage,
       noticeMessage: noticeMessage ?? this.noticeMessage,
       activeDetailTab: activeDetailTab ?? this.activeDetailTab,
@@ -44,9 +47,13 @@ class WeatherState extends Equatable {
   @override
   List<Object?> get props => [
         status,
-        weather,
+        details,
         errorMessage,
         noticeMessage,
         activeDetailTab,
       ];
 }
+
+// Backward-compatibility aliases
+typedef WeatherStatus = DetailsStatus;
+typedef WeatherState = DetailsState;

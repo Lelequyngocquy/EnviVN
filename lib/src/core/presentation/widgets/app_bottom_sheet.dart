@@ -1,18 +1,15 @@
-import 'package:flutter/material.dart';
-
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
-/// Vỏ BottomSheet dùng chung cho toàn bộ ứng dụng EnviVN theo chuẩn Liquid Glass.
-/// Đồng bộ giao diện kính mờ cao cấp, thanh kéo (drag handle), header chuẩn hóa (leading, title, subtitle, close/trailing),
-/// nội dung con (child) và nút hành động dưới cùng (bottom button).
 class AppBottomSheet extends StatelessWidget {
   final String? title;
   final String? subtitle;
   final Widget? titleWidget;
-  final Widget? leading;
+  final IconData? icon;
   final Widget? trailing;
   final Widget child;
   final String? bottomButtonText;
@@ -30,7 +27,7 @@ class AppBottomSheet extends StatelessWidget {
     this.title,
     this.subtitle,
     this.titleWidget,
-    this.leading,
+    this.icon,
     this.trailing,
     required this.child,
     this.bottomButtonText,
@@ -44,13 +41,12 @@ class AppBottomSheet extends StatelessWidget {
     this.glassColor,
   });
 
-  /// Phương thức tiện ích tĩnh mở BottomSheet với thiết lập Liquid Glass chuẩn.
   static Future<T?> show<T>(
     BuildContext context, {
     String? title,
     String? subtitle,
     Widget? titleWidget,
-    Widget? leading,
+    IconData? icon,
     Widget? trailing,
     required Widget child,
     String? bottomButtonText,
@@ -76,7 +72,7 @@ class AppBottomSheet extends StatelessWidget {
         title: title,
         subtitle: subtitle,
         titleWidget: titleWidget,
-        leading: leading,
+        icon: icon,
         trailing: trailing,
         bottomButtonText: bottomButtonText,
         onBottomButtonPressed:
@@ -103,7 +99,7 @@ class AppBottomSheet extends StatelessWidget {
     final hasHeaderContent =
         title != null ||
         titleWidget != null ||
-        leading != null ||
+        icon != null ||
         trailing != null;
 
     return Container(
@@ -119,7 +115,6 @@ class AppBottomSheet extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. Drag Handle
               if (showDragHandle) ...[
                 Center(
                   child: Container(
@@ -131,16 +126,31 @@ class AppBottomSheet extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const Gap(16),
               ],
 
-              // 2. Header (Leading + Title/Subtitle + Trailing or Close button)
               if (hasHeaderContent) ...[
                 Row(
                   children: [
-                    if (leading != null) ...[
-                      leading!,
-                      const SizedBox(width: 12),
+                    if (icon != null) ...[
+                      Container(
+                        width: 42,
+                        height: 42,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [UIColors.primary, UIColors.secondary],
+                          ),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: AppIcon(
+                            icon ?? Icons.circle,
+                            color: UIColors.white,
+                            size: 22,
+                          ),
+                        ),
+                      ),
+                      const Gap(12),
                     ],
                     Expanded(
                       child:
@@ -156,7 +166,7 @@ class AppBottomSheet extends StatelessWidget {
                                   maxLines: 2,
                                 ),
                               if (subtitle != null) ...[
-                                const SizedBox(height: 2),
+                                const Gap(2),
                                 AppText.regular(
                                   subtitle!,
                                   size: 12,
@@ -180,18 +190,16 @@ class AppBottomSheet extends StatelessWidget {
                       ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const Gap(16),
               ],
 
-              // 3. Child Widget
               Flexible(fit: FlexFit.loose, child: child),
 
-              // 4. Bottom Action Button
               if (bottomButton != null) ...[
-                const SizedBox(height: 16),
+                const Gap(16),
                 bottomButton!,
               ] else if (bottomButtonText != null) ...[
-                const SizedBox(height: 16),
+                const Gap(16),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../common/constants/colors.dart';
 import 'app_text.dart';
+import 'package:gap/gap.dart';
 
 class LoadingWidget extends StatelessWidget {
   final String? message;
@@ -17,7 +18,7 @@ class LoadingWidget extends StatelessWidget {
             strokeWidth: 3,
           ),
           if (message != null) ...[
-            const SizedBox(height: 16),
+            const Gap(16),
             AppText.medium(
               message!,
               color: UIColors.textSecondary,

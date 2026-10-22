@@ -4,6 +4,7 @@ import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/core/presentation/widgets/app_dialog.dart';
 import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
+import 'package:gap/gap.dart';
 
 /// Lớp phủ hiệu ứng kính mờ (Glass Overlay) hiển thị trong quá trình đổi vị trí GPS / Thành phố.
 /// Được xây dựng hoàn toàn dựa trên [AppDialog] dùng chung của core widgets.
@@ -119,7 +120,7 @@ class _LocationLoadingOverlayState extends State<LocationLoadingOverlay>
                   color: UIColors.primary,
                   size: 13,
                 ),
-                const SizedBox(width: 6),
+                const Gap(6),
                 Flexible(
                   child: AppText.bold(
                     widget.cityName,
@@ -131,7 +132,7 @@ class _LocationLoadingOverlayState extends State<LocationLoadingOverlay>
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          const Gap(12),
 
           // Explanatory Subtitle
           AppText.regular(

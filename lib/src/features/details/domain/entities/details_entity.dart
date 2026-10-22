@@ -1,4 +1,4 @@
-class WeatherEntity {
+class DetailsEntity {
   final double currentTemp;
   final double apparentTemp;
   final int relativeHumidity;
@@ -7,11 +7,11 @@ class WeatherEntity {
   final double windSpeed;
   final double uvIndex;
   final double surfacePressure;
-  final List<HourlyWeatherPoint> hourlyForecast;
-  final List<DailyWeatherPoint> dailyForecast;
+  final List<HourlyDetailsPoint> hourlyForecast;
+  final List<DailyDetailsPoint> dailyForecast;
   final bool isOfflineCache;
 
-  const WeatherEntity({
+  const DetailsEntity({
     this.currentTemp = 0.0,
     this.apparentTemp = 0.0,
     this.relativeHumidity = 0,
@@ -26,14 +26,14 @@ class WeatherEntity {
   });
 }
 
-class HourlyWeatherPoint {
+class HourlyDetailsPoint {
   final DateTime time;
   final double temperature;
   final int humidity;
   final int precipitationProbability;
   final int weatherCode;
 
-  const HourlyWeatherPoint({
+  const HourlyDetailsPoint({
     required this.time,
     required this.temperature,
     required this.humidity,
@@ -42,14 +42,14 @@ class HourlyWeatherPoint {
   });
 }
 
-class DailyWeatherPoint {
+class DailyDetailsPoint {
   final DateTime date;
   final int weatherCode;
   final double maxTemp;
   final double minTemp;
   final double precipitationSum;
 
-  const DailyWeatherPoint({
+  const DailyDetailsPoint({
     required this.date,
     required this.weatherCode,
     required this.maxTemp,
@@ -57,3 +57,8 @@ class DailyWeatherPoint {
     required this.precipitationSum,
   });
 }
+
+// Backward-compatibility aliases
+typedef WeatherEntity = DetailsEntity;
+typedef HourlyWeatherPoint = HourlyDetailsPoint;
+typedef DailyWeatherPoint = DailyDetailsPoint;

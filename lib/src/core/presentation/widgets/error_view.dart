@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../common/constants/colors.dart';
 import 'app_icon.dart';
 import 'app_text.dart';
+import 'package:gap/gap.dart';
 
 class CustomErrorView extends StatelessWidget {
   final String message;
@@ -26,13 +27,13 @@ class CustomErrorView extends StatelessWidget {
               size: 64,
               color: UIColors.error,
             ),
-            const SizedBox(height: 16),
+            const Gap(16),
             const AppText.bold(
               'Không thể tải dữ liệu',
               size: 16,
               color: UIColors.textPrimary,
             ),
-            const SizedBox(height: 8),
+            const Gap(8),
             AppText.regular(
               message,
               textAlign: TextAlign.center,
@@ -40,7 +41,7 @@ class CustomErrorView extends StatelessWidget {
               size: 14,
             ),
             if (onRetry != null) ...[
-              const SizedBox(height: 20),
+              const Gap(20),
               ElevatedButton.icon(
                 onPressed: onRetry,
                 style: ElevatedButton.styleFrom(

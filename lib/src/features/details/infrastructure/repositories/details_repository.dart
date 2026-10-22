@@ -4,28 +4,28 @@ import '../../../../core/domain/entities/base.dart';
 import '../../../../core/infrastructure/datasources/local/local_storage.dart';
 import '../../../../core/infrastructure/datasources/network/api/configs/endpoint.dart';
 import '../../../../core/infrastructure/datasources/network/api/restful_request.dart';
-import '../../domain/entities/weather_entity.dart';
-import '../../domain/interfaces/i_weather_repository.dart';
-import '../models/weather_model.dart';
-import '../paths/weather_paths.dart';
+import '../../domain/entities/details_entity.dart';
+import '../../domain/interfaces/i_details_repository.dart';
+import '../models/details_model.dart';
+import '../paths/details_paths.dart';
 
-class WeatherRepository implements IWeatherRepository {
+class DetailsRepository implements IDetailsRepository {
   final RestfulRequest network;
   final LocalStorage storage;
 
-  WeatherRepository({
+  DetailsRepository({
     required this.network,
     required this.storage,
   });
 
   @override
-  Future<BaseResult<WeatherEntity>> getWeatherForecast({
+  Future<BaseResult<DetailsEntity>> getDetailsForecast({
     required double latitude,
     required double longitude,
   }) async {
     try {
       final endpoint = EndpointType(
-        path: WeatherPaths.forecast,
+        path: DetailsPaths.forecast,
         method: HttpMethod.get,
         params: {
           'latitude': latitude,
@@ -41,16 +41,14 @@ class WeatherRepository implements IWeatherRepository {
 
       if (response.isSuccess && response.data is Map) {
         final dataMap = Map<String, dynamic>.from(response.data as Map);
-        final weather = WeatherModel.fromJson(dataMap);
+        final details = DetailsModel.fromJson(dataMap);
 
-        
         await storage.saveCachedWeather(dataMap);
 
-        return BaseResult(success: true, data: weather);
+        return BaseResult(success: true, data: details);
       }
 
-      
-      final cached = getCachedWeather();
+      final cached = getCachedDetails();
       if (cached != null) {
         return BaseResult(
           success: true,
@@ -61,12 +59,12 @@ class WeatherRepository implements IWeatherRepository {
 
       return BaseResult(
         success: false,
-        message: response.message ?? 'Không thể tải dự báo thời tiết',
-        data: const WeatherEntity(),
+        message: response.message ?? 'Không thể tải dự báo thời tiết chi tiết',
+        data: const DetailsEntity(),
       );
     } catch (e) {
-      debugPrint('❌ [WeatherRepository] Lỗi: $e');
-      final cached = getCachedWeather();
+      debugPrint('❌ [DetailsRepository] Lỗi: $e');
+      final cached = getCachedDetails();
       if (cached != null) {
         return BaseResult(
           success: true,
@@ -77,18 +75,31 @@ class WeatherRepository implements IWeatherRepository {
 
       return BaseResult(
         success: false,
-        message: 'Lỗi tải thời tiết: $e',
-        data: const WeatherEntity(),
+        message: 'Lỗi tải dữ liệu chi tiết: $e',
+        data: const DetailsEntity(),
       );
     }
   }
 
   @override
-  WeatherEntity? getCachedWeather() {
+  DetailsEntity? getCachedDetails() {
     final cachedJson = storage.getCachedWeather();
     if (cachedJson != null) {
-      return WeatherModel.fromJson(cachedJson, isOfflineCache: true);
+      return DetailsModel.fromJson(cachedJson, isOfflineCache: true);
     }
     return null;
   }
+
+  // Aliases for compatibility
+  @override
+  Future<BaseResult<DetailsEntity>> getWeatherForecast({
+    required double latitude,
+    required double longitude,
+  }) => getDetailsForecast(latitude: latitude, longitude: longitude);
+
+  @override
+  DetailsEntity? getCachedWeather() => getCachedDetails();
 }
+
+// Backward-compatibility alias
+typedef WeatherRepository = DetailsRepository;

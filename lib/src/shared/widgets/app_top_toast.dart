@@ -5,6 +5,7 @@ import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
+import 'package:gap/gap.dart';
 
 class AppTopToast {
   static OverlayEntry? _currentEntry;
@@ -155,7 +156,7 @@ class _TopToastOverlayWidgetState extends State<_TopToastOverlayWidget>
                           color: widget.isError ? UIColors.error : UIColors.primary,
                           size: 20,
                         ),
-                        const SizedBox(width: 10),
+                        const Gap(10),
                         Flexible(
                           child: AppText.semiBold(
                             widget.message,

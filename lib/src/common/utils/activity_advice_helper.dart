@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/features/air_quality/domain/entities/air_quality_entity.dart';
-import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
+import 'package:envivn/src/features/details/domain/entities/details_entity.dart';
 
 enum ActivitySafetyLevel {
   safe,
@@ -72,7 +72,7 @@ class ActivityAdviceHelper {
     required double uv,
     required int rainProb,
     DateTime? currentTime,
-    List<HourlyWeatherPoint> hourlyWeather = const [],
+    List<HourlyDetailsPoint> hourlyWeather = const [],
     List<HourlyAqiPoint> hourlyAqi = const [],
     bool isRaining = false,
     double precipitation = 0.0,
@@ -171,7 +171,7 @@ class ActivityAdviceHelper {
   /// - Sau 21:00: Sáng mai & Chiều mai
   static List<ActivitySlotInfo> resolveTimeSlots({
     required DateTime currentTime,
-    required List<HourlyWeatherPoint> hourlyWeather,
+    required List<HourlyDetailsPoint> hourlyWeather,
     required List<HourlyAqiPoint> hourlyAqi,
     int fallbackAqi = 50,
     int fallbackRainProb = 0,
@@ -278,8 +278,8 @@ class ActivityAdviceHelper {
     }).toList();
   }
 
-  static HourlyWeatherPoint? _findHourlyWeather(
-    List<HourlyWeatherPoint> list,
+  static HourlyDetailsPoint? _findHourlyWeather(
+    List<HourlyDetailsPoint> list,
     DateTime target,
   ) {
     if (list.isEmpty) return null;
@@ -291,7 +291,7 @@ class ActivityAdviceHelper {
         return p;
       }
     }
-    HourlyWeatherPoint closest = list.first;
+    HourlyDetailsPoint closest = list.first;
     int minDiff = (closest.time.difference(target)).inMinutes.abs();
     for (final p in list) {
       final diff = (p.time.difference(target)).inMinutes.abs();
