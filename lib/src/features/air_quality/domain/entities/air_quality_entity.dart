@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-
-class AirQualityEntity extends Equatable {
+class AirQualityEntity {
   final int usAqi;
   final int europeanAqi;
   final double pm25; // µg/m³
@@ -24,23 +22,9 @@ class AirQualityEntity extends Equatable {
     this.hourlyAqi = const [],
     this.isOfflineCache = false,
   });
-
-  @override
-  List<Object?> get props => [
-        usAqi,
-        europeanAqi,
-        pm25,
-        pm10,
-        carbonMonoxide,
-        nitrogenDioxide,
-        sulphurDioxide,
-        ozone,
-        hourlyAqi,
-        isOfflineCache,
-      ];
 }
 
-class HourlyAqiPoint extends Equatable {
+class HourlyAqiPoint {
   final DateTime time;
   final int aqi;
   final double pm25;
@@ -52,7 +36,4 @@ class HourlyAqiPoint extends Equatable {
     required this.pm25,
     required this.pm10,
   });
-
-  @override
-  List<Object?> get props => [time, aqi, pm25, pm10];
 }

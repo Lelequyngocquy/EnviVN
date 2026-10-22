@@ -7,11 +7,11 @@ import '../../features/air_quality/domain/interfaces/i_air_quality_repository.da
 import '../../features/air_quality/infrastructure/repositories/air_quality_repository.dart';
 import '../../features/air_quality/presentation/cubits/air_quality_cubit.dart';
 import '../../features/home/presentation/cubits/home_dashboard_cubit.dart';
-import '../../features/map_pollution/domain/interfaces/i_map_pollution_repository.dart';
-import '../../features/map_pollution/domain/interfaces/i_nasa_firms_repository.dart';
-import '../../features/map_pollution/infrastructure/repositories/map_pollution_repository.dart';
-import '../../features/map_pollution/infrastructure/repositories/nasa_firms_repository.dart';
-import '../../features/map_pollution/presentation/cubits/map_pollution_cubit.dart';
+import '../../features/map/domain/interfaces/i_map_repository.dart';
+import '../../features/map/domain/interfaces/i_nasa_firms_repository.dart';
+import '../../features/map/infrastructure/repositories/map_repository.dart';
+import '../../features/map/infrastructure/repositories/nasa_firms_repository.dart';
+import '../../features/map/presentation/cubits/map_cubit.dart';
 import '../../features/weather/domain/interfaces/i_weather_repository.dart';
 import '../../features/weather/infrastructure/repositories/weather_repository.dart';
 import '../../features/weather/presentation/cubits/weather_cubit.dart';
@@ -68,8 +68,8 @@ Future<void> setupGetIt() async {
   );
 
   //! 5. Feature: Map Pollution
-  sl.registerLazySingleton<IMapPollutionRepository>(
-    () => MapPollutionRepository(network: sl<RestfulRequest>()),
+  sl.registerLazySingleton<IMapRepository>(
+    () => MapRepository(network: sl<RestfulRequest>()),
   );
 
   sl.registerLazySingleton<INasaFirmsRepository>(
@@ -79,9 +79,9 @@ Future<void> setupGetIt() async {
     ),
   );
 
-  sl.registerFactory<MapPollutionCubit>(
-    () => MapPollutionCubit(
-      repository: sl<IMapPollutionRepository>(),
+  sl.registerFactory<MapCubit>(
+    () => MapCubit(
+      repository: sl<IMapRepository>(),
       weatherRepository: sl<IWeatherRepository>(),
       airQualityRepository: sl<IAirQualityRepository>(),
       locationService: sl<LocationService>(),

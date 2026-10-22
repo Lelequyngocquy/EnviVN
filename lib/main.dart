@@ -16,7 +16,7 @@ import 'src/features/home/presentation/cubits/home_dashboard_cubit.dart';
 import 'src/features/home/presentation/pages/home_page.dart';
 import 'src/features/home/presentation/pages/location_permission_page.dart';
 import 'src/features/home/presentation/pages/splash_page.dart';
-import 'src/features/map_pollution/presentation/cubits/map_pollution_cubit.dart';
+import 'src/features/map/presentation/cubits/map_cubit.dart';
 import 'src/features/weather/presentation/cubits/weather_cubit.dart';
 import 'src/shared/router/router_key_manager.dart';
 
@@ -47,7 +47,7 @@ class EnviVNApp extends StatelessWidget {
         BlocProvider<WeatherCubit>.value(value: di.sl<WeatherCubit>()),
         BlocProvider<AirQualityCubit>.value(value: di.sl<AirQualityCubit>()),
         BlocProvider<HomeDashboardCubit>.value(value: di.sl<HomeDashboardCubit>()),
-        BlocProvider<MapPollutionCubit>(create: (_) => di.sl<MapPollutionCubit>()),
+        BlocProvider<MapCubit>(create: (_) => di.sl<MapCubit>()),
       ],
       child: MaterialApp(
         navigatorKey: GlobalKeyManager.instance.root,
@@ -92,7 +92,7 @@ class EnviVNApp extends StatelessWidget {
             case RouterPath.home:
               return FadeRoute(page: const HomePage());
 
-            case RouterPath.pollutionMap:
+            case RouterPath.map:
               return FadeRoute(page: const HomePage(initialTab: 1));
 
             case RouterPath.twentyFourHours:

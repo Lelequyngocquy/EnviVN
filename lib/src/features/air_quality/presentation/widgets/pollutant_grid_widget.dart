@@ -103,10 +103,14 @@ class _PollutantItem extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
       decoration: BoxDecoration(
-        color: isWarning ? Colors.red.shade50 : UIColors.surfaceVariant,
+        color: isWarning
+            ? UIColors.error.withOpacity(0.12)
+            : UIColors.surfaceVariant,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: isWarning ? Colors.red.shade200 : UIColors.border.withOpacity(0.5),
+          color: isWarning
+              ? UIColors.error.withOpacity(0.4)
+              : UIColors.border.withOpacity(0.5),
         ),
       ),
       child: Column(
@@ -115,18 +119,20 @@ class _PollutantItem extends StatelessWidget {
           AppText.semiBold(
             name,
             size: 11,
-            color: isWarning ? Colors.red.shade800 : UIColors.textSecondary,
+            color: isWarning ? UIColors.error : UIColors.textSecondary,
           ),
           const SizedBox(height: 4),
           AppText.bold(
             value,
             size: 15,
-            color: isWarning ? Colors.red.shade900 : UIColors.textPrimary,
+            color: isWarning ? UIColors.error : UIColors.textPrimary,
           ),
           AppText.regular(
             unit,
             size: 9,
-            color: isWarning ? Colors.red.shade700 : UIColors.textLight,
+            color: isWarning
+                ? UIColors.error.withOpacity(0.8)
+                : UIColors.textLight,
           ),
         ],
       ),

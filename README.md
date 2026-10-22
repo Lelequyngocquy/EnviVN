@@ -1,4 +1,4 @@
-<p align="center">
+﻿<p align="center">
   <img src="assets/images/png/app_logo/envivn_logo_nobackground.png" width="160" alt="EnviVN Logo" />
 </p>
 
@@ -12,7 +12,7 @@
   <a href="https://flutter.dev/"><img src="https://img.shields.io/badge/Flutter-%3E%3D%203.22.0-02569B?style=for-the-badge&logo=flutter&logoColor=white" alt="Flutter" /></a>
   <a href="https://dart.dev/"><img src="https://img.shields.io/badge/Dart-%3E%3D%203.12.0-0175C2?style=for-the-badge&logo=dart&logoColor=white" alt="Dart" /></a>
   <a href="#"><img src="https://img.shields.io/badge/Architecture-Clean%20Architecture%20%2B%20BLoC-673AB7?style=for-the-badge" alt="Architecture" /></a>
-  <a href="#"><img src="https://img.shields.io/badge/Tests-23%2F23%20Passing-success?style=for-the-badge&logo=checkmarx" alt="Tests" /></a>
+  <a href="#"><img src="https://img.shields.io/badge/Tests-26%2F26%20Passing-success?style=for-the-badge&logo=checkmarx" alt="Tests" /></a>
   <a href="#"><img src="https://img.shields.io/badge/Analysis-0%20Issues-brightgreen?style=for-the-badge" alt="Static Analysis" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License" /></a>
 </p>
@@ -147,14 +147,14 @@ EnviVN is architected following the **Clean Architecture** paradigm, married wit
 ```mermaid
 flowchart TD
     subgraph UI ["Presentation Layer (Flutter & BLoC)"]
-        Pages["Pages (HomePage, DetailPage, PollutionMapPage)"]
+        Pages["Pages (HomePage, DetailPage, MapPage)"]
         Widgets["Reusable Widgets (AppGlass, AQIGauge, StationCard)"]
-        Cubits["Cubits (HomeDashboardCubit, MapPollutionCubit, WeatherCubit, AirQualityCubit, AdvisorCubit)"]
+        Cubits["Cubits (HomeDashboardCubit, MapCubit, WeatherCubit, AirQualityCubit, AdvisorCubit)"]
         States["Immutable States (Equatable)"]
     end
 
     subgraph Domain ["Domain Layer (Pure Dart / Enterprise Business Rules)"]
-        Entities["Entities (WeatherEntity, AirQualityEntity, StationPollutionEntity)"]
+        Entities["Entities (WeatherEntity, AirQualityEntity, StationEntity)"]
         Interfaces["Repository Interfaces (IWeatherRepository, IAirQualityRepository, INasaFirmsRepository)"]
         Enums["SSOT Enums (QuickCityTarget, MapLayerType, VietnamProvince, QuickPromptType)"]
     end
@@ -229,15 +229,15 @@ lib/
     │   ├── home/                               # Central Application Shell & Bottom Navigation
     │   │   ├── domain/entities/                # CityEntity
     │   │   └── presentation/                   # HomeDashboardCubit, HomePage, LiquidGlassBottomBar, CitySheet
-    │   ├── map_pollution/                      # Multi-Layer GIS Environmental Map
+    │   ├── map/                      # Multi-Layer GIS Environmental Map
     │   │   ├── domain/
-    │   │   │   ├── entities/                   # StationPollutionEntity, MapLayerType, QuickCityTarget, FloodBlackspot
-    │   │   │   └── interfaces/                 # IMapPollutionRepository, INasaFirmsRepository
+    │   │   │   ├── entities/                   # StationEntity, MapLayerType, QuickCityTarget, FloodBlackspot
+    │   │   │   └── interfaces/                 # IMapRepository, INasaFirmsRepository
     │   │   ├── infrastructure/
-    │   │   │   ├── models/                     # StationPollutionModel, ThermalHotspotModel (CSV parser)
-    │   │   │   ├── paths/                      # MapPollutionPaths, NasaFirmsPaths
-    │   │   │   └── repositories/               # MapPollutionRepository, NasaFirmsRepository (3-Tier Cache)
-    │   │   └── presentation/                   # MapPollutionCubit, PollutionMapPage, StationPreviewCard, Markers
+    │   │   │   ├── models/                     # StationModel, ThermalHotspotModel (CSV parser)
+    │   │   │   ├── paths/                      # MapPaths, NasaFirmsPaths
+    │   │   │   └── repositories/               # MapRepository, NasaFirmsRepository (3-Tier Cache)
+    │   │   └── presentation/                   # MapCubit, MapPage, StationPreviewCard, Markers
     │   └── weather/                            # Meteorological Forecast Feature (Open-Meteo Forecast API)
     │       ├── domain/                         # WeatherEntity, IWeatherRepository
     │       ├── infrastructure/                 # WeatherRepository, WeatherModel, WeatherPaths
@@ -323,7 +323,7 @@ sequenceDiagram
 
 ```mermaid
 flowchart TD
-    Tap["User Taps / Long-presses Any Point on Map (LatLng)"] --> Cubit["MapPollutionCubit.pickCustomLocation(lat, lon)"]
+    Tap["User Taps / Long-presses Any Point on Map (LatLng)"] --> Cubit["MapCubit.pickCustomLocation(lat, lon)"]
     Cubit --> Haversine["GeoDistanceHelper.findNearestStation()"]
     
     Haversine --> Check{"Distance to Closest Station <= 35km?"}
@@ -338,8 +338,8 @@ flowchart TD
     Enrich --> API1["AirQualityRepository.getAirQuality(lat, lon)"]
     Enrich --> API2["WeatherRepository.getCurrentWeather(lat, lon)"]
     
-    API1 & API2 --> BuildCard["Construct Virtual StationPollutionEntity"]
-    BuildCard --> State["Emit MapPollutionState (selectedStation = CustomPin)"]
+    API1 & API2 --> BuildCard["Construct Virtual StationEntity"]
+    BuildCard --> State["Emit MapState (selectedStation = CustomPin)"]
     State --> View["Slide Up StationPreviewCard (Hero AQI, Weather & Quick Actions)"]
 ```
 
@@ -701,10 +701,10 @@ flutter test
 | Test Suite File | Test Count | Scope of Coverage |
 | :--- | :---: | :--- |
 | `test/widget_test.dart` | 1 | Smoke test verifying AQI classifications, enum lengths, and deterministic advisor rules |
-| `test/features/map_pollution/infrastructure/repositories/nasa_firms_repository_test.dart` | 3 | NOAA-20 VIIRS CSV stream parsing, 15m TTL cache validity, HTTP 429 auto-cooldown, and sample dataset fallbacks |
-| `test/features/map_pollution/presentation/cubits/map_pollution_cubit_test.dart` | 15 | Custom location picking, Haversine nearest province distance formatting ($>35\text{ km}$ rules), Hoang Sa & Truong Sa quick-selection, layer transitions, and state isolation |
-| `test/features/map_pollution/presentation/widgets/station_marker_overflow_test.dart` | 2 | Zero-overflow rendering of map markers across all 4 layers under extreme rainfall telemetry ($0\text{ mm}$ to $120\text{ mm/h}$) |
-| `test/features/map_pollution/presentation/widgets/station_preview_card_overflow_test.dart` | 2 | Responsive layout constraints on ultra-compact mobile viewports down to **320px width** |
+| `test/features/map/infrastructure/repositories/nasa_firms_repository_test.dart` | 3 | NOAA-20 VIIRS CSV stream parsing, 15m TTL cache validity, HTTP 429 auto-cooldown, and sample dataset fallbacks |
+| `test/features/map/presentation/cubits/map_cubit_test.dart` | 15 | Custom location picking, Haversine nearest province distance formatting ($>35\text{ km}$ rules), Hoang Sa & Truong Sa quick-selection, layer transitions, and state isolation |
+| `test/features/map/presentation/widgets/station_marker_overflow_test.dart` | 2 | Zero-overflow rendering of map markers across all 4 layers under extreme rainfall telemetry ($0\text{ mm}$ to $120\text{ mm/h}$) |
+| `test/features/map/presentation/widgets/station_preview_card_overflow_test.dart` | 2 | Responsive layout constraints on ultra-compact mobile viewports down to **320px width** |
 
 ---
 

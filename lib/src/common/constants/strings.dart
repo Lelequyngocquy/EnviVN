@@ -7,7 +7,7 @@ class AppStrings {
   static const String weatherForecast = 'Dự báo thời tiết';
   static const String outdoorActivity = 'Khuyến nghị hoạt động ngoài trời';
   static const String hourlyForecast = 'Dự báo 24 giờ tới';
-  static const String pollutionMap = 'Bản đồ ô nhiễm & Trạm quan trắc';
+  static const String map = 'Bản đồ đa tầng Việt Nam';
   static const String selectLocation = 'Chọn khu vực quan trắc';
   static const String defaultCityName = 'Hà Nội';
 }

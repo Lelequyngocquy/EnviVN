@@ -9,6 +9,6 @@ class RouterPath {
   static const splash = '/';
   static const permission = '/permission';
   static const home = '/home';
-  static const pollutionMap = '/pollution_map';
+  static const map = '/map';
   static const twentyFourHours = '/twenty_four_hours';
 }

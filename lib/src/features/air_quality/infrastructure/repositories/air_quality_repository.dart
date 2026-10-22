@@ -13,10 +13,7 @@ class AirQualityRepository implements IAirQualityRepository {
   final RestfulRequest network;
   final LocalStorage storage;
 
-  AirQualityRepository({
-    required this.network,
-    required this.storage,
-  });
+  AirQualityRepository({required this.network, required this.storage});
 
   @override
   Future<BaseResult<AirQualityEntity>> getAirQuality({
@@ -31,25 +28,27 @@ class AirQualityRepository implements IAirQualityRepository {
         params: {
           'latitude': latitude,
           'longitude': longitude,
-          'current': 'european_aqi,us_aqi,pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone',
+          'current':
+              'european_aqi,us_aqi,pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone',
           'hourly': 'pm2_5,pm10,us_aqi',
           'timezone': 'auto',
         },
       );
 
-      final response = await network.requestData(endpoint, showErrorToast: false);
+      final response = await network.requestData(
+        endpoint,
+        showErrorToast: false,
+      );
 
       if (response.isSuccess && response.data is Map) {
         final dataMap = Map<String, dynamic>.from(response.data as Map);
         final airQuality = AirQualityModel.fromJson(dataMap);
 
-        // Cache for offline resilience
         await storage.saveCachedAirQuality(dataMap);
 
         return BaseResult(success: true, data: airQuality);
       }
 
-      // Fallback to cache
       final cached = getCachedAirQuality();
       if (cached != null) {
         return BaseResult(
@@ -61,7 +60,8 @@ class AirQualityRepository implements IAirQualityRepository {
 
       return BaseResult(
         success: false,
-        message: response.message ?? 'Không thể tải chỉ số chất lượng không khí',
+        message:
+            response.message ?? 'Không thể tải chỉ số chất lượng không khí',
         data: const AirQualityEntity(),
       );
     } catch (e) {

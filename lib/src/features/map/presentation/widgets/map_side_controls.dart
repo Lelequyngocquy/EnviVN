@@ -85,9 +85,7 @@ class MapSideControls extends StatelessWidget {
                   alignment: Alignment.center,
                   child: AppIcon(
                     Icons.my_location_rounded,
-                    color: isHomeSelected
-                        ? UIColors.gpsBlue
-                        : UIColors.textSecondary.withOpacity(0.4),
+                    color: UIColors.gpsBlue.withOpacity(0.8),
                     size: 19,
                   ),
                 ),

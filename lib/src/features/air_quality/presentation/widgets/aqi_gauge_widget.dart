@@ -8,10 +8,7 @@ import '../../../../core/presentation/widgets/widgets.dart';
 class AQIGaugeWidget extends StatefulWidget {
   final int aqi;
 
-  const AQIGaugeWidget({
-    super.key,
-    required this.aqi,
-  });
+  const AQIGaugeWidget({super.key, required this.aqi});
 
   @override
   State<AQIGaugeWidget> createState() => _AQIGaugeWidgetState();
@@ -29,9 +26,10 @@ class _AQIGaugeWidgetState extends State<AQIGaugeWidget>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
-    _animation = Tween<double>(begin: 0, end: widget.aqi.toDouble()).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
-    );
+    _animation = Tween<double>(
+      begin: 0,
+      end: widget.aqi.toDouble(),
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
     _controller.forward();
   }
 
@@ -39,10 +37,13 @@ class _AQIGaugeWidgetState extends State<AQIGaugeWidget>
   void didUpdateWidget(covariant AQIGaugeWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.aqi != widget.aqi) {
-      _animation = Tween<double>(
-        begin: oldWidget.aqi.toDouble(),
-        end: widget.aqi.toDouble(),
-      ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
+      _animation =
+          Tween<double>(
+            begin: oldWidget.aqi.toDouble(),
+            end: widget.aqi.toDouble(),
+          ).animate(
+            CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
+          );
       _controller.forward(from: 0);
     }
   }
@@ -90,7 +91,11 @@ class _AQIGaugeWidgetState extends State<AQIGaugeWidget>
                             color: info.color.withOpacity(0.15),
                             shape: BoxShape.circle,
                           ),
-                          child: AppIcon(Icons.eco_rounded, color: info.color, size: 20),
+                          child: AppIcon(
+                            Icons.eco_rounded,
+                            color: info.color,
+                            size: 20,
+                          ),
                         ),
                         const SizedBox(width: 8),
                         const Expanded(
@@ -176,7 +181,6 @@ class _AQIGaugePainter extends CustomPainter {
     const startAngle = pi * 0.85;
     const sweepAngle = pi * 1.3;
 
-    // Background track
     final bgPaint = Paint()
       ..color = UIColors.surfaceVariant
       ..style = PaintingStyle.stroke
@@ -191,7 +195,6 @@ class _AQIGaugePainter extends CustomPainter {
       bgPaint,
     );
 
-    // Active progress arc
     final progress = (aqi / 300.0).clamp(0.0, 1.0);
     final activePaint = Paint()
       ..shader = SweepGradient(
@@ -219,13 +222,12 @@ class _AQIGaugePainter extends CustomPainter {
       activePaint,
     );
 
-    // Indicator Dot on Arc
     final currentAngle = startAngle + (sweepAngle * progress);
     final indicatorX = center.dx + radius * cos(currentAngle);
     final indicatorY = center.dy + radius * sin(currentAngle);
 
     final dotBorderPaint = Paint()
-      ..color = Colors.white
+      ..color = UIColors.white
       ..style = PaintingStyle.fill;
     final dotInnerPaint = Paint()
       ..color = activeColor
