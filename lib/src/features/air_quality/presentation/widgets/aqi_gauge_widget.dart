@@ -97,7 +97,7 @@ class _AQIGaugeWidgetState extends State<AQIGaugeWidget>
                             size: 20,
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        const Gap(8),
                         const Expanded(
                           child: AppText.bold(
                             'Chỉ số AQI (US)',
@@ -110,7 +110,7 @@ class _AQIGaugeWidgetState extends State<AQIGaugeWidget>
                       ],
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const Gap(8),
                   AppStatusTag(
                     label: info.label,
                     color: info.color,
@@ -118,7 +118,7 @@ class _AQIGaugeWidgetState extends State<AQIGaugeWidget>
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const Gap(16),
               SizedBox(
                 height: 180,
                 width: 260,
@@ -139,7 +139,7 @@ class _AQIGaugeWidgetState extends State<AQIGaugeWidget>
                             color: info.color,
                             height: 1.0,
                           ),
-                          const SizedBox(height: 4),
+                          const Gap(4),
                           const AppText.semiBold(
                             'US AQI',
                             size: 12,
@@ -152,7 +152,7 @@ class _AQIGaugeWidgetState extends State<AQIGaugeWidget>
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
+              const Gap(8),
               AppText.medium(
                 info.description,
                 textAlign: TextAlign.center,

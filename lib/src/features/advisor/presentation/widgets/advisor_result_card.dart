@@ -7,6 +7,7 @@ import 'package:envivn/src/features/advisor/domain/entities/advisor_decision.dar
 import 'package:envivn/src/features/advisor/domain/entities/advisor_evidence.dart';
 import 'package:envivn/src/features/advisor/domain/entities/quick_prompt_type.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
+import 'package:gap/gap.dart';
 
 
 
@@ -79,12 +80,12 @@ class AdvisorResultCard extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 AppIcon(level.icon, size: 16, color: level.color),
-                const SizedBox(width: 6),
+                const Gap(6),
                 AppText.bold(level.label, size: 12, color: level.color),
               ],
             ),
           ),
-          const SizedBox(height: 14),
+          const Gap(14),
 
           
           AppText.bold(
@@ -93,7 +94,7 @@ class AdvisorResultCard extends StatelessWidget {
             color: UIColors.textPrimary,
             height: 1.35,
           ),
-          const SizedBox(height: 10),
+          const Gap(10),
 
           
           AppText.regular(
@@ -102,7 +103,7 @@ class AdvisorResultCard extends StatelessWidget {
             color: UIColors.textSecondary,
             height: 1.5,
           ),
-          const SizedBox(height: 16),
+          const Gap(16),
 
           
           if (effectiveEvidences.isNotEmpty) ...[
@@ -126,7 +127,7 @@ class AdvisorResultCard extends StatelessWidget {
                         size: 16,
                         color: UIColors.secondary,
                       ),
-                      SizedBox(width: 8),
+                      Gap(8),
                       AppText.semibold(
                         'Dữ liệu tính toán & Dẫn chứng đối chiếu',
                         size: 13,
@@ -134,7 +135,7 @@ class AdvisorResultCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  const Gap(10),
                   ...effectiveEvidences.map((evidence) {
                     final Color badgeColor = evidence.isDanger
                         ? UIColors.error
@@ -176,7 +177,7 @@ class AdvisorResultCard extends StatelessWidget {
                                           shape: BoxShape.circle,
                                         ),
                                       ),
-                                      const SizedBox(width: 6),
+                                      const Gap(6),
                                       
                                       Expanded(
                                         child: AppText.bold(
@@ -189,7 +190,7 @@ class AdvisorResultCard extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                const SizedBox(width: 4),
+                                const Gap(4),
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 6,
@@ -207,7 +208,7 @@ class AdvisorResultCard extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 4),
+                            const Gap(4),
                             AppText.regular(
                               '• ${evidence.detailComparison}',
                               size: 11.5,
@@ -222,7 +223,7 @@ class AdvisorResultCard extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 14),
+            const Gap(14),
           ],
 
           
@@ -246,7 +247,7 @@ class AdvisorResultCard extends StatelessWidget {
                       size: 16,
                       color: UIColors.primary,
                     ),
-                    SizedBox(width: 8),
+                    Gap(8),
                     AppText.semibold(
                       'Khuyến nghị hành động thực tế',
                       size: 13,
@@ -254,7 +255,7 @@ class AdvisorResultCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                const Gap(10),
                 ...decision.tips.map(
                   (tip) => Padding(
                     padding: const EdgeInsets.only(bottom: 6),
@@ -288,7 +289,7 @@ class AdvisorResultCard extends StatelessWidget {
 
           
           if (decision.alternativeHour != null) ...[
-            const SizedBox(height: 14),
+            const Gap(14),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
@@ -306,7 +307,7 @@ class AdvisorResultCard extends StatelessWidget {
                     size: 18,
                     color: UIColors.warning,
                   ),
-                  const SizedBox(width: 10),
+                  const Gap(10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -316,7 +317,7 @@ class AdvisorResultCard extends StatelessWidget {
                           size: 11.5,
                           color: UIColors.warning,
                         ),
-                        const SizedBox(height: 2),
+                        const Gap(2),
                         AppText.medium(
                           decision.alternativeHour!,
                           size: 13,

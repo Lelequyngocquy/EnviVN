@@ -24,7 +24,7 @@ class PollutantGridWidget extends StatelessWidget {
           Row(
             children: const [
               AppIcon(Icons.grain_rounded, color: UIColors.primary, size: 20),
-              SizedBox(width: 8),
+              Gap(8),
               AppText.bold(
                 'Nồng độ các chất ô nhiễm',
                 size: 14,
@@ -32,7 +32,7 @@ class PollutantGridWidget extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          const Gap(16),
           GridView.count(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -121,7 +121,7 @@ class _PollutantItem extends StatelessWidget {
             size: 11,
             color: isWarning ? UIColors.error : UIColors.textSecondary,
           ),
-          const SizedBox(height: 4),
+          const Gap(4),
           AppText.bold(
             value,
             size: 15,

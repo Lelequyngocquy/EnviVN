@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/weather_code_helper.dart';
 import 'package:envivn/src/core/presentation/widgets/app_bottom_sheet.dart';
@@ -10,20 +7,23 @@ import 'package:envivn/src/features/advisor/domain/entities/quick_prompt_type.da
 import 'package:envivn/src/features/advisor/presentation/cubits/advisor_cubit.dart';
 import 'package:envivn/src/features/advisor/presentation/cubits/advisor_state.dart';
 import 'package:envivn/src/features/advisor/presentation/widgets/advisor_result_card.dart';
-import 'package:envivn/src/features/air_quality/domain/entities/air_quality_entity.dart';
 import 'package:envivn/src/features/advisor/presentation/widgets/outdoor_activity_advice_card.dart';
-import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
+import 'package:envivn/src/features/air_quality/domain/entities/air_quality_entity.dart';
+import 'package:envivn/src/features/details/domain/entities/details_entity.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 
 class AdvisorModalSheet extends StatelessWidget {
   final AirQualityEntity airQuality;
-  final WeatherEntity weather;
+  final DetailsEntity weather;
   final String? cityName;
   final bool hasRespiratoryCondition;
 
   const AdvisorModalSheet({
     super.key,
     this.airQuality = const AirQualityEntity(),
-    this.weather = const WeatherEntity(),
+    this.weather = const DetailsEntity(),
     this.cityName,
     this.hasRespiratoryCondition = false,
   });
@@ -31,7 +31,7 @@ class AdvisorModalSheet extends StatelessWidget {
   static Future<void> show(
     BuildContext context, {
     required AirQualityEntity airQuality,
-    required WeatherEntity weather,
+    required DetailsEntity weather,
     String? cityName,
     bool hasRespiratoryCondition = false,
   }) {
@@ -41,19 +41,7 @@ class AdvisorModalSheet extends StatelessWidget {
       subtitle: cityName != null && cityName.isNotEmpty
           ? 'Điều kiện thực tế tại $cityName chuẩn WHO & EPA (Thời điểm hiện tại)'
           : 'Phân tích điều kiện tức thì theo chuẩn WHO & EPA',
-      leading: Container(
-        width: 42,
-        height: 42,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [UIColors.primary, UIColors.secondary],
-          ),
-          shape: BoxShape.circle,
-        ),
-        child: const Center(
-          child: AppIcon(Icons.wechat_sharp, color: UIColors.white, size: 22),
-        ),
-      ),
+      icon: Icons.wechat_sharp,
       child: BlocProvider(
         create: (_) => AdvisorCubit(),
         child: AdvisorModalSheet(
@@ -140,7 +128,7 @@ class AdvisorModalSheet extends StatelessWidget {
                             size: 14,
                             color: UIColors.primary,
                           ),
-                          SizedBox(width: 6),
+                          Gap(6),
                           Expanded(
                             child: AppText.regular(
                               'Chạm vào câu hỏi gợi ý bên dưới để nhận phân tích chuyên sâu tức thì',
@@ -157,7 +145,7 @@ class AdvisorModalSheet extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 12),
+        const Gap(12),
 
         BlocBuilder<AdvisorCubit, AdvisorState>(
           buildWhen: (prev, curr) =>
@@ -170,7 +158,7 @@ class AdvisorModalSheet extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
                 itemCount: state.availablePrompts.length,
-                separatorBuilder: (_, index) => const SizedBox(width: 8),
+                separatorBuilder: (_, index) => const Gap(8),
                 itemBuilder: (context, index) {
                   final prompt = state.availablePrompts[index];
                   final isSelected = state.selectedPrompt == prompt;
@@ -250,7 +238,7 @@ class _PromptChip extends StatelessWidget {
               size: 16,
               color: isSelected ? UIColors.bg : UIColors.textPrimary,
             ),
-            const SizedBox(width: 8),
+            const Gap(8),
             AppText.bold(
               prompt.label,
               size: 12.5,

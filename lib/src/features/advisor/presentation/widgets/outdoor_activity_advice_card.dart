@@ -8,12 +8,13 @@ import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_status_tag.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/features/air_quality/domain/entities/air_quality_entity.dart';
-import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
+import 'package:envivn/src/features/details/domain/entities/details_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
+import 'package:gap/gap.dart';
 
 class OutdoorActivityAdviceCard extends StatelessWidget {
   final AirQualityEntity airQuality;
-  final WeatherEntity weather;
+  final DetailsEntity weather;
   final bool isCompact;
 
   const OutdoorActivityAdviceCard({
@@ -71,7 +72,7 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
                         size: isCompact ? 16 : 20,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const Gap(8),
                     Expanded(
                       child: AppText.bold(
                         'Khuyến nghị hoạt động',
@@ -83,7 +84,7 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
+              const Gap(8),
               AppStatusTag(
                 label: adviceData.statusLabel,
                 color: adviceData.statusColor,
@@ -91,14 +92,14 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: isCompact ? 8 : 12),
+          Gap(isCompact ? 8 : 12),
           AppText.medium(
             adviceData.adviceText,
             size: isCompact ? 12 : 13,
             color: UIColors.textPrimary,
             height: isCompact ? 1.35 : 1.45,
           ),
-          SizedBox(height: isCompact ? 8 : 14),
+          Gap(isCompact ? 8 : 14),
           Wrap(
             spacing: isCompact ? 6 : 8,
             runSpacing: isCompact ? 6 : 8,
@@ -143,17 +144,17 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: isCompact ? 8 : 14),
+          Gap(isCompact ? 8 : 14),
           AppText.bold(
             'Khung giờ hoạt động gợi ý:',
             size: isCompact ? 10.5 : 11,
             color: UIColors.textSecondary,
           ),
-          SizedBox(height: isCompact ? 6 : 8),
+          Gap(isCompact ? 6 : 8),
           Row(
             children: [
               for (int i = 0; i < adviceData.slots.length; i++) ...[
-                if (i > 0) const SizedBox(width: 8),
+                if (i > 0) const Gap(8),
                 _TimeSlotGlassChip(
                   time: adviceData.slots[i].timeRange,
                   activity: adviceData.slots[i].activity,
@@ -207,7 +208,7 @@ class _TimeSlotGlassChip extends StatelessWidget {
                   size: isCompact ? 11 : 13,
                   color: isOk ? UIColors.primary : UIColors.textSecondary,
                 ),
-                const SizedBox(width: 4),
+                const Gap(4),
                 Expanded(
                   child: AppText.bold(
                     time,
@@ -218,14 +219,14 @@ class _TimeSlotGlassChip extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 2),
+            const Gap(2),
             AppText.regular(
               activity,
               maxLines: 1,
               size: isCompact ? 9.5 : 11,
               color: UIColors.textSecondary,
             ),
-            const SizedBox(height: 1),
+            const Gap(1),
             AppText.bold(
               status,
               maxLines: 1,
