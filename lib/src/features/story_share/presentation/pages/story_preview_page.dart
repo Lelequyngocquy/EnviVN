@@ -9,6 +9,7 @@ import 'package:envivn/src/features/details/presentation/cubits/details_cubit.da
 import 'package:envivn/src/features/details/presentation/cubits/details_state.dart';
 import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
 import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_state.dart';
+import 'package:envivn/src/shared/widgets/app_button.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -17,6 +18,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../widgets/story_card_view.dart';
+import '../widgets/story_options_bottom_sheet.dart';
 
 class StoryPreviewPage extends StatefulWidget {
   const StoryPreviewPage({super.key});
@@ -123,7 +125,7 @@ class _StoryPreviewPageState extends State<StoryPreviewPage> {
                     final now = DateTime.now();
 
                     return Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 6, 16, 12),
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                       child: Column(
                         children: [
                           Row(
@@ -237,54 +239,11 @@ class _StoryPreviewPageState extends State<StoryPreviewPage> {
                             ),
                           ),
 
-                          Row(
-                            children: [
-                              Expanded(
-                                child: SizedBox(
-                                  height: 50,
-                                  child: ElevatedButton(
-                                    onPressed: _isSharing
-                                        ? null
-                                        : () => _handleShare(city.name),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: UIColors.primary,
-                                      foregroundColor: UIColors.bg,
-                                      elevation: 0,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                    ),
-                                    child: _isSharing
-                                        ? const SizedBox(
-                                            width: 22,
-                                            height: 22,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2.4,
-                                              color: UIColors.bg,
-                                            ),
-                                          )
-                                        : Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: const [
-                                              AppIcon(
-                                                Icons.ios_share_rounded,
-                                                size: 20,
-                                                color: UIColors.bg,
-                                              ),
-                                              Gap(8),
-                                              AppText.bold(
-                                                'Chia sẻ thẻ Story',
-                                                size: 15,
-                                                color: UIColors.bg,
-                                                maxLines: 3,
-                                              ),
-                                            ],
-                                          ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                          AppButton(
+                            title: 'Chia sẻ thẻ Story',
+                            icon: Icons.ios_share_rounded,
+                            isLoading: _isSharing,
+                            onTap: () => _handleShare(city.name),
                           ),
                         ],
                       ),

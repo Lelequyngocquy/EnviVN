@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/core/presentation/widgets/widgets.dart';
+import 'package:envivn/src/features/explore/domain/entities/explore_utility.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
+import 'package:flutter/material.dart';
 
 /// Thẻ hiển thị một tiện ích (Utility Tile) trong trang Khám phá
 class UtilityCard extends StatelessWidget {
@@ -25,13 +25,32 @@ class UtilityCard extends StatelessWidget {
     required this.onTap,
   });
 
+  /// Khởi tạo nhanh `UtilityCard` trực tiếp từ enum `ExploreUtility`
+  factory UtilityCard.fromUtility({
+    Key? key,
+    required ExploreUtility utility,
+    required BuildContext context,
+    VoidCallback? onTap,
+  }) {
+    return UtilityCard(
+      key: key,
+      icon: utility.icon,
+      iconColor: utility.iconColor,
+      title: utility.title,
+      subtitle: utility.subtitle,
+      badgeText: utility.badgeText,
+      badgeColor: utility.badgeColor,
+      onTap: onTap ?? () => utility.handleTap(context),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: AppGlass(
-        isFixed: true,
+        // isFixed: true,
         borderRadius: 22,
         padding: const EdgeInsets.all(14),
         child: Column(
@@ -52,11 +71,7 @@ class UtilityCard extends StatelessWidget {
                       width: 1,
                     ),
                   ),
-                  child: AppIcon(
-                    icon,
-                    color: iconColor,
-                    size: 22,
-                  ),
+                  child: AppIcon(icon, color: iconColor, size: 22),
                 ),
                 if (badgeText != null && badgeText!.isNotEmpty)
                   AppStatusTag(
@@ -66,9 +81,6 @@ class UtilityCard extends StatelessWidget {
                   ),
               ],
             ),
-
-            const Gap(12),
-
             // Bottom: Title & Subtitle
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,

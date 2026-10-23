@@ -7,6 +7,7 @@ import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/features/air_quality/domain/entities/air_quality_entity.dart';
 import 'package:envivn/src/features/details/domain/entities/details_entity.dart';
 import 'package:envivn/src/features/home/domain/entities/city_entity.dart';
+import 'package:envivn/src/shared/widgets/app_button.dart';
 import 'package:envivn/src/shared/widgets/app_divider.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 import 'package:flutter/material.dart';
@@ -369,32 +370,12 @@ class _StoryOptionsBottomSheetState extends State<StoryOptionsBottomSheet> {
             ),
           ),
         ),
-
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: SizedBox(
-            height: 48,
-            child: ElevatedButton(
-              onPressed: () {
-                widget.onApply(_selectedRatio, _selectedCards);
-                Navigator.of(context).pop();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: UIColors.primary,
-                foregroundColor: UIColors.bg,
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-              child: const AppText.bold(
-                'Áp dụng tùy chọn',
-                size: 15,
-                color: UIColors.bg,
-                maxLines: 3,
-              ),
-            ),
-          ),
+        AppButton(
+          onTap: () {
+            widget.onApply(_selectedRatio, _selectedCards);
+            Navigator.of(context).pop();
+          },
+          title: 'Áp dụng tùy chọn',
         ),
       ],
     );
