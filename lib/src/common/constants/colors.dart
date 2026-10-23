@@ -20,11 +20,21 @@ class UIColors {
 
   // Status & AQI Colors from Design
   static const Color aqiGood = Color(0xFF4ADE80); // 0 - 50: Tốt (Mint/Emerald)
-  static const Color aqiModerate = Color(0xFFFACC15); // 51 - 100: Trung bình (Amber/Yellow)
-  static const Color aqiUnhealthySensitive = Color(0xFFFB923C); // 101 - 150: Nhạy cảm (Orange)
-  static const Color aqiUnhealthy = Color(0xFFF87171); // 151 - 200: Xấu (Coral Red)
-  static const Color aqiVeryUnhealthy = Color(0xFFA855F7); // 201 - 300: Rất xấu (Purple)
-  static const Color aqiHazardous = Color(0xFFDC2626); // 301+: Nguy hại (Deep Red)
+  static const Color aqiModerate = Color(
+    0xFFFACC15,
+  ); // 51 - 100: Trung bình (Amber/Yellow)
+  static const Color aqiUnhealthySensitive = Color(
+    0xFFFB923C,
+  ); // 101 - 150: Nhạy cảm (Orange)
+  static const Color aqiUnhealthy = Color(
+    0xFFF87171,
+  ); // 151 - 200: Xấu (Coral Red)
+  static const Color aqiVeryUnhealthy = Color(
+    0xFFA855F7,
+  ); // 201 - 300: Rất xấu (Purple)
+  static const Color aqiHazardous = Color(
+    0xFFDC2626,
+  ); // 301+: Nguy hại (Deep Red)
 
   // Functional Accents
   static const Color primary = Color(0xFF4ADE80);
@@ -33,6 +43,7 @@ class UIColors {
   static const Color secondary = Color(0xFF38BDF8); // Sky Blue
   static const Color warning = Color(0xFFFBBF24);
   static const Color error = Color(0xFFF87171);
+  static const Color disabled = Color(0xFF9A9A9A);
 
   // Base Primitives
   static const Color white = Colors.white;
@@ -48,11 +59,13 @@ class UIColors {
   static const Color pinPurpleDark = Color(0xFF7E22CE); // Deep Purple
 
   static void setSystemUIOverlay() {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: UIColors.transparent,
-      statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: UIColors.bg,
-      systemNavigationBarIconBrightness: Brightness.light,
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: UIColors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        systemNavigationBarColor: UIColors.bg,
+        systemNavigationBarIconBrightness: Brightness.light,
+      ),
+    );
   }
 }

@@ -45,17 +45,6 @@ class AppIcon extends StatelessWidget {
     this.shadows,
   });
 
-  /// Icon kích thước vừa (20.0)
-  const AppIcon.medium(
-    this.icon, {
-    super.key,
-    this.size = 20.0,
-    this.color = UIColors.textPrimary,
-    this.semanticLabel,
-    this.textDirection,
-    this.shadows,
-  });
-
   /// Icon kích thước lớn (28.0)
   const AppIcon.large(
     this.icon, {

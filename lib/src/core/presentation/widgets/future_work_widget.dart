@@ -2,12 +2,12 @@ import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
+import 'package:envivn/src/shared/widgets/app_button.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
-/// Đại diện cho một điểm nổi bật của tính năng sắp ra mắt trong lộ trình
 class FutureWorkHighlight {
   final IconData icon;
   final String title;
@@ -22,31 +22,21 @@ class FutureWorkHighlight {
   });
 }
 
-/// Widget chuẩn hiển thị các tính năng đang phát triển / sắp ra mắt (Future Works / Coming Soon).
-/// Thiết kế đồng bộ 100% theo style Dark Theme & Liquid Glass của `location_permission_page.dart`.
 class FutureWorkWidget extends StatelessWidget {
-  /// Tiêu đề chính của tính năng
   final String title;
 
-  /// Mô tả chi tiết hoặc lộ trình phát triển
   final String subtitle;
 
-  /// Nhãn hiển thị trên badge (mặc định: 'SẮP RA MẮT • COMING SOON')
   final String? badgeText;
 
-  /// Icon đại diện ở trung tâm vòng radar phát sáng
   final IconData centerIcon;
 
-  /// Danh sách các tính năng con nổi bật sẽ có trong bản cập nhật tới
   final List<FutureWorkHighlight>? highlights;
 
-  /// Callback khi bấm nút Quay lại (nếu null sẽ tự động pop Navigator hoặc về tab Trang chủ)
   final VoidCallback? onBack;
 
-  /// Văn bản hiển thị trên nút quay lại chính
   final String backButtonText;
 
-  /// Padding dưới cùng (mặc định là 96 chuẩn theo location_permission_page)
   final double bottomPadding;
 
   const FutureWorkWidget({
@@ -59,10 +49,9 @@ class FutureWorkWidget extends StatelessWidget {
     this.highlights,
     this.onBack,
     this.backButtonText = 'Quay lại',
-    this.bottomPadding = 96,
+    this.bottomPadding = 80,
   });
 
-  /// Điều hướng nhanh tới trang FutureWorkWidget dạng fullscreen route
   static Future<T?> push<T>(
     BuildContext context, {
     String title = 'Tính năng đang phát triển',
@@ -73,7 +62,7 @@ class FutureWorkWidget extends StatelessWidget {
     List<FutureWorkHighlight>? highlights,
     VoidCallback? onBack,
     String backButtonText = 'Quay lại',
-    double bottomPadding = 96,
+    double bottomPadding = 80,
   }) {
     return Navigator.of(context).push<T>(
       MaterialPageRoute(
@@ -122,11 +111,9 @@ class FutureWorkWidget extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const Spacer(),
+                        const Gap(128),
                         _FutureWorkRadarIllustration(centerIcon: centerIcon),
                         const Gap(32),
-
-                        // 2. Status Badge Pill
                         if (badgeText != null && badgeText!.isNotEmpty) ...[
                           _buildStatusBadge(),
                           const Gap(16),
@@ -151,8 +138,12 @@ class FutureWorkWidget extends StatelessWidget {
                           _buildHighlightsCard(),
                         ],
                         const Spacer(),
-                        _buildActionPanel(context),
-                        const Gap(14),
+                        AppButton(
+                          onTap: () => _handleBack(context),
+                          title: backButtonText,
+                          icon: Icons.arrow_back_rounded,
+                        ),
+                        const Gap(24),
                       ],
                     ),
                   ),
@@ -267,43 +258,8 @@ class FutureWorkWidget extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildActionPanel(BuildContext context) {
-    return AppGlass(
-      borderRadius: 24,
-      padding: const EdgeInsets.all(12),
-      child: SizedBox(
-        width: double.infinity,
-        height: 52,
-        child: ElevatedButton(
-          onPressed: () => _handleBack(context),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: UIColors.primary,
-            foregroundColor: UIColors.bg,
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const AppIcon(
-                Icons.arrow_back_rounded,
-                size: 18,
-                color: UIColors.bg,
-              ),
-              const Gap(8),
-              AppText.bold(backButtonText, size: 15, color: UIColors.bg),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 }
 
-/// Minh họa Radar Pulse phong cách futuristic đồng bộ tuyệt đối với `LocationRadarIllustration`
 class _FutureWorkRadarIllustration extends StatelessWidget {
   final IconData centerIcon;
 
@@ -318,7 +274,6 @@ class _FutureWorkRadarIllustration extends StatelessWidget {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // Pulse 1 (Vòng ngoài cùng)
             Container(
               width: 220,
               height: 220,
@@ -331,7 +286,6 @@ class _FutureWorkRadarIllustration extends StatelessWidget {
               ),
             ),
 
-            // Pulse 2 (Vòng giữa)
             Container(
               width: 160,
               height: 160,
@@ -344,7 +298,6 @@ class _FutureWorkRadarIllustration extends StatelessWidget {
               ),
             ),
 
-            // Pulse 3 (Vòng trong)
             Container(
               width: 104,
               height: 104,
@@ -357,7 +310,6 @@ class _FutureWorkRadarIllustration extends StatelessWidget {
               ),
             ),
 
-            // Điểm vệ tinh phát sáng phụ (Orbiting accent lights)
             Positioned(
               top: 36,
               right: 48,
@@ -397,7 +349,6 @@ class _FutureWorkRadarIllustration extends StatelessWidget {
               ),
             ),
 
-            // Bóng mờ bên dưới tâm phát sáng
             Positioned(
               bottom: 68,
               child: Container(
@@ -410,7 +361,6 @@ class _FutureWorkRadarIllustration extends StatelessWidget {
               ),
             ),
 
-            // Quả cầu tâm phát sáng (Main Glowing Center Orb)
             Container(
               width: 64,
               height: 64,

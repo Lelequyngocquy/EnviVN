@@ -1,6 +1,7 @@
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
+import 'package:envivn/src/shared/widgets/app_button.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -200,27 +201,11 @@ class AppBottomSheet extends StatelessWidget {
                 bottomButton!,
               ] else if (bottomButtonText != null) ...[
                 const Gap(16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: UIColors.primary,
-                      foregroundColor: UIColors.bg,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      elevation: 0,
-                    ),
-                    onPressed:
-                        onBottomButtonPressed ??
-                        () => Navigator.of(context).pop(),
-                    child: AppText.bold(
-                      bottomButtonText!,
-                      size: 14,
-                      color: UIColors.bg,
-                    ),
-                  ),
+                AppButton(
+                  onTap:
+                      onBottomButtonPressed ??
+                      () => Navigator.of(context).pop(),
+                  title: bottomButtonText!,
                 ),
               ],
             ],
