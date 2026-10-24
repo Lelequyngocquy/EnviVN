@@ -40,7 +40,7 @@ class StationMarkerWidget extends StatelessWidget {
               size: 13,
               color: isSelected ? badgeColor : UIColors.bg,
             ),
-            const SizedBox(width: 3),
+            const Gap(3),
             AppText.extraBold(
               '$tempStr°',
               color: isSelected ? badgeColor : UIColors.bg,
@@ -70,7 +70,7 @@ class StationMarkerWidget extends StatelessWidget {
               size: 12,
               color: isSelected ? badgeColor : UIColors.bg,
             ),
-            const SizedBox(width: 2),
+            const Gap(2),
             AppText.extraBold(
               '$heatStr°',
               color: isSelected ? badgeColor : UIColors.bg,
@@ -103,7 +103,7 @@ class StationMarkerWidget extends StatelessWidget {
               size: 11.5,
               color: isSelected ? badgeColor : UIColors.bg,
             ),
-            const SizedBox(width: 2),
+            const Gap(2),
             AppText.extraBold(
               '${rainVal.toStringAsFixed(0)}mm',
               color: isSelected ? badgeColor : UIColors.bg,

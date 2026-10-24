@@ -6,6 +6,7 @@ import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/features/home/domain/entities/city_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
+import 'package:gap/gap.dart';
 
 class CitySelectorSheet extends StatefulWidget {
   final CityEntity currentCity;
@@ -40,24 +41,24 @@ class _CitySelectorSheetState extends State<CitySelectorSheet> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
 
-          // Search Box in Dark Glass Style
+          
           TextField(
             onChanged: (val) => setState(() => _searchQuery = val),
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(color: UIColors.textPrimary),
             decoration: InputDecoration(
               hintText: 'Tìm kiếm tỉnh/thành phố...',
               hintStyle: const TextStyle(color: UIColors.textMuted),
               prefixIcon: const AppIcon(Icons.search, color: UIColors.textSecondary, size: 20),
               filled: true,
-              fillColor: Colors.white.withOpacity(0.07),
+              fillColor: UIColors.white.withOpacity(0.07),
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
-                borderSide: BorderSide(color: Colors.white.withOpacity(0.12)),
+                borderSide: BorderSide(color: UIColors.white.withOpacity(0.12)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
-                borderSide: BorderSide(color: Colors.white.withOpacity(0.12)),
+                borderSide: BorderSide(color: UIColors.white.withOpacity(0.12)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
@@ -65,9 +66,9 @@ class _CitySelectorSheetState extends State<CitySelectorSheet> {
               ),
             ),
           ),
-          const SizedBox(height: 14),
+          const Gap(14),
 
-          // GPS Option Tile in Liquid Glass
+          
           AppGlass(
             borderRadius: 16,
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -87,7 +88,7 @@ class _CitySelectorSheetState extends State<CitySelectorSheet> {
               title: const AppText.bold(
                 'Sử dụng vị trí hiện tại (GPS)',
                 size: 14,
-                color: Colors.white,
+                color: UIColors.textPrimary,
               ),
               subtitle: const AppText.regular(
                 'Tự động cập nhật theo tọa độ GPS của máy',
@@ -100,20 +101,20 @@ class _CitySelectorSheetState extends State<CitySelectorSheet> {
               contentPadding: EdgeInsets.zero,
             ),
           ),
-          const SizedBox(height: 16),
+          const Gap(16),
           const AppText.bold(
             'Tỉnh & Thành phố phổ biến:',
             size: 12,
             color: UIColors.textSecondary,
           ),
-          const SizedBox(height: 8),
+          const Gap(8),
 
-          // Cities List
+          
           Expanded(
             child: ListView.separated(
               physics: const ClampingScrollPhysics(),
               itemCount: filteredCities.length,
-              separatorBuilder: (_, _) => Divider(height: 1, color: Colors.white.withOpacity(0.08)),
+              separatorBuilder: (_, _) => Divider(height: 1, color: UIColors.white.withOpacity(0.08)),
               itemBuilder: (context, index) {
                 final city = filteredCities[index];
                 final isSelected = !widget.currentCity.isGps &&
@@ -128,7 +129,7 @@ class _CitySelectorSheetState extends State<CitySelectorSheet> {
                   title: AppText(
                     city.name,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                    color: isSelected ? UIColors.primary : Colors.white,
+                    color: isSelected ? UIColors.primary : UIColors.textPrimary,
                   ),
                   subtitle: AppText.regular(
                     city.province,

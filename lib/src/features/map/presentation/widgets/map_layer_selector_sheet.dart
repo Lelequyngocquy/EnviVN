@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
-
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/core/presentation/widgets/app_bottom_sheet.dart';
 import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/features/map/domain/entities/map_layer_type.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 class MapLayerSelectorSheet extends StatelessWidget {
   final MapLayerType currentLayer;
@@ -17,7 +17,6 @@ class MapLayerSelectorSheet extends StatelessWidget {
     required this.onLayerSelected,
   });
 
-  
   static Future<void> show(
     BuildContext context, {
     required MapLayerType currentLayer,
@@ -27,21 +26,7 @@ class MapLayerSelectorSheet extends StatelessWidget {
       context,
       title: 'Lớp dữ liệu bản đồ',
       subtitle: 'Chọn góc nhìn thời tiết & môi trường bạn muốn theo dõi',
-      leading: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: currentLayer.badgeColor.withOpacity(0.18),
-          shape: BoxShape.circle,
-        ),
-        child: Center(
-          child: AppIcon(
-            Icons.layers_rounded,
-            color: currentLayer.badgeColor,
-            size: 22,
-          ),
-        ),
-      ),
+      icon: Icons.layers_rounded,
       bottomButtonText: 'Đóng',
       child: MapLayerSelectorSheet(
         currentLayer: currentLayer,
@@ -71,7 +56,10 @@ class MapLayerSelectorSheet extends StatelessWidget {
                   Navigator.of(context).pop();
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(18),
                     color: isSelected
@@ -86,7 +74,6 @@ class MapLayerSelectorSheet extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      
                       Container(
                         width: 44,
                         height: 44,
@@ -115,9 +102,8 @@ class MapLayerSelectorSheet extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 14),
+                      const Gap(14),
 
-                      
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -136,14 +122,16 @@ class MapLayerSelectorSheet extends StatelessWidget {
                                   ),
                                 ),
                                 if (layer == MapLayerType.weather) ...[
-                                  const SizedBox(width: 8),
+                                  const Gap(8),
                                   Container(
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 6,
                                       vertical: 2,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: UIColors.secondary.withOpacity(0.18),
+                                      color: UIColors.secondary.withOpacity(
+                                        0.18,
+                                      ),
                                       borderRadius: BorderRadius.circular(6),
                                     ),
                                     child: const AppText.bold(
@@ -155,7 +143,7 @@ class MapLayerSelectorSheet extends StatelessWidget {
                                 ],
                               ],
                             ),
-                            const SizedBox(height: 3),
+                            const Gap(3),
                             AppText.regular(
                               layer.description,
                               size: 11.5,
@@ -165,9 +153,8 @@ class MapLayerSelectorSheet extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(width: 10),
+                      const Gap(10),
 
-                      
                       Container(
                         width: 22,
                         height: 22,

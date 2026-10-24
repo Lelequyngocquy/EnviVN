@@ -13,10 +13,7 @@ import 'package:envivn/src/shared/router/router_key_manager.dart';
 class LocationPermissionPage extends StatelessWidget {
   final bool isSettings;
 
-  const LocationPermissionPage({
-    super.key,
-    this.isSettings = false,
-  });
+  const LocationPermissionPage({super.key, this.isSettings = false});
 
   void _navigateToHome(BuildContext context) {
     if (isSettings) {
@@ -32,7 +29,7 @@ class LocationPermissionPage extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
+      backgroundColor: UIColors.transparent,
       builder: (_) => CitySelectorSheet(
         currentCity: state.currentCity,
         onCitySelected: (city) {
@@ -51,7 +48,8 @@ class LocationPermissionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeDashboardCubit, HomeDashboardState>(
       buildWhen: (prev, curr) =>
-          prev.isLocationPermissionGranted != curr.isLocationPermissionGranted ||
+          prev.isLocationPermissionGranted !=
+              curr.isLocationPermissionGranted ||
           prev.currentTab != curr.currentTab ||
           prev.isChangingLocation != curr.isChangingLocation,
       builder: (context, state) {
@@ -83,11 +81,10 @@ class LocationPermissionPage extends StatelessWidget {
               child: Column(
                 children: [
                   const Spacer(),
-                  // Radar Pulse Location Pin Animation
-                  const LocationRadarIllustration(),
-                  const SizedBox(height: 32),
 
-                  // Title (Tự động cập nhật nếu trong bộ nhớ đã bật quyền vị trí)
+                  const LocationRadarIllustration(),
+                  const Gap(32),
+
                   AppText.bold(
                     titleText,
                     textAlign: TextAlign.center,
@@ -95,9 +92,8 @@ class LocationPermissionPage extends StatelessWidget {
                     color: UIColors.textPrimary,
                     height: 1.3,
                   ),
-                  const SizedBox(height: 14),
+                  const Gap(14),
 
-                  // Subtitle
                   AppText.regular(
                     subtitleText,
                     textAlign: TextAlign.center,
@@ -107,7 +103,6 @@ class LocationPermissionPage extends StatelessWidget {
                   ),
                   const Spacer(),
 
-                  // Liquid Glass Action Panel (Apple iOS style)
                   LocationActionPanel(
                     primaryButtonText: primaryButtonText,
                     secondaryButtonText: secondaryButtonText,
@@ -137,9 +132,8 @@ class LocationPermissionPage extends StatelessWidget {
                       }
                     },
                   ),
-                  const SizedBox(height: 14),
+                  const Gap(14),
 
-                  // Privacy Footnote
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
@@ -148,7 +142,7 @@ class LocationPermissionPage extends StatelessWidget {
                         size: 12,
                         color: UIColors.textMuted,
                       ),
-                      SizedBox(width: 6),
+                      Gap(6),
                       AppText.regular(
                         'Dữ liệu vị trí chỉ được lưu trên thiết bị của bạn.',
                         size: 11,

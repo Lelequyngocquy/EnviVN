@@ -62,7 +62,7 @@ class MapTopControlBar extends StatelessWidget {
                 color: UIColors.primary,
                 size: 20,
               ),
-              const SizedBox(width: 8),
+              const Gap(8),
               Expanded(
                 child: SingleChildScrollView(
                   physics: const ClampingScrollPhysics(),
@@ -74,19 +74,19 @@ class MapTopControlBar extends StatelessWidget {
                         isActive: activeFilter == 'all',
                         onTap: () => onFilterChanged('all'),
                       ),
-                      const SizedBox(width: 6),
+                      const Gap(6),
                       _FilterGlassChip(
                         label: 'Tốt',
                         isActive: activeFilter == 'good',
                         onTap: () => onFilterChanged('good'),
                       ),
-                      const SizedBox(width: 6),
+                      const Gap(6),
                       _FilterGlassChip(
                         label: 'Trung bình',
                         isActive: activeFilter == 'moderate',
                         onTap: () => onFilterChanged('moderate'),
                       ),
-                      const SizedBox(width: 6),
+                      const Gap(6),
                       _FilterGlassChip(
                         label: 'Kém',
                         isActive:
@@ -111,7 +111,7 @@ class MapTopControlBar extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 8),
+        const Gap(8),
 
         
         SizedBox(
@@ -120,7 +120,7 @@ class MapTopControlBar extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             physics: const ClampingScrollPhysics(),
             itemCount: (hasHome ? 1 : 0) + effectiveQuickCities.length,
-            separatorBuilder: (_, index) => const SizedBox(width: 6),
+            separatorBuilder: (_, index) => const Gap(6),
             itemBuilder: (context, index) {
               if (hasHome && index == 0) {
                 return _QuickCityGlassChip(
@@ -226,7 +226,7 @@ class _QuickCityGlassChip extends StatelessWidget {
                 size: 13,
                 color: isActive ? UIColors.bg : UIColors.primary,
               ),
-              const SizedBox(width: 4),
+              const Gap(4),
             ],
             AppText(
               label,

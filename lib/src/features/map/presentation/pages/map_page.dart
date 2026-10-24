@@ -1,4 +1,4 @@
-﻿import 'dart:ui';
+import 'dart:ui';
 
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/aqi_helper.dart';
@@ -27,6 +27,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:gap/gap.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -237,13 +238,13 @@ class _MapPageState extends State<MapPage> {
   Widget build(BuildContext context) {
     return BlocListener<HomeDashboardCubit, HomeDashboardState>(
       listenWhen: (prev, curr) {
-        final switchedToMap = prev.currentTab != 2 && curr.currentTab == 2;
+        final switchedToMap = prev.currentTab != 1 && curr.currentTab == 1;
         final cityChanged = prev.currentCity != curr.currentCity;
         final permissionChanged =
             prev.isLocationPermissionGranted !=
             curr.isLocationPermissionGranted;
         return (switchedToMap && curr.hasPendingMapSync) ||
-            (curr.currentTab == 2 && (cityChanged || permissionChanged));
+            (curr.currentTab == 1 && (cityChanged || permissionChanged));
       },
       listener: (context, homeState) {
         final mapCubit = context.read<MapCubit>();
@@ -742,7 +743,7 @@ class _MapPageState extends State<MapPage> {
                                         ],
                                       ),
                                     ),
-                                    const SizedBox(height: 1),
+                                    const Gap(1),
                                     AppText.semiBold(
                                       item.sovereignty,
                                       size: 8.5,
@@ -955,7 +956,7 @@ class _MapPageState extends State<MapPage> {
                                         ? UIColors.warning
                                         : UIColors.secondary,
                                   ),
-                                  const SizedBox(width: 5),
+                                  const Gap(5),
                                   Flexible(
                                     child: AppText.regular(
                                       state.thermalNotice!,

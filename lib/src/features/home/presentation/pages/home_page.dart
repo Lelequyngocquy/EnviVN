@@ -1,18 +1,18 @@
+import 'package:envivn/src/common/constants/colors.dart';
+import 'package:envivn/src/core/presentation/widgets/location_loading_overlay.dart';
+import 'package:envivn/src/features/advisor/presentation/widgets/advisor_modal_sheet.dart';
+import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_cubit.dart';
+import 'package:envivn/src/features/explore/presentation/pages/explore_page.dart';
+import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
+import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_state.dart';
+import 'package:envivn/src/features/home/presentation/widgets/home_dashboard_view.dart';
+import 'package:envivn/src/features/home/presentation/widgets/liquid_glass_bottom_bar.dart';
+import 'package:envivn/src/features/map/presentation/pages/map_page.dart';
+import 'package:envivn/src/features/details/presentation/cubits/details_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:envivn/src/common/constants/colors.dart';
-import 'package:envivn/src/features/advisor/presentation/widgets/advisor_modal_sheet.dart';
-import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_cubit.dart';
-import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
-import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_state.dart';
-import 'package:envivn/src/features/home/presentation/pages/location_permission_page.dart';
-import 'package:envivn/src/features/home/presentation/widgets/home_dashboard_view.dart';
-import 'package:envivn/src/features/home/presentation/widgets/liquid_glass_bottom_bar.dart';
-import 'package:envivn/src/features/home/presentation/widgets/location_loading_overlay.dart';
-import 'package:envivn/src/features/map_pollution/presentation/pages/pollution_map_page.dart';
-import 'package:envivn/src/features/weather/presentation/cubits/weather_cubit.dart';
-import 'package:envivn/src/features/weather/presentation/pages/twenty_four_hour_detail_page.dart';
+import '../../../../core/presentation/widgets/future_work_widget.dart';
 
 class HomePage extends StatefulWidget {
   final int initialTab;
@@ -35,13 +35,13 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _openAdvisor(BuildContext context) {
-    final weatherState = context.read<WeatherCubit>().state;
+    final detailsState = context.read<DetailsCubit>().state;
     final aqiState = context.read<AirQualityCubit>().state;
     final homeState = context.read<HomeDashboardCubit>().state;
     AdvisorModalSheet.show(
       context,
       airQuality: aqiState.airQuality,
-      weather: weatherState.weather,
+      weather: detailsState.details,
       cityName: homeState.currentCity.name,
     );
   }
@@ -61,7 +61,6 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: UIColors.bg,
         body: Stack(
           children: [
-            // 1. Persistent Tab Views with state retention (IndexedStack)
             BlocBuilder<HomeDashboardCubit, HomeDashboardState>(
               buildWhen: (prev, curr) => prev.currentTab != curr.currentTab,
               builder: (context, state) {
@@ -70,16 +69,20 @@ class _HomePageState extends State<HomePage> {
                     index: state.currentTab,
                     children: const [
                       HomeDashboardView(),
-                      TwentyFourHourDetailPage(),
-                      PollutionMapPage(),
-                      LocationPermissionPage(isSettings: true),
+                      MapPage(),
+                      ExplorePage(),
+                      FutureWorkWidget(
+                        title: 'Cài đặt hệ thống',
+                        subtitle:
+                            'Khu vực quản lý thiết lập cá nhân, thông báo và tùy chỉnh ứng dụng đang được hoàn thiện.',
+                        badgeText: 'CÀI ĐẶT • SETTINGS',
+                        centerIcon: Icons.tune_rounded,
+                      ),
                     ],
                   ),
                 );
               },
             ),
-
-            // 2. Fixed Floating Liquid Glass Bottom Navigation Bar (retains position across all pages)
             BlocBuilder<HomeDashboardCubit, HomeDashboardState>(
               buildWhen: (prev, curr) => prev.currentTab != curr.currentTab,
               builder: (context, state) {
@@ -98,7 +101,6 @@ class _HomePageState extends State<HomePage> {
               },
             ),
 
-            // 3. Full-Screen Blocking Glass Loading Popup during Location Change
             BlocBuilder<HomeDashboardCubit, HomeDashboardState>(
               buildWhen: (prev, curr) =>
                   prev.isChangingLocation != curr.isChangingLocation ||

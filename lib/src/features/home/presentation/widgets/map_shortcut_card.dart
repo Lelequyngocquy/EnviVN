@@ -4,14 +4,12 @@ import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
+import 'package:gap/gap.dart';
 
 class MapShortcutCard extends StatelessWidget {
   final VoidCallback onTap;
 
-  const MapShortcutCard({
-    super.key,
-    required this.onTap,
-  });
+  const MapShortcutCard({super.key, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +27,13 @@ class MapShortcutCard extends StatelessWidget {
                 color: UIColors.secondary.withOpacity(0.18),
                 shape: BoxShape.circle,
               ),
-              child: const AppIcon(Icons.map_rounded, color: UIColors.secondary, size: 24),
+              child: const AppIcon(
+                Icons.map_rounded,
+                color: UIColors.secondary,
+                size: 24,
+              ),
             ),
-            const SizedBox(width: 14),
+            const Gap(14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,16 +43,20 @@ class MapShortcutCard extends StatelessWidget {
                     size: 14,
                     color: UIColors.textPrimary,
                   ),
-                  SizedBox(height: 3),
+                  Gap(3),
                   AppText.regular(
                     'Xem các trạm quan trắc chất lượng không khí trên toàn quốc',
-                    size: 11,
+                    size: 12,
                     color: UIColors.textSecondary,
                   ),
                 ],
               ),
             ),
-            const AppIcon(Icons.arrow_forward_ios_rounded, size: 14, color: UIColors.textSecondary),
+            const AppIcon(
+              Icons.arrow_forward_ios_rounded,
+              size: 14,
+              color: UIColors.textSecondary,
+            ),
           ],
         ),
       ),

@@ -6,8 +6,8 @@ import '../../../../core/infrastructure/services/location_service.dart';
 import '../../../air_quality/domain/entities/air_quality_entity.dart';
 import '../../../air_quality/domain/interfaces/i_air_quality_repository.dart';
 import '../../../home/domain/entities/city_entity.dart';
-import '../../../weather/domain/entities/weather_entity.dart';
-import '../../../weather/domain/interfaces/i_weather_repository.dart';
+import '../../../details/domain/entities/details_entity.dart';
+import '../../../details/domain/interfaces/i_details_repository.dart';
 import '../../domain/entities/map_layer_type.dart';
 import '../../domain/entities/quick_city_target.dart';
 import '../../domain/entities/station_entity.dart';
@@ -18,18 +18,22 @@ import 'map_state.dart';
 
 class MapCubit extends Cubit<MapState> {
   final IMapRepository repository;
-  final IWeatherRepository? weatherRepository;
+  final IDetailsRepository? detailsRepository;
   final IAirQualityRepository? airQualityRepository;
   final LocationService? locationService;
   final INasaFirmsRepository? nasaFirmsRepository;
 
   MapCubit({
     required this.repository,
-    this.weatherRepository,
+    IDetailsRepository? detailsRepository,
+    IDetailsRepository? weatherRepository,
     this.airQualityRepository,
     this.locationService,
     this.nasaFirmsRepository,
-  }) : super(const MapState());
+  })  : detailsRepository = detailsRepository ?? weatherRepository,
+        super(const MapState());
+
+  IDetailsRepository? get weatherRepository => detailsRepository;
 
   Future<void> fetchVietnamStations({
     String? initialCity,
@@ -216,7 +220,7 @@ class MapCubit extends Cubit<MapState> {
       return;
     }
     try {
-      final res = await weatherRepository!.getWeatherForecast(
+      final res = await detailsRepository!.getDetailsForecast(
         latitude: station.latitude,
         longitude: station.longitude,
       );
@@ -503,7 +507,7 @@ class MapCubit extends Cubit<MapState> {
         latitude: point.latitude,
         longitude: point.longitude,
       );
-      final weatherFuture = weatherRepository?.getWeatherForecast(
+      final weatherFuture = detailsRepository?.getDetailsForecast(
         latitude: point.latitude,
         longitude: point.longitude,
       );
@@ -534,7 +538,7 @@ class MapCubit extends Cubit<MapState> {
         if (weatherRes != null &&
             weatherRes.isSuccess &&
             weatherRes.data != null) {
-          final WeatherEntity weatherData = weatherRes.data!;
+          final DetailsEntity weatherData = weatherRes.data!;
           temp = weatherData.currentTemp;
           apparentTemp = weatherData.apparentTemp;
           weatherCode = weatherData.weatherCode;

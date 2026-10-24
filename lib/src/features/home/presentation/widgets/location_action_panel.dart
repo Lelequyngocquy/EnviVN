@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
+import 'package:gap/gap.dart';
 
 class LocationActionPanel extends StatelessWidget {
   final VoidCallback onAllow;
@@ -28,7 +29,6 @@ class LocationActionPanel extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Primary Button: Allow Location / Select Current Location
           SizedBox(
             width: double.infinity,
             height: 52,
@@ -36,7 +36,7 @@ class LocationActionPanel extends StatelessWidget {
               onPressed: isLoading ? null : onAllow,
               style: ElevatedButton.styleFrom(
                 backgroundColor: UIColors.primary,
-                foregroundColor: const Color(0xFF0B1220),
+                foregroundColor: UIColors.bg,
                 disabledBackgroundColor: UIColors.primary.withOpacity(0.6),
                 elevation: 0,
                 shape: RoundedRectangleBorder(
@@ -49,19 +49,20 @@ class LocationActionPanel extends StatelessWidget {
                       height: 22,
                       child: CircularProgressIndicator(
                         strokeWidth: 2.5,
-                        color: Color(0xFF0B1220),
+                        color: UIColors.bg,
                       ),
                     )
                   : AppText.bold(
                       primaryButtonText,
                       size: 15,
-                      color: const Color(0xFF0B1220),
+                      color: UIColors.bg,
                     ),
             ),
           ),
-          if (secondaryButtonText != null && secondaryButtonText!.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            // Secondary Button: Skip / Choose city manually
+          if (secondaryButtonText != null &&
+              secondaryButtonText!.isNotEmpty) ...[
+            const Gap(8),
+
             SizedBox(
               width: double.infinity,
               height: 48,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/constants/strings.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
+import 'package:gap/gap.dart';
 
 class SplashBrandingWidget extends StatelessWidget {
   const SplashBrandingWidget({super.key});
@@ -31,20 +32,20 @@ class SplashBrandingWidget extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        const SizedBox(height: 24),
+        const Gap(24),
         const AppText.extraBold(
           AppStrings.appName,
           size: 34,
-          color: Colors.white,
+          color: UIColors.textPrimary,
           letterSpacing: 2.0,
         ),
-        const SizedBox(height: 6),
+        const Gap(6),
         const AppText.medium(
           AppStrings.appSlogan,
           size: 13,
           color: UIColors.textSecondary,
         ),
-        const SizedBox(height: 36),
+        const Gap(36),
         const SizedBox(
           width: 24,
           height: 24,

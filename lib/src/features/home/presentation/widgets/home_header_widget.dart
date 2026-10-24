@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/weather_code_helper.dart';
 import 'package:envivn/src/core/presentation/widgets/widgets.dart';
 import 'package:envivn/src/features/home/domain/entities/city_entity.dart';
-import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
+import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
+import 'package:envivn/src/features/details/domain/entities/details_entity.dart';
 import 'package:envivn/src/shared/router/router_key_manager.dart';
 
 class HomeHeaderWidget extends StatelessWidget {
   final CityEntity city;
   final DateTime? lastUpdated;
-  final WeatherEntity weather;
+  final DetailsEntity weather;
   final VoidCallback onSelectCity;
   final VoidCallback onDetectGps;
 
@@ -46,7 +48,6 @@ class HomeHeaderWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top Bar: Location Selector & Action Buttons
             Row(
               children: [
                 Expanded(
@@ -59,7 +60,7 @@ class HomeHeaderWidget extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
+                        color: UIColors.white.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
@@ -69,21 +70,21 @@ class HomeHeaderWidget extends StatelessWidget {
                             city.isGps
                                 ? Icons.my_location_rounded
                                 : Icons.location_on_rounded,
-                            color: Colors.white,
+                            color: UIColors.white,
                             size: 18,
                           ),
-                          const SizedBox(width: 6),
+                          const Gap(6),
                           Flexible(
                             child: AppText.bold(
                               city.name,
-                              color: Colors.white,
+                              color: UIColors.textPrimary,
                               size: 14,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           const AppIcon(
                             Icons.keyboard_arrow_down_rounded,
-                            color: Colors.white,
+                            color: UIColors.white,
                             size: 18,
                           ),
                         ],
@@ -91,33 +92,39 @@ class HomeHeaderWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const Gap(8),
                 IconButton(
                   onPressed: onDetectGps,
                   icon: const AppIcon(
                     Icons.gps_fixed_rounded,
-                    color: Colors.white,
+                    color: UIColors.white,
                   ),
                   tooltip: 'Định vị GPS của tôi',
                   style: IconButton.styleFrom(
-                    backgroundColor: Colors.white.withOpacity(0.15),
+                    backgroundColor: UIColors.white.withOpacity(0.15),
                   ),
                 ),
-                const SizedBox(width: 6),
+                const Gap(6),
                 IconButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, RouterPath.pollutionMap);
+                    try {
+                      final cubit = context.read<HomeDashboardCubit>();
+                      cubit.markPendingMapSync();
+                      cubit.setTab(1);
+                    } catch (_) {
+                      Navigator.pushNamed(context, RouterPath.map);
+                    }
                   },
-                  icon: const AppIcon(Icons.map_rounded, color: Colors.white),
-                  tooltip: 'Bản đồ ô nhiễm',
+                  icon: const AppIcon(Icons.map_rounded, color: UIColors.white),
+                  tooltip: 'Bản đồ',
                   style: IconButton.styleFrom(
-                    backgroundColor: Colors.white.withOpacity(0.15),
+                    backgroundColor: UIColors.white.withOpacity(0.15),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 18),
-            // Weather Overview Hero Row
+            const Gap(18),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -130,74 +137,74 @@ class HomeHeaderWidget extends StatelessWidget {
                         AppText.bold(
                           '${weather.currentTemp.toStringAsFixed(0)}°',
                           size: 48,
-                          color: Colors.white,
+                          color: UIColors.textPrimary,
                           height: 1.0,
                         ),
-                        const SizedBox(width: 4),
+                        const Gap(4),
                         const AppText.bold(
                           'C',
                           size: 20,
-                          color: Colors.white70,
+                          color: UIColors.white70,
                         ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    const Gap(4),
                     AppText.regular(
                       'Cảm giác như: ${weather.apparentTemp.toStringAsFixed(0)}°C',
                       size: 13,
-                      color: Colors.white70,
+                      color: UIColors.white70,
                     ),
                     AppText.semiBold(
                       weatherInfo.description,
                       size: 14,
-                      color: Colors.white,
+                      color: UIColors.textPrimary,
                     ),
                   ],
                 ),
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.12),
+                    color: UIColors.white.withOpacity(0.12),
                     shape: BoxShape.circle,
                   ),
                   child: AppIcon(
                     weatherInfo.icon,
                     size: 48,
-                    color: Colors.white,
+                    color: UIColors.white,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const Gap(12),
             if (lastUpdated != null)
               Row(
                 children: [
                   const AppIcon(
                     Icons.access_time_rounded,
                     size: 12,
-                    color: Colors.white60,
+                    color: UIColors.textSecondary,
                   ),
-                  const SizedBox(width: 4),
+                  const Gap(4),
                   AppText.regular(
                     'Cập nhật: ${DateFormat('HH:mm - dd/MM/yyyy').format(lastUpdated!)}',
                     size: 11,
-                    color: Colors.white60,
+                    color: UIColors.textSecondary,
                   ),
                   if (weather.isOfflineCache) ...[
-                    const SizedBox(width: 8),
+                    const Gap(8),
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 6,
                         vertical: 1,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white24,
+                        color: UIColors.cardGlassBorder,
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: const AppText.regular(
                         'Ngoại tuyến',
                         size: 10,
-                        color: Colors.white,
+                        color: UIColors.textPrimary,
                       ),
                     ),
                   ],

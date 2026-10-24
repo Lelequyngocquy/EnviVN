@@ -1,22 +1,23 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/extensions/context_x.dart';
 import 'package:envivn/src/common/utils/date_helper.dart';
 import 'package:envivn/src/core/presentation/widgets/loading.dart';
-import 'package:envivn/src/features/home/presentation/widgets/environmental_notification_sheet.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_cubit.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_state.dart';
+import 'package:envivn/src/features/details/presentation/cubits/details_cubit.dart';
+import 'package:envivn/src/features/details/presentation/cubits/details_state.dart';
 import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
 import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_state.dart';
 import 'package:envivn/src/features/home/presentation/widgets/city_selector_sheet.dart';
+import 'package:envivn/src/features/home/presentation/widgets/environmental_notification_sheet.dart';
 import 'package:envivn/src/features/home/presentation/widgets/hero_aqi_card.dart';
+import 'package:envivn/src/features/home/presentation/widgets/home_details_card.dart';
 import 'package:envivn/src/features/home/presentation/widgets/home_top_bar.dart';
-import 'package:envivn/src/features/home/presentation/widgets/home_weather_card.dart';
 import 'package:envivn/src/features/home/presentation/widgets/map_shortcut_card.dart';
-import 'package:envivn/src/features/weather/presentation/cubits/weather_cubit.dart';
-import 'package:envivn/src/features/weather/presentation/cubits/weather_state.dart';
+import 'package:envivn/src/shared/router/router_key_manager.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 
 class HomeDashboardView extends StatelessWidget {
   const HomeDashboardView({super.key});
@@ -25,8 +26,8 @@ class HomeDashboardView extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      barrierColor: Colors.black.withOpacity(0.65),
+      backgroundColor: UIColors.transparent,
+      barrierColor: UIColors.black.withOpacity(0.65),
       builder: (_) => CitySelectorSheet(
         currentCity: state.currentCity,
         onCitySelected: (city) {
@@ -46,7 +47,6 @@ class HomeDashboardView extends StatelessWidget {
 
     return Stack(
       children: [
-        // Background ambient radial glows
         Positioned(
           top: -60,
           right: -40,
@@ -58,7 +58,7 @@ class HomeDashboardView extends StatelessWidget {
               gradient: RadialGradient(
                 colors: [
                   UIColors.primary.withOpacity(0.18),
-                  Colors.transparent,
+                  UIColors.transparent,
                 ],
               ),
             ),
@@ -75,14 +75,13 @@ class HomeDashboardView extends StatelessWidget {
               gradient: RadialGradient(
                 colors: [
                   UIColors.secondary.withOpacity(0.14),
-                  Colors.transparent,
+                  UIColors.transparent,
                 ],
               ),
             ),
           ),
         ),
 
-        // Scrollable content
         SafeArea(
           bottom: false,
           child: BlocConsumer<HomeDashboardCubit, HomeDashboardState>(
@@ -94,12 +93,12 @@ class HomeDashboardView extends StatelessWidget {
               }
             },
             builder: (context, dashState) {
-              return BlocBuilder<WeatherCubit, WeatherState>(
-                builder: (context, weatherState) {
+              return BlocBuilder<DetailsCubit, DetailsState>(
+                builder: (context, detailsState) {
                   return BlocBuilder<AirQualityCubit, AirQualityState>(
                     builder: (context, aqiState) {
                       final isInitialLoading = dashState.isInitialLoading(
-                        weatherState.weather.hourlyForecast.length,
+                        detailsState.details.hourlyForecast.length,
                       );
 
                       if (isInitialLoading) {
@@ -111,14 +110,12 @@ class HomeDashboardView extends StatelessWidget {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // 1. Fixed Top Bar (Location Selector & Notification Bell)
                           Container(
                             padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
                             decoration: BoxDecoration(
-                              // color: UIColors.bg.withOpacity(0.92),
                               border: Border(
                                 bottom: BorderSide(
-                                  color: Colors.white.withOpacity(0.06),
+                                  color: UIColors.white.withOpacity(0.06),
                                   width: 0.8,
                                 ),
                               ),
@@ -140,12 +137,11 @@ class HomeDashboardView extends StatelessWidget {
                                     context,
                                     cityName: dashState.currentCity.name,
                                     airQuality: aqiState.airQuality,
-                                    weather: weatherState.weather,
+                                    weather: detailsState.details,
                                   ),
                             ),
                           ),
 
-                          // 2. Scrollable Body
                           Expanded(
                             child: RefreshIndicator(
                               color: UIColors.primary,
@@ -167,34 +163,34 @@ class HomeDashboardView extends StatelessWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      // 1. Weather Overview Liquid Glass Card (Mưa gió giông bão nắng mây, dự báo giờ & chỉ số)
-                                      HomeWeatherCard(
-                                        weather: weatherState.weather,
-                                        onDetailTap: () {
-                                          context
-                                              .read<HomeDashboardCubit>()
-                                              .setTab(1);
-                                        },
-                                      ),
-                                      const SizedBox(height: 16),
-                                      // 2. Hero AQI Liquid Glass Card
                                       HeroAQICard(
                                         airQuality: aqiState.airQuality,
                                         onDetailTap: () {
-                                          context
-                                              .read<HomeDashboardCubit>()
-                                              .setTab(1);
+                                          Navigator.pushNamed(
+                                            context,
+                                            RouterPath.twentyFourHours,
+                                          );
                                         },
                                       ),
-                                      const SizedBox(height: 16),
+                                      const Gap(16),
+                                      HomeDetailsCard(
+                                        details: detailsState.details,
+                                        onDetailTap: () {
+                                          Navigator.pushNamed(
+                                            context,
+                                            RouterPath.twentyFourHours,
+                                          );
+                                        },
+                                      ),
 
-                                      // 3. Map Shortcut Card
+                                      const Gap(16),
+
                                       MapShortcutCard(
                                         onTap: () {
                                           final cubit = context
                                               .read<HomeDashboardCubit>();
                                           cubit.markPendingMapSync();
-                                          cubit.setTab(2);
+                                          cubit.setTab(1);
                                         },
                                       ),
                                     ],

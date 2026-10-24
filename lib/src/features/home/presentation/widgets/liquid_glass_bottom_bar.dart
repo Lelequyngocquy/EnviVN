@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 class LiquidGlassBottomBar extends StatelessWidget {
   final int currentTab;
@@ -25,9 +25,9 @@ class LiquidGlassBottomBar extends StatelessWidget {
           child: AppGlass(
             isFixed: true,
             borderRadius: 30,
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 NavBarItem(
                   icon: Icons.home_rounded,
@@ -36,14 +36,14 @@ class LiquidGlassBottomBar extends StatelessWidget {
                   onTap: () => onTabSelected(0),
                 ),
                 NavBarItem(
-                  icon: Icons.bar_chart_rounded,
-                  label: 'Chi Tiết',
+                  icon: Icons.map_outlined,
+                  label: 'Bản đồ',
                   isActive: currentTab == 1,
                   onTap: () => onTabSelected(1),
                 ),
                 NavBarItem(
-                  icon: Icons.map_outlined,
-                  label: 'Bản đồ',
+                  icon: Icons.auto_awesome_rounded,
+                  label: 'Khám phá',
                   isActive: currentTab == 2,
                   onTap: () => onTabSelected(2),
                 ),
@@ -57,13 +57,13 @@ class LiquidGlassBottomBar extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 8),
+        const Gap(8),
         AppGlass(
           isFixed: true,
           borderRadius: 100,
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: NavBarItem(
-            icon: Icons.lightbulb,
+            icon: Icons.wechat_sharp,
             isActive: true,
             onTap: onAdvisorTap ?? () {},
           ),
@@ -94,7 +94,7 @@ class NavBarItem extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       child: Padding(
         padding: label != null
-            ? const EdgeInsets.symmetric(horizontal: 12, vertical: 4)
+            ? const EdgeInsets.symmetric(horizontal: 10, vertical: 4)
             : const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -105,7 +105,7 @@ class NavBarItem extends StatelessWidget {
               size: label != null ? 22 : 40,
             ),
             if (label != null) ...{
-              const SizedBox(height: 3),
+              const Gap(3),
               AppText(
                 label ?? '',
                 size: 10,

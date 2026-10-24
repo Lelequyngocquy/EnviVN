@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
-
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
 class HomeTopBar extends StatelessWidget {
   final String cityName;
@@ -48,7 +48,6 @@ class HomeTopBar extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Location Dropdown in Liquid Glass Pill
                     GestureDetector(
                       onTap: onLocationTap,
                       child: AppGlass(
@@ -68,13 +67,13 @@ class HomeTopBar extends StatelessWidget {
                               color: UIColors.primary,
                               size: 16,
                             ),
-                            const SizedBox(width: 6),
+                            const Gap(6),
                             AppText.bold(
                               cityName,
                               color: UIColors.textPrimary,
                               size: 14,
                             ),
-                            const SizedBox(width: 4),
+                            const Gap(4),
                             const AppIcon(
                               Icons.keyboard_arrow_down_rounded,
                               color: UIColors.textSecondary,
@@ -85,9 +84,8 @@ class HomeTopBar extends StatelessWidget {
                       ),
                     ),
 
-                    // Quick Suggestion Button: Chọn vị trí hiện tại
                     if (shouldShowSuggestion) ...[
-                      const SizedBox(width: 8),
+                      const Gap(8),
                       GestureDetector(
                         onTap: onSelectCurrentLocation,
                         child: AppGlass(
@@ -95,27 +93,16 @@ class HomeTopBar extends StatelessWidget {
                           borderRadius: 20,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 12,
-                            vertical: 8,
+                            vertical: 12,
                           ),
                           border: Border.all(
                             color: UIColors.primary.withValues(alpha: 0.35),
                             width: 0.8,
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              AppIcon(
-                                Icons.my_location_rounded,
-                                color: UIColors.primary,
-                                size: 16,
-                              ),
-                              SizedBox(width: 4),
-                              AppText.semiBold(
-                                'Vị trí hiện tại',
-                                color: UIColors.primary,
-                                size: 12,
-                              ),
-                            ],
+                          child: AppIcon(
+                            Icons.my_location_rounded,
+                            color: UIColors.primary,
+                            size: 16,
                           ),
                         ),
                       ),
@@ -123,7 +110,7 @@ class HomeTopBar extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: 6),
+              const Gap(6),
               Padding(
                 padding: const EdgeInsets.only(left: 4),
                 child: AppText.medium(
@@ -135,8 +122,8 @@ class HomeTopBar extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(width: 8),
-        // Notification Bell in Liquid Glass Button
+        const Gap(8),
+
         AppGlass(
           borderRadius: 22,
           isFixed: true,
@@ -149,7 +136,7 @@ class HomeTopBar extends StatelessWidget {
                 IconButton(
                   icon: const AppIcon(
                     Icons.notifications_none_rounded,
-                    color: Colors.white,
+                    color: UIColors.textPrimary,
                     size: 22,
                   ),
                   onPressed: onNotificationTap,

@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
-import 'package:envivn/src/features/weather/domain/entities/weather_entity.dart';
+import 'package:envivn/src/features/details/domain/entities/details_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
+import 'package:gap/gap.dart';
 
 class WeatherMetricsGrid extends StatelessWidget {
-  final WeatherEntity weather;
+  final DetailsEntity weather;
   final void Function(String metricType)? onMetricTap;
 
   const WeatherMetricsGrid({
@@ -18,11 +19,21 @@ class WeatherMetricsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tempStr = weather.currentTemp > 0 ? weather.currentTemp.toStringAsFixed(0) : '28';
-    final feelsLikeStr = weather.apparentTemp > 0 ? weather.apparentTemp.toStringAsFixed(0) : '30';
-    final humidityVal = weather.relativeHumidity > 0 ? weather.relativeHumidity : 78;
-    final windSpeedStr = weather.windSpeed > 0 ? weather.windSpeed.toStringAsFixed(1) : '12.0';
-    final uvIndexStr = weather.uvIndex > 0 ? weather.uvIndex.toStringAsFixed(1) : '4.2';
+    final tempStr = weather.currentTemp > 0
+        ? weather.currentTemp.toStringAsFixed(0)
+        : '28';
+    final feelsLikeStr = weather.apparentTemp > 0
+        ? weather.apparentTemp.toStringAsFixed(0)
+        : '30';
+    final humidityVal = weather.relativeHumidity > 0
+        ? weather.relativeHumidity
+        : 78;
+    final windSpeedStr = weather.windSpeed > 0
+        ? weather.windSpeed.toStringAsFixed(1)
+        : '12.0';
+    final uvIndexStr = weather.uvIndex > 0
+        ? weather.uvIndex.toStringAsFixed(1)
+        : '4.2';
 
     return GridView.count(
       shrinkWrap: true,
@@ -34,7 +45,7 @@ class WeatherMetricsGrid extends StatelessWidget {
       children: [
         MetricGlassItem(
           icon: Icons.thermostat_rounded,
-          iconColor: Colors.orangeAccent,
+          iconColor: UIColors.warning,
           label: 'Nhiệt độ',
           value: '$tempStr°C',
           sub: 'Cảm giác như: $feelsLikeStr°C',
@@ -102,24 +113,12 @@ class MetricGlassItem extends StatelessWidget {
             Row(
               children: [
                 AppIcon(icon, color: iconColor, size: 18),
-                const SizedBox(width: 6),
-                AppText.regular(
-                  label,
-                  size: 12,
-                  color: UIColors.textSecondary,
-                ),
+                const Gap(6),
+                AppText.regular(label, size: 12, color: UIColors.textSecondary),
               ],
             ),
-            AppText.bold(
-              value,
-              size: 22,
-              color: Colors.white,
-            ),
-            AppText.regular(
-              sub,
-              size: 10,
-              color: UIColors.textMuted,
-            ),
+            AppText.bold(value, size: 22, color: UIColors.textPrimary),
+            AppText.regular(sub, size: 10, color: UIColors.textMuted),
           ],
         ),
       ),

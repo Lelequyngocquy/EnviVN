@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-
-class CityEntity extends Equatable {
+class CityEntity {
   final String name;
   final String province;
   final double latitude;
@@ -15,9 +13,6 @@ class CityEntity extends Equatable {
     this.isGps = false,
   });
 
-  @override
-  List<Object?> get props => [name, province, latitude, longitude, isGps];
-
   static const defaultCity = CityEntity(
     name: 'Hà Nội',
     province: 'Thủ đô Hà Nội',
@@ -27,7 +22,7 @@ class CityEntity extends Equatable {
 
   static const List<CityEntity> popularCities = [
     CityEntity(name: 'Hà Nội', province: 'Thủ đô Hà Nội', latitude: 21.0285, longitude: 105.8542),
-    CityEntity(name: 'TP. Hồ Chí Minh', province: 'TP. Hồ Chí Minh', latitude: 10.8231, longitude: 106.6297),
+    CityEntity(name: 'TP. Hồ Chí Minh', province: 'TP. Hồ Chí Minh', latitude: 10.7769, longitude: 106.7009),
     CityEntity(name: 'Đà Nẵng', province: 'Đà Nẵng', latitude: 16.0544, longitude: 108.2022),
     CityEntity(name: 'Hải Phòng', province: 'Hải Phòng', latitude: 20.8449, longitude: 106.6881),
     CityEntity(name: 'Cần Thơ', province: 'Cần Thơ', latitude: 10.0452, longitude: 105.7469),
@@ -38,5 +33,7 @@ class CityEntity extends Equatable {
     CityEntity(name: 'Vũng Tàu', province: 'Bà Rịa - Vũng Tàu', latitude: 10.3460, longitude: 107.0843),
     CityEntity(name: 'Quy Nhơn', province: 'Bình Định', latitude: 13.7820, longitude: 109.2197),
     CityEntity(name: 'Buôn Ma Thuột', province: 'Đắk Lắk', latitude: 12.6675, longitude: 108.0383),
+    CityEntity(name: 'Quần đảo Hoàng Sa', province: 'TP. Đà Nẵng', latitude: 16.5333, longitude: 112.0333),
+    CityEntity(name: 'Quần đảo Trường Sa', province: 'Tỉnh Khánh Hòa', latitude: 9.8833, longitude: 114.2500),
   ];
 }

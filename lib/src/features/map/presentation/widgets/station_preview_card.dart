@@ -51,7 +51,7 @@ class StationPreviewCard extends StatelessWidget {
         children: [
           
           _buildHeader(),
-          const SizedBox(height: 8),
+          const Gap(8),
 
           
           if (_isContentLoading)
@@ -98,7 +98,7 @@ class StationPreviewCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
               if (isPicked) ...[
-                const SizedBox(height: 2.5),
+                const Gap(2.5),
                 Row(
                   children: [
                     const AppIcon(
@@ -106,7 +106,7 @@ class StationPreviewCard extends StatelessWidget {
                       size: 11,
                       color: UIColors.pinPurple,
                     ),
-                    const SizedBox(width: 4),
+                    const Gap(4),
                     Expanded(
                       child: AppText.regular(
                         'Tọa độ: ${station.latitude.toStringAsFixed(4)}°B, ${station.longitude.toStringAsFixed(4)}°Đ',
@@ -134,7 +134,7 @@ class StationPreviewCard extends StatelessWidget {
               ),
             ),
           ),
-        const SizedBox(width: 4),
+        const Gap(4),
         GestureDetector(
           onTap: onClose,
           behavior: HitTestBehavior.opaque,
@@ -214,7 +214,7 @@ class StationPreviewCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 12),
+          const Gap(12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,7 +227,7 @@ class StationPreviewCard extends StatelessWidget {
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 3),
+                const Gap(3),
                 AppText.regular(
                   subtitle,
                   size: 10.5,
@@ -285,7 +285,7 @@ class StationPreviewCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   AppIcon(weatherInfo.icon, size: 22, color: weatherInfo.color),
-                  const SizedBox(height: 2),
+                  const Gap(2),
                   AppText.extraBold(
                     '${temp.toStringAsFixed(0)}°C',
                     size: 14,
@@ -296,7 +296,7 @@ class StationPreviewCard extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 10),
+            const Gap(10),
 
             
             Expanded(
@@ -327,7 +327,7 @@ class StationPreviewCard extends StatelessWidget {
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 5),
+                  const Gap(5),
                   Wrap(
                     spacing: 10,
                     runSpacing: 4,
@@ -360,7 +360,7 @@ class StationPreviewCard extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 7),
+        const Gap(7),
 
         
         _buildBottomTip(
@@ -405,7 +405,7 @@ class StationPreviewCard extends StatelessWidget {
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 2),
+                  const Gap(2),
                   AppText.bold(
                     aqiInfo.label,
                     size: 9.5,
@@ -416,7 +416,7 @@ class StationPreviewCard extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 12),
+            const Gap(12),
 
             
             Expanded(
@@ -433,7 +433,7 @@ class StationPreviewCard extends StatelessWidget {
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 1),
+                        const Gap(1),
                         AppText.bold(
                           '${station.pm25.toStringAsFixed(1)} µg/m³',
                           size: 12.5,
@@ -449,7 +449,7 @@ class StationPreviewCard extends StatelessWidget {
                     height: 28,
                     color: UIColors.white.withOpacity(0.1),
                   ),
-                  const SizedBox(width: 12),
+                  const Gap(12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -461,7 +461,7 @@ class StationPreviewCard extends StatelessWidget {
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 1),
+                        const Gap(1),
                         AppText.bold(
                           '${station.pm10.toStringAsFixed(1)} µg/m³',
                           size: 12.5,
@@ -477,7 +477,7 @@ class StationPreviewCard extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 7),
+        const Gap(7),
 
         
         _buildBottomTip(
@@ -537,7 +537,7 @@ class StationPreviewCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     AppIcon(statusIcon, size: 20, color: statusColor),
-                    const SizedBox(height: 2),
+                    const Gap(2),
                     AppText.extraBold(
                       tempStr,
                       size: 13,
@@ -548,7 +548,7 @@ class StationPreviewCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 10),
+              const Gap(10),
 
               
               Expanded(
@@ -562,7 +562,7 @@ class StationPreviewCard extends StatelessWidget {
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(height: 3),
+                    const Gap(3),
                     AppText.regular(
                       statusSubtitle,
                       size: 10.5,
@@ -577,7 +577,7 @@ class StationPreviewCard extends StatelessWidget {
           ),
 
           
-          const SizedBox(height: 6),
+          const Gap(6),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
             decoration: BoxDecoration(
@@ -603,7 +603,7 @@ class StationPreviewCard extends StatelessWidget {
                           ? UIColors.markerRedDark
                           : UIColors.warning,
                     ),
-                    const SizedBox(width: 5),
+                    const Gap(5),
                     Expanded(
                       child: AppText.bold(
                         isActive
@@ -620,7 +620,7 @@ class StationPreviewCard extends StatelessWidget {
                   ],
                 ),
                 if (isActive && station.fireDetectedTime != null) ...[
-                  const SizedBox(height: 3),
+                  const Gap(3),
                   AppText.regular(
                     '⏱️ ${station.fireDetectedTime!}',
                     size: 9.5,
@@ -630,7 +630,7 @@ class StationPreviewCard extends StatelessWidget {
                   ),
                 ],
                 if (!isActive && station.fireProneSeason != null) ...[
-                  const SizedBox(height: 3),
+                  const Gap(3),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -654,7 +654,7 @@ class StationPreviewCard extends StatelessWidget {
                   ),
                 ],
                 if (station.spotDescription != null) ...[
-                  const SizedBox(height: 2),
+                  const Gap(2),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -681,7 +681,7 @@ class StationPreviewCard extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 6),
+          const Gap(6),
 
           
           _buildBottomTip(
@@ -721,7 +721,7 @@ class StationPreviewCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   AppIcon(risk.icon, size: 20, color: risk.color),
-                  const SizedBox(height: 2),
+                  const Gap(2),
                   AppText.extraBold(
                     '${heatIndex.toStringAsFixed(0)}°C',
                     size: 14,
@@ -732,7 +732,7 @@ class StationPreviewCard extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 10),
+            const Gap(10),
 
             
             Expanded(
@@ -762,7 +762,7 @@ class StationPreviewCard extends StatelessWidget {
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 4),
+                  const Gap(4),
                   Wrap(
                     spacing: 10,
                     runSpacing: 4,
@@ -788,7 +788,7 @@ class StationPreviewCard extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 7),
+        const Gap(7),
 
         
         _buildBottomTip(
@@ -855,7 +855,7 @@ class StationPreviewCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   AppIcon(liveIcon, size: 20, color: liveColor),
-                  const SizedBox(height: 2),
+                  const Gap(2),
                   AppText.extraBold(
                     '${rain.toStringAsFixed(1)}mm',
                     size: 12.5,
@@ -866,7 +866,7 @@ class StationPreviewCard extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 10),
+            const Gap(10),
 
             
             Expanded(
@@ -880,7 +880,7 @@ class StationPreviewCard extends StatelessWidget {
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  const SizedBox(height: 3),
+                  const Gap(3),
                   AppText.regular(
                     liveDetail,
                     size: 10.5,
@@ -896,7 +896,7 @@ class StationPreviewCard extends StatelessWidget {
 
         
         if (isBlackspot) ...[
-          const SizedBox(height: 6),
+          const Gap(6),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
             decoration: BoxDecoration(
@@ -914,7 +914,7 @@ class StationPreviewCard extends StatelessWidget {
                       size: 13,
                       color: UIColors.warning,
                     ),
-                    const SizedBox(width: 5),
+                    const Gap(5),
                     Expanded(
                       child: AppText.rich(
                         TextSpan(
@@ -945,7 +945,7 @@ class StationPreviewCard extends StatelessWidget {
                   ],
                 ),
                 if (station.floodProneTime != null) ...[
-                  const SizedBox(height: 3),
+                  const Gap(3),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -969,7 +969,7 @@ class StationPreviewCard extends StatelessWidget {
                   ),
                 ],
                 if (station.floodTriggerCondition != null) ...[
-                  const SizedBox(height: 2),
+                  const Gap(2),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -997,7 +997,7 @@ class StationPreviewCard extends StatelessWidget {
           ),
         ],
 
-        const SizedBox(height: 6),
+        const Gap(6),
 
         
         _buildBottomTip(
@@ -1037,7 +1037,7 @@ class StationPreviewCard extends StatelessWidget {
             padding: const EdgeInsets.only(top: 2),
             child: AppIcon(icon, color: color, size: 13),
           ),
-          const SizedBox(width: 6),
+          const Gap(6),
           Expanded(
             child: AppText.regular(
               text,

@@ -66,7 +66,7 @@ class MapSideControls extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 10),
+        const Gap(10),
 
         AppGlass(
           isFixed: true,
@@ -85,7 +85,7 @@ class MapSideControls extends StatelessWidget {
                   alignment: Alignment.center,
                   child: AppIcon(
                     Icons.my_location_rounded,
-                    color: UIColors.gpsBlue.withOpacity(0.8),
+                    color: UIColors.gpsBlue,
                     size: 19,
                   ),
                 ),
@@ -94,7 +94,7 @@ class MapSideControls extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 10),
+        const Gap(10),
 
         AppGlass(
           isFixed: true,

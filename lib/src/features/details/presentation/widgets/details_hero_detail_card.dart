@@ -55,7 +55,7 @@ class DetailsHeroDetailCard extends StatelessWidget {
                       children: [
                         AppText.extraBold(
                           tempStr,
-                          size: 44,
+                          size: 50,
                           color: UIColors.white,
                           letterSpacing: -1.0,
                           height: 1.0,
@@ -65,7 +65,7 @@ class DetailsHeroDetailCard extends StatelessWidget {
                           padding: EdgeInsets.only(top: 4),
                           child: AppText.bold(
                             '°C',
-                            size: 20,
+                            size: 22,
                             color: UIColors.textSecondary,
                           ),
                         ),
@@ -74,13 +74,13 @@ class DetailsHeroDetailCard extends StatelessWidget {
                     const Gap(6),
                     AppText.bold(
                       weatherInfo.description,
-                      size: 16,
+                      size: 15,
                       color: weatherInfo.color,
                     ),
                     const Gap(4),
                     AppText.medium(
                       'Cảm giác như: $feelsLikeStr°C${highLowStr != null ? ' • $highLowStr' : ''}',
-                      size: 11,
+                      size: 12,
                       color: UIColors.textSecondary,
                     ),
                   ],
@@ -209,9 +209,9 @@ class _MetricItem extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
         const Gap(1),
-        AppText.regular(
+        AppText.medium(
           label,
-          size: 9,
+          size: 9.5,
           color: UIColors.textSecondary,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,

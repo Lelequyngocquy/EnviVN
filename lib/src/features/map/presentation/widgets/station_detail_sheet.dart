@@ -44,7 +44,7 @@ class StationDetailSheet extends StatelessWidget {
                       color: info.color,
                       height: 1.0,
                     ),
-                    const SizedBox(height: 4),
+                    const Gap(4),
                     const AppText.semiBold(
                       'US AQI',
                       size: 11,
@@ -53,7 +53,7 @@ class StationDetailSheet extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 16),
+              const Gap(16),
               Expanded(
                 child: Column(
                   children: [
@@ -73,7 +73,7 @@ class StationDetailSheet extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 18),
+          const Gap(18),
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
@@ -88,7 +88,7 @@ class StationDetailSheet extends StatelessWidget {
                   color: info.color,
                   size: 20,
                 ),
-                const SizedBox(width: 8),
+                const Gap(8),
                 Expanded(
                   child: AppText.medium(
                     info.healthAdvice,

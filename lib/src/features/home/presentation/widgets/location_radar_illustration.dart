@@ -14,7 +14,6 @@ class LocationRadarIllustration extends StatelessWidget {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // Pulse 1
             Container(
               width: 220,
               height: 220,
@@ -26,7 +25,7 @@ class LocationRadarIllustration extends StatelessWidget {
                 ),
               ),
             ),
-            // Pulse 2
+
             Container(
               width: 160,
               height: 160,
@@ -38,7 +37,7 @@ class LocationRadarIllustration extends StatelessWidget {
                 ),
               ),
             ),
-            // Pulse 3
+
             Container(
               width: 100,
               height: 100,
@@ -50,19 +49,19 @@ class LocationRadarIllustration extends StatelessWidget {
                 ),
               ),
             ),
-            // Shadow beneath pin
+
             Positioned(
               bottom: 70,
               child: Container(
                 width: 80,
                 height: 14,
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.4),
+                  color: UIColors.black.withOpacity(0.4),
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
-            // Main Pin
+
             Container(
               width: 60,
               height: 60,
@@ -82,7 +81,7 @@ class LocationRadarIllustration extends StatelessWidget {
                   width: 24,
                   height: 24,
                   decoration: const BoxDecoration(
-                    color: Colors.white,
+                    color: UIColors.white,
                     shape: BoxShape.circle,
                   ),
                 ),
