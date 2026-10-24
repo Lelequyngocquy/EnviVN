@@ -10,7 +10,6 @@ import 'package:envivn/src/features/details/presentation/cubits/details_state.da
 import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
 import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_state.dart';
 import 'package:envivn/src/shared/widgets/app_button.dart';
-import 'package:envivn/src/shared/widgets/glass.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -140,7 +139,11 @@ class _StoryPreviewPageState extends State<StoryPreviewPage> {
                                   maxLines: 3,
                                 ),
                               ),
-                              GestureDetector(
+                              AppCircleButton(
+                                icon: Icons.tune_rounded,
+                                iconColor: UIColors.primary,
+                                iconSize: 22,
+                                tooltip: 'Tùy chọn hiển thị',
                                 onTap: () {
                                   StoryOptionsBottomSheet.show(
                                     context,
@@ -158,20 +161,6 @@ class _StoryPreviewPageState extends State<StoryPreviewPage> {
                                     },
                                   );
                                 },
-                                behavior: HitTestBehavior.opaque,
-                                child: AppGlass(
-                                  isFixed: true,
-                                  borderRadius: 50,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 10,
-                                  ),
-                                  child: AppIcon(
-                                    Icons.tune_rounded,
-                                    size: 22,
-                                    color: UIColors.primary,
-                                  ),
-                                ),
                               ),
                             ],
                           ),

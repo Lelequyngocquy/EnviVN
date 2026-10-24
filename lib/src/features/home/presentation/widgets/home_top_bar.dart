@@ -1,6 +1,7 @@
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
+import 'package:envivn/src/shared/widgets/app_button.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -86,25 +87,10 @@ class HomeTopBar extends StatelessWidget {
 
                     if (shouldShowSuggestion) ...[
                       const Gap(8),
-                      GestureDetector(
+                      AppCircleButton(
+                        icon: Icons.my_location_rounded,
                         onTap: onSelectCurrentLocation,
-                        child: AppGlass(
-                          isFixed: true,
-                          borderRadius: 20,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 12,
-                          ),
-                          border: Border.all(
-                            color: UIColors.primary.withValues(alpha: 0.35),
-                            width: 0.8,
-                          ),
-                          child: AppIcon(
-                            Icons.my_location_rounded,
-                            color: UIColors.primary,
-                            size: 16,
-                          ),
-                        ),
+                        iconSize: 16,
                       ),
                     ],
                   ],
@@ -123,40 +109,13 @@ class HomeTopBar extends StatelessWidget {
           ),
         ),
         const Gap(8),
-
-        AppGlass(
-          borderRadius: 22,
-          isFixed: true,
-          child: SizedBox(
-            width: 44,
-            height: 44,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                IconButton(
-                  icon: const AppIcon(
-                    Icons.notifications_none_rounded,
-                    color: UIColors.textPrimary,
-                    size: 22,
-                  ),
-                  onPressed: onNotificationTap,
-                ),
-                if (hasNotification)
-                  Positioned(
-                    top: 10,
-                    right: 12,
-                    child: Container(
-                      width: 8,
-                      height: 8,
-                      decoration: const BoxDecoration(
-                        color: UIColors.error,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
+        AppCircleButton(
+          icon: Icons.notifications_none_rounded,
+          iconColor: UIColors.textPrimary,
+          iconSize: 22,
+          onTap: onNotificationTap,
+          showDot: hasNotification,
+          isLoading: false,
         ),
       ],
     );
