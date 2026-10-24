@@ -2,13 +2,13 @@ import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/core/presentation/widgets/location_loading_overlay.dart';
 import 'package:envivn/src/features/advisor/presentation/widgets/advisor_modal_sheet.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_cubit.dart';
+import 'package:envivn/src/features/details/presentation/cubits/details_cubit.dart';
 import 'package:envivn/src/features/explore/presentation/pages/explore_page.dart';
 import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
 import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_state.dart';
 import 'package:envivn/src/features/home/presentation/widgets/home_dashboard_view.dart';
 import 'package:envivn/src/features/home/presentation/widgets/liquid_glass_bottom_bar.dart';
 import 'package:envivn/src/features/map/presentation/pages/map_page.dart';
-import 'package:envivn/src/features/details/presentation/cubits/details_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -75,7 +75,7 @@ class _HomePageState extends State<HomePage> {
                         title: 'Cài đặt hệ thống',
                         subtitle:
                             'Khu vực quản lý thiết lập cá nhân, thông báo và tùy chỉnh ứng dụng đang được hoàn thiện.',
-                        badgeText: 'CÀI ĐẶT • SETTINGS',
+                        badgeText: 'Sắp ra mắt • COMMING SOON',
                         centerIcon: Icons.tune_rounded,
                       ),
                     ],

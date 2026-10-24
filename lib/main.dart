@@ -26,15 +26,25 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   UIColors.setSystemUIOverlay();
 
-  
-  await EnvConfig.init();
+  try {
+    await EnvConfig.init();
+  } catch (e, stack) {
+    debugPrint('[main] EnvConfig.init error: $e\n$stack');
+  }
 
-  
-  await initializeDateFormatting('vi_VN', null);
-  await initializeDateFormatting('vi', null);
-  Intl.defaultLocale = 'vi_VN';
+  try {
+    await initializeDateFormatting('vi_VN', null);
+    await initializeDateFormatting('vi', null);
+    Intl.defaultLocale = 'vi_VN';
+  } catch (e, stack) {
+    debugPrint('[main] initializeDateFormatting error: $e\n$stack');
+  }
 
-  await di.setupGetIt();
+  try {
+    await di.setupGetIt();
+  } catch (e, stack) {
+    debugPrint('[main] di.setupGetIt error: $e\n$stack');
+  }
 
   runApp(const EnviVNApp());
 }
