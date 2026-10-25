@@ -118,13 +118,13 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
                 icon: isCurrentlyRaining
                     ? Icons.water_drop_rounded
                     : (rainProb >= 40
-                        ? Icons.umbrella_rounded
-                        : Icons.wb_sunny_outlined),
+                          ? Icons.umbrella_rounded
+                          : Icons.wb_sunny_outlined),
                 label: isCurrentlyRaining
                     ? 'Đang mưa • Mang áo mưa'
                     : (rainProb >= 40
-                        ? 'Chuẩn bị áo mưa ($rainProb%)'
-                        : 'Trời tạnh ráo'),
+                          ? 'Chuẩn bị áo mưa ($rainProb%)'
+                          : 'Trời tạnh ráo'),
                 color: isCurrentlyRaining || rainProb >= 40
                     ? UIColors.secondary
                     : UIColors.aqiGood,
@@ -139,7 +139,9 @@ class OutdoorActivityAdviceCard extends StatelessWidget {
               _ActionGlassPill(
                 icon: Icons.air_rounded,
                 label: aqi <= 80 ? 'Mở cửa thông thoáng' : 'Bật máy lọc khí',
-                color: aqi <= 80 ? UIColors.aqiGood : UIColors.aqiUnhealthySensitive,
+                color: aqi <= 80
+                    ? UIColors.aqiGood
+                    : UIColors.aqiUnhealthySensitive,
                 isCompact: isCompact,
               ),
             ],

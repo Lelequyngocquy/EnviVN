@@ -35,9 +35,9 @@ class AdvisorState extends Equatable {
 
   @override
   List<Object?> get props => [
-        status,
-        availablePrompts,
-        selectedPrompt,
-        decision,
-      ];
+    status,
+    availablePrompts,
+    selectedPrompt,
+    decision,
+  ];
 }

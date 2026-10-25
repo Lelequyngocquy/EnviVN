@@ -9,8 +9,6 @@ import 'package:envivn/src/features/advisor/domain/entities/quick_prompt_type.da
 import 'package:envivn/src/shared/widgets/glass.dart';
 import 'package:gap/gap.dart';
 
-
-
 class AdvisorResultCard extends StatelessWidget {
   final AdvisorDecision decision;
   final QuickPromptType? prompt;
@@ -68,7 +66,6 @@ class AdvisorResultCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
@@ -87,7 +84,6 @@ class AdvisorResultCard extends StatelessWidget {
           ),
           const Gap(14),
 
-          
           AppText.bold(
             decision.headline,
             size: 18,
@@ -96,7 +92,6 @@ class AdvisorResultCard extends StatelessWidget {
           ),
           const Gap(10),
 
-          
           AppText.regular(
             decision.explanation,
             size: 13.5,
@@ -105,7 +100,6 @@ class AdvisorResultCard extends StatelessWidget {
           ),
           const Gap(16),
 
-          
           if (effectiveEvidences.isNotEmpty) ...[
             Container(
               padding: const EdgeInsets.all(14),
@@ -166,8 +160,8 @@ class AdvisorResultCard extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .center, 
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Container(
                                         width: 6,
@@ -178,7 +172,7 @@ class AdvisorResultCard extends StatelessWidget {
                                         ),
                                       ),
                                       const Gap(6),
-                                      
+
                                       Expanded(
                                         child: AppText.bold(
                                           '${evidence.metricName}: ${evidence.formattedValue}',
@@ -226,7 +220,6 @@ class AdvisorResultCard extends StatelessWidget {
             const Gap(14),
           ],
 
-          
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
@@ -287,7 +280,6 @@ class AdvisorResultCard extends StatelessWidget {
             ),
           ),
 
-          
           if (decision.alternativeHour != null) ...[
             const Gap(14),
             Container(

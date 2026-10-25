@@ -6,7 +6,6 @@ import 'advisor_state.dart';
 class AdvisorCubit extends Cubit<AdvisorState> {
   AdvisorCubit() : super(const AdvisorState());
 
-  
   void selectPrompt(
     QuickPromptType prompt, {
     required int aqi,
@@ -19,12 +18,8 @@ class AdvisorCubit extends Cubit<AdvisorState> {
     double precipitation = 0.0,
     int? weatherCode,
   }) {
-    emit(state.copyWith(
-      status: AdvisorStatus.loading,
-      selectedPrompt: prompt,
-    ));
+    emit(state.copyWith(status: AdvisorStatus.loading, selectedPrompt: prompt));
 
-    
     final decision = prompt.evaluate(
       aqi: aqi,
       pm25: pm25,
@@ -37,10 +32,7 @@ class AdvisorCubit extends Cubit<AdvisorState> {
       weatherCode: weatherCode,
     );
 
-    emit(state.copyWith(
-      status: AdvisorStatus.success,
-      decision: decision,
-    ));
+    emit(state.copyWith(status: AdvisorStatus.success, decision: decision));
   }
 
   void reset() {
