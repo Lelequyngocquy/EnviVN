@@ -12,6 +12,7 @@ import 'package:envivn/src/features/advisor/presentation/cubits/advisor_cubit.da
 import 'package:envivn/src/features/advisor/presentation/widgets/advisor_modal_sheet.dart';
 import 'package:envivn/src/features/air_quality/domain/entities/air_quality_entity.dart';
 import 'package:envivn/src/features/details/domain/entities/details_entity.dart';
+import 'package:envivn/src/shared/widgets/app_button.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -124,6 +125,25 @@ void main() {
         );
         expect(find.text('Gói trí tuệ nhân tạo Gemma 2B'), findsOneWidget);
         expect(find.text('Tải gói AI On-Device (~1.3 GB)'), findsOneWidget);
+        expect(find.byType(AppButton), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'displays AppTwoButtons when download is paused with existing partial file',
+      (tester) async {
+        final tempFile = await downloadService.getTempDownloadFile();
+        tempFile.writeAsBytesSync(List.filled(4096, 2));
+        await downloadService.init();
+
+        chatCubit.toggleAi(true);
+
+        await tester.pumpWidget(buildTestWidget());
+        await tester.pumpAndSettle();
+
+        expect(find.byType(AppTwoButtons), findsOneWidget);
+        expect(find.text('Tiếp tục'), findsOneWidget);
+        expect(find.text('Hủy bỏ'), findsOneWidget);
       },
     );
 

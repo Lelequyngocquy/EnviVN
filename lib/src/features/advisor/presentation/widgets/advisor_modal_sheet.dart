@@ -130,8 +130,7 @@ class AdvisorModalSheet extends StatelessWidget {
             ),
             const Gap(12),
             if (chatState.isAiEnabled) ...[
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.70,
+              Flexible(
                 child: AiChatConversationView(
                   location: resolvedLocation,
                   weather: weather,

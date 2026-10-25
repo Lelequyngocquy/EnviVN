@@ -242,14 +242,21 @@ class ModelDownloadService {
       if (existingBytes > 0) {
         request.headers['Range'] = 'bytes=$existingBytes-';
       }
+      final hfToken = EnvConfig.huggingFaceToken;
+      if (hfToken.isNotEmpty) {
+        request.headers['Authorization'] = 'Bearer $hfToken';
+      }
 
       final response = await client.send(request);
 
       if (response.statusCode != 200 && response.statusCode != 206) {
+        final errorMsg = response.statusCode == 401
+            ? 'Yêu cầu quyền truy cập (HTTP 401). Mô hình yêu cầu token xác thực HuggingFace.'
+            : 'Máy chủ phản hồi lỗi: HTTP ${response.statusCode}';
         _emitState(
           _currentState.copyWith(
             status: ModelDownloadStatus.error,
-            errorMessage: 'Máy chủ phản hồi lỗi: HTTP ${response.statusCode}',
+            errorMessage: errorMsg,
           ),
         );
         return;

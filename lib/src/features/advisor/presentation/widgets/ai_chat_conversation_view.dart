@@ -7,6 +7,7 @@ import '../../../../core/domain/entities/app_location_entity.dart';
 import '../../../../core/domain/entities/model_download_state.dart';
 import '../../../../core/presentation/widgets/app_icon.dart';
 import '../../../../core/presentation/widgets/app_text.dart';
+import '../../../../shared/widgets/app_button.dart';
 import '../../../air_quality/domain/entities/air_quality_entity.dart';
 import '../../../details/domain/entities/details_entity.dart';
 import '../cubits/advisor_chat_cubit.dart';
@@ -72,25 +73,30 @@ class _AiChatConversationViewState extends State<AiChatConversationView> {
         final dState = state.downloadState;
 
         if (dState.status != ModelDownloadStatus.ready) {
-          return _ModelDownloadCard(
-            downloadState: dState,
-            onStartDownload: () =>
-                context.read<AdvisorChatCubit>().startDownload(),
-            onPauseDownload: () =>
-                context.read<AdvisorChatCubit>().pauseDownload(),
-            onResumeDownload: () =>
-                context.read<AdvisorChatCubit>().resumeDownload(),
-            onCancelDownload: () =>
-                context.read<AdvisorChatCubit>().cancelDownload(),
+          return SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: _ModelDownloadCard(
+              downloadState: dState,
+              onStartDownload: () =>
+                  context.read<AdvisorChatCubit>().startDownload(),
+              onPauseDownload: () =>
+                  context.read<AdvisorChatCubit>().pauseDownload(),
+              onResumeDownload: () =>
+                  context.read<AdvisorChatCubit>().resumeDownload(),
+              onCancelDownload: () =>
+                  context.read<AdvisorChatCubit>().cancelDownload(),
+            ),
           );
         }
 
         return Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
+            Flexible(
               child: ListView.builder(
                 controller: _scrollController,
                 physics: const BouncingScrollPhysics(),
+                shrinkWrap: true,
                 padding: const EdgeInsets.only(top: 8, bottom: 8),
                 itemCount: state.messages.length,
                 itemBuilder: (context, index) {
@@ -151,256 +157,174 @@ class _ModelDownloadCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: UIColors.white.withOpacity(0.06),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: UIColors.primary.withOpacity(0.25),
-          width: 1.2,
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: UIColors.white.withOpacity(0.06),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: UIColors.primary.withOpacity(0.25),
+              width: 1.2,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: UIColors.primary.withOpacity(0.16),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: const AppIcon(
-                  Icons.auto_awesome,
-                  size: 24,
-                  color: UIColors.primary,
-                ),
-              ),
-              const Gap(12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const AppText.bold(
-                      'Gói trí tuệ nhân tạo Gemma 2B',
-                      size: 14.5,
-                      color: UIColors.textPrimary,
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: UIColors.primary.withOpacity(0.16),
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    const Gap(2),
-                    Row(
-                      children: const [
-                        AppIcon(
-                          Icons.security_rounded,
-                          size: 12,
-                          color: UIColors.primary,
+                    child: const AppIcon(
+                      Icons.auto_awesome,
+                      size: 24,
+                      color: UIColors.primary,
+                    ),
+                  ),
+                  const Gap(12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const AppText.bold(
+                          'Gói trí tuệ nhân tạo Gemma 2B',
+                          size: 14.5,
+                          color: UIColors.textPrimary,
                         ),
-                        Gap(4),
+                        const Gap(2),
                         AppText.regular(
-                          '100% On-device • Bảo mật tuyệt đối',
+                          '100% On-device, bảo mật tuyệt đối',
                           size: 11,
                           color: UIColors.textSecondary,
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
+              const Gap(14),
+              const AppText.regular(
+                'Gói AI Gemma 2 2B chạy trực tiếp trên thiết bị của bạn. '
+                'Sau khi cài đặt, mô hình sẽ phản hồi tức thì mọi câu hỏi chuyên sâu về môi trường, '
+                'thời tiết và cảnh báo sức khỏe mà không cần kết nối máy chủ.',
+                size: 12,
+                color: UIColors.textSecondary,
+                height: 1.45,
               ),
             ],
           ),
-          const Gap(14),
-          const AppText.regular(
-            'Gói AI Gemma 2 2B chạy trực tiếp trên thiết bị của bạn. Sau khi cài đặt, mô hình sẽ phản hồi tức thì mọi câu hỏi chuyên sâu về môi trường, thời tiết và cảnh báo sức khỏe mà không cần kết nối máy chủ.',
-            size: 12,
-            color: UIColors.textSecondary,
-            height: 1.45,
+        ),
+        const Gap(12),
+        if (downloadState.isDownloading || downloadState.isPaused) ...[
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: LinearProgressIndicator(
+              value: downloadState.progress > 0 ? downloadState.progress : null,
+              minHeight: 8,
+              backgroundColor: UIColors.white.withOpacity(0.12),
+              valueColor: const AlwaysStoppedAnimation<Color>(UIColors.primary),
+            ),
           ),
-          const Gap(16),
-          if (downloadState.isDownloading || downloadState.isPaused) ...[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: LinearProgressIndicator(
-                value: downloadState.progress > 0
-                    ? downloadState.progress
-                    : null,
-                minHeight: 8,
-                backgroundColor: UIColors.white.withOpacity(0.12),
-                valueColor: const AlwaysStoppedAnimation<Color>(
-                  UIColors.primary,
-                ),
+          const Gap(10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              AppText.medium(
+                downloadState.isPaused
+                    ? 'Đã tạm dừng (${downloadState.formattedDownloadedSize} / ${downloadState.formattedTotalSize})'
+                    : '${downloadState.formattedProgress} • ${downloadState.formattedDownloadedSize} / ${downloadState.formattedTotalSize}',
+                size: 11.5,
+                color: UIColors.textPrimary,
               ),
-            ),
-            const Gap(10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                AppText.medium(
-                  downloadState.isPaused
-                      ? 'Đã tạm dừng (${downloadState.formattedDownloadedSize} / ${downloadState.formattedTotalSize})'
-                      : '${downloadState.formattedProgress} • ${downloadState.formattedDownloadedSize} / ${downloadState.formattedTotalSize}',
+              if (downloadState.isDownloading)
+                AppText.bold(
+                  downloadState.formattedSpeed,
                   size: 11.5,
-                  color: UIColors.textPrimary,
+                  color: UIColors.primary,
                 ),
-                if (downloadState.isDownloading)
-                  AppText.bold(
-                    downloadState.formattedSpeed,
-                    size: 11.5,
-                    color: UIColors.primary,
-                  ),
-              ],
-            ),
-            const Gap(14),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: downloadState.isPaused
-                        ? onResumeDownload
-                        : onPauseDownload,
-                    icon: Icon(
-                      downloadState.isPaused
-                          ? Icons.play_arrow_rounded
-                          : Icons.pause_rounded,
-                      size: 18,
-                    ),
-                    label: Text(
-                      downloadState.isPaused ? 'Tiếp tục' : 'Tạm dừng',
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: UIColors.white.withOpacity(0.12),
-                      foregroundColor: UIColors.textPrimary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                  ),
-                ),
-                const Gap(10),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: onCancelDownload,
-                    icon: const Icon(Icons.close_rounded, size: 18),
-                    label: const Text('Hủy bỏ'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: UIColors.textSecondary,
-                      side: BorderSide(color: UIColors.white.withOpacity(0.2)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ] else if (downloadState.status ==
-              ModelDownloadStatus.checkingDisk) ...[
+            ],
+          ),
+          const Gap(14),
+          AppTwoButtons(
+            primaryTitle: downloadState.isPaused ? 'Tiếp tục' : 'Tạm dừng',
+            primaryIcon: downloadState.isPaused
+                ? Icons.play_arrow_rounded
+                : Icons.pause_rounded,
+            primaryOnTap: downloadState.isPaused
+                ? onResumeDownload
+                : onPauseDownload,
+            secondaryTitle: 'Hủy bỏ',
+            secondaryIcon: Icons.close_rounded,
+            secondaryOnTap: onCancelDownload,
+          ),
+        ] else ...[
+          if (downloadState.status == ModelDownloadStatus.checkingDisk) ...[
             const Center(
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: UIColors.primary,
-                      ),
-                    ),
-                    Gap(10),
-                    AppText.regular(
-                      'Đang kiểm tra dung lượng bộ nhớ trống...',
-                      size: 12,
-                      color: UIColors.textSecondary,
-                    ),
-                  ],
+                padding: EdgeInsets.only(bottom: 12),
+                child: AppText.regular(
+                  'Đang kiểm tra dung lượng bộ nhớ trống...',
+                  size: 12,
+                  color: UIColors.textSecondary,
                 ),
               ),
             ),
           ] else if (downloadState.status == ModelDownloadStatus.verifying) ...[
             const Center(
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: UIColors.primary,
-                      ),
-                    ),
-                    Gap(10),
-                    AppText.regular(
-                      'Đang xác thực và cấu hình gói mô hình...',
-                      size: 12,
-                      color: UIColors.primary,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ] else ...[
-            if (downloadState.hasError) ...[
-              Container(
-                margin: const EdgeInsets.only(bottom: 12),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.redAccent.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.redAccent.withOpacity(0.3)),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.error_outline_rounded,
-                      size: 16,
-                      color: Colors.redAccent,
-                    ),
-                    const Gap(8),
-                    Expanded(
-                      child: AppText.regular(
-                        downloadState.errorMessage ?? 'Lỗi không xác định',
-                        size: 11.5,
-                        color: Colors.redAccent,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: ElevatedButton.icon(
-                onPressed: onStartDownload,
-                icon: const Icon(Icons.cloud_download_rounded, size: 20),
-                label: const Text(
-                  'Tải gói AI On-Device (~1.3 GB)',
-                  style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.bold),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: UIColors.primary,
-                  foregroundColor: UIColors.bg,
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
+                padding: EdgeInsets.only(bottom: 12),
+                child: AppText.regular(
+                  'Đang xác thực và cấu hình gói mô hình...',
+                  size: 12,
+                  color: UIColors.primary,
                 ),
               ),
             ),
           ],
+          if (downloadState.hasError) ...[
+            Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                color: UIColors.error.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: UIColors.error.withOpacity(0.3)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.error_outline_rounded,
+                    size: 16,
+                    color: UIColors.error,
+                  ),
+                  const Gap(8),
+                  Expanded(
+                    child: AppText.regular(
+                      downloadState.errorMessage ?? 'Lỗi không xác định',
+                      size: 11.5,
+                      color: UIColors.error,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          AppButton(
+            title: 'Tải gói AI On-Device (~1.3 GB)',
+            icon: Icons.cloud_download_rounded,
+            isLoading:
+                downloadState.status == ModelDownloadStatus.checkingDisk ||
+                downloadState.status == ModelDownloadStatus.verifying,
+            onTap: onStartDownload,
+          ),
         ],
-      ),
+      ],
     );
   }
 }
