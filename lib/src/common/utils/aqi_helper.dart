@@ -39,10 +39,12 @@ class AQIHelper {
       return const AQIInfo(
         category: AQICategory.good,
         label: 'Tốt',
-        description: 'Chất lượng không khí lý tưởng, không gây nguy hại sức khỏe.',
+        description:
+            'Chất lượng không khí lý tưởng, không gây nguy hại sức khỏe.',
         color: UIColors.aqiGood,
         healthAdvice: 'Không khí trong lành, mở cửa sổ để đón gió tự nhiên.',
-        outdoorAdvice: 'Rất thích hợp cho chạy bộ, đạp xe và các hoạt động thể thao ngoài trời.',
+        outdoorAdvice:
+            'Rất thích hợp cho chạy bộ, đạp xe và các hoạt động thể thao ngoài trời.',
         wearMask: false,
       );
     } else if (aqi <= 100) {
@@ -59,10 +61,12 @@ class AQIHelper {
       return const AQIInfo(
         category: AQICategory.unhealthySensitive,
         label: 'Kém (Nhạy cảm)',
-        description: 'Người già, trẻ em và người bệnh hô hấp có thể bị ảnh hưởng.',
+        description:
+            'Người già, trẻ em và người bệnh hô hấp có thể bị ảnh hưởng.',
         color: UIColors.aqiUnhealthySensitive,
         healthAdvice: 'Nhóm người nhạy cảm nên hạn chế ở ngoài trời lâu.',
-        outdoorAdvice: 'Nên giảm cường độ tập thể dục ngoài trời, chuyển vào phòng tập.',
+        outdoorAdvice:
+            'Nên giảm cường độ tập thể dục ngoài trời, chuyển vào phòng tập.',
         wearMask: true,
       );
     } else if (aqi <= 200) {
@@ -72,7 +76,8 @@ class AQIHelper {
         description: 'Bắt đầu ảnh hưởng xấu đến sức khỏe của tất cả mọi người.',
         color: UIColors.aqiUnhealthy,
         healthAdvice: 'Tránh các hoạt động gắng sức ngoài trời.',
-        outdoorAdvice: 'Không nên chạy bộ hoặc tập luyện ngoài trời vào khung giờ này.',
+        outdoorAdvice:
+            'Không nên chạy bộ hoặc tập luyện ngoài trời vào khung giờ này.',
         wearMask: true,
       );
     } else if (aqi <= 300) {
@@ -81,7 +86,8 @@ class AQIHelper {
         label: 'Rất xấu',
         description: 'Cảnh báo nguy hại sức khỏe nghiêm trọng cho cộng đồng.',
         color: UIColors.aqiVeryUnhealthy,
-        healthAdvice: 'Mọi người nên ở trong nhà, đóng kín cửa sổ và bật máy lọc khí.',
+        healthAdvice:
+            'Mọi người nên ở trong nhà, đóng kín cửa sổ và bật máy lọc khí.',
         outdoorAdvice: 'Tuyệt đối hạn chế tối đa ra ngoài trời.',
         wearMask: true,
       );
@@ -91,7 +97,8 @@ class AQIHelper {
         label: 'Nguy hại',
         description: 'Mức độ khẩn cấp. Ảnh hưởng nghiêm trọng đến tính mạng.',
         color: UIColors.aqiHazardous,
-        healthAdvice: 'Ở yên trong nhà, kích hoạt máy lọc không khí mức cao nhất.',
+        healthAdvice:
+            'Ở yên trong nhà, kích hoạt máy lọc không khí mức cao nhất.',
         outdoorAdvice: 'Cấm các hoạt động ngoài trời!',
         wearMask: true,
       );

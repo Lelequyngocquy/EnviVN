@@ -1,203 +1,264 @@
-# EnviVN - Environmental Monitoring and Weather Risk Early-Warning System
+# EnviVN - Environmental Monitoring & Early-Warning Intelligence System
 
-EnviVN is a cross-platform mobile application developed with Flutter, providing real-time air quality index (AQI) tracking, high-precision weather forecasting, urban flood risk warnings, and satellite-detected thermal radiation and surface temperature anomaly monitoring across Vietnam via NASA FIRMS.
+<div align="center">
 
-The application is architected strictly following Clean Architecture principles combined with the BLoC/Cubit state management pattern, ensuring strong separation of concerns, high maintainability, and enterprise-grade testability.
+[![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.22.0-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-%3E%3D3.12.0-0175C2?logo=dart&logoColor=white)](https://dart.dev)
+[![Architecture](https://img.shields.io/badge/Architecture-Clean%20Architecture-4CAF50?logo=clean-code)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+[![State Management](https://img.shields.io/badge/State%20Management-BLoC%20%2F%20Cubit-blueviolet?logo=bloc)](https://bloclibrary.dev)
+[![Edge AI](https://img.shields.io/badge/Edge%20AI-Gemma%202%202B%20(On--Device)-orange?logo=google)](https://ai.google.dev/gemma)
+[![Tests](https://img.shields.io/badge/Tests-103%20Passed%20(100%25)-brightgreen?logo=checkmarx)](https://github.com)
+[![Code Quality](https://img.shields.io/badge/Analysis-0%20Issues-success?logo=dart)](https://dart.dev/tools/analysis)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
----
+**A high-performance, privacy-first environmental intelligence and early-warning mobile application for Vietnam.**  
+Real-time air quality tracking (US AQI), high-precision hyper-local meteorology, urban flood vulnerability alerts, satellite thermal radiation anomaly detection (NASA FIRMS), and on-device Edge AI health advisories powered by Google Gemma.
 
-## 1. Core Features & Screen Breakdown
+[English](#english-documentation) • [Tiếng Việt](#bản-hướng-dẫn-tiếng-việt-vietnamese)
 
-### 1.1. Real-Time Environmental Dashboard
-
-The central dashboard aggregates real-time air quality indices and meteorological metrics for the user's current GPS location or selected city. Key data points include US AQI, PM2.5, PM10, ambient temperature, apparent heat index, humidity, wind velocity, precipitation likelihood, and ultraviolet exposure.
-
-![Dashboard Overview](screenshots/dashboard_screen.png)
-
-### 1.2. 24-Hour Analytics & 7-Day Forecasting
-
-Provides comprehensive 24-hour hourly trend charts for air pollution and temperature fluctuations, accompanied by extended 7-day meteorological outlooks and pollutant concentration breakdowns (CO, NO2, SO2, O3) benchmarked against international standards.
-
-![24-Hour Detail and Forecast](screenshots/details_screen.png)
-
-### 1.3. Interactive Multi-Layer GIS Map & Custom Dropped Pin
-
-An interactive mapping interface powered by vector tiles featuring 4 specialized operational layers: Air Quality (AQI), Weather, Urban Flood Vulnerability, and Satellite Thermal Anomalies. Users can tap anywhere across Vietnam to drop a custom pin, instantly resolving the nearest administrative province and querying live environmental data for that specific coordinate.
-
-![Multi-layer Map and Custom Pin](screenshots/map_layers_screen.png)
-
-### 1.4. NASA FIRMS Satellite Thermal Radiation Monitoring
-
-Direct integration with NASA FIRMS utilizing next-generation NOAA-20 and NOAA-21 VIIRS 375m sensor data. Visualizes active surface thermal radiation points across Vietnam with fire radiative power (FRP) metrics and terrain-aware contextual categorization.
-
-![Satellite Thermal Hotspots](screenshots/thermal_hotspots_screen.png)
-
-### 1.5. Deterministic Environmental Health & Activity Advisor
-
-An on-device, zero-latency rule engine evaluating current ambient conditions to generate actionable outdoor health recommendations (e.g., jogging, cycling, mask usage) accompanied by concrete evidentiary comparisons against WHO and Vietnam national standard QCVN 05:2023/BTNMT.
-
-![Smart Advisor](screenshots/advisor_screen.png)
-
-### 1.6. Visual Story Sharing & Card Export
-
-Allows users to generate exportable visual cards formatted for social sharing in 9:16 (Story/Reel) and 1:1 (Square) aspect ratios with customizable card metrics and high-fidelity rendering.
-
-![Story Share Preview](screenshots/story_share_screen.png)
+</div>
 
 ---
 
-## 2. System Architecture
+<a name="english-documentation"></a>
+# English Documentation
 
-The codebase enforces Clean Architecture with strict separation across Presentation, Domain, Infrastructure, Core, Shared, and Common layers.
+## Table of Contents
+1. [System Overview & Value Proposition](#1-system-overview--value-proposition)
+2. [Visual Walkthrough & Screenshot Gallery](#2-visual-walkthrough--screenshot-gallery)
+3. [Core Feature Breakdown](#3-core-feature-breakdown)
+4. [Enterprise Architecture](#4-enterprise-architecture)
+5. [Key Engineering Highlights & Scientific Calculations](#5-key-engineering-highlights--scientific-calculations)
+6. [Tech Stack & Dependencies](#6-tech-stack--dependencies)
+7. [Installation & Local Setup](#7-installation--local-setup)
+8. [Automated Testing & Quality Verification](#8-automated-testing--quality-verification)
+9. [Data Attribution & References](#9-data-attribution--references)
+
+---
+
+## 1. System Overview & Value Proposition
+
+EnviVN addresses urban environmental risks across Vietnam by consolidating disparate environmental observation streams into an integrated, zero-latency mobile dashboard:
+
+- **Hyper-Local Atmospheric Intelligence**: Hourly US EPA AQI tracking, particulate matter concentrations (PM2.5, PM10), and criteria pollutants (CO, NO2, SO2, O3) via Open-Meteo.
+- **Microclimate & Urban Inundation Forecasting**: 24-hour predictive temperature curves, Rothfusz heat index stress alerts, and real-time urban drainage flood risk warnings.
+- **NASA FIRMS Earth Observation**: Sub-kilometer (375m) satellite thermal anomaly detection from NOAA-20 & NOAA-21 VIIRS sensors, complete with Fire Radiative Power (FRP) and terrain-aware contextualization.
+- **On-Device Edge AI Intelligence**: Complete on-device, offline-first natural language health advisory powered by quantized Google Gemma 2 2B (GGUF), with strict hardware RAM validation ($\ge 1.4\text{ GB}$ available), throttled chunk streaming, and SHA-256 integrity verification.
+- **Single Source of Truth (SSOT)**: Unified `AppLocationEntity` bridging GPS geolocation, predefined municipalities, active monitoring stations, and custom dropped pins across all features.
+
+---
+
+## 2. Visual Walkthrough & Screenshot Gallery
+
+<div align="center">
+<table>
+  <tr>
+    <td align="center" width="25%">
+      <img src="screenshots/screen_01_home.png" alt="Home Dashboard" width="100%"/>
+      <br/><b>1. Home Dashboard</b>
+      <br/><i>Live AQI Gauge, Weather & Quick Actions</i>
+    </td>
+    <td align="center" width="25%">
+      <img src="screenshots/screen_02_city_selector.png" alt="City Selector" width="100%"/>
+      <br/><b>2. Location Picker</b>
+      <br/><i>Administrative Regions & GPS Lock</i>
+    </td>
+    <td align="center" width="25%">
+      <img src="screenshots/screen_03_map.png" alt="GIS Map" width="100%"/>
+      <br/><b>3. GIS Pollution Map</b>
+      <br/><i>Interactive Vector Tile Map</i>
+    </td>
+    <td align="center" width="25%">
+      <img src="screenshots/screen_04_station_preview.png" alt="Station Preview" width="100%"/>
+      <br/><b>4. Station & Pin Preview</b>
+      <br/><i>Proximity Metrics & Dynamic Data</i>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="25%">
+      <img src="screenshots/screen_05_map_layers.png" alt="Map Layer Selector" width="100%"/>
+      <br/><b>5. Layer Switcher</b>
+      <br/><i>AQI, Weather, Flood & NASA FIRMS</i>
+    </td>
+    <td align="center" width="25%">
+      <img src="screenshots/screen_06_24h_details.png" alt="24H Analytics" width="100%"/>
+      <br/><b>6. 24H Analytics</b>
+      <br/><i>Hourly Charts & Pollutant Grids</i>
+    </td>
+    <td align="center" width="25%">
+      <img src="screenshots/screen_07_advisor_modal.png" alt="Smart Health Advisor" width="100%"/>
+      <br/><b>7. Smart Health Advisor</b>
+      <br/><i>Deterministic Multi-Factor Matrix</i>
+    </td>
+    <td align="center" width="25%">
+      <img src="screenshots/screen_08_advisor_ai.png" alt="On-Device Edge AI" width="100%"/>
+      <br/><b>8. On-Device Edge AI</b>
+      <br/><i>Gemma 2 2B Local Chat Assistant</i>
+    </td>
+  </tr>
+</table>
+</div>
+
+---
+
+## 3. Core Feature Breakdown
+
+### 3.1. Central Ambient Intelligence Dashboard
+- Dynamically rendered gauge displaying calculated US AQI bracketed according to EPA air quality color benchmarks.
+- Current weather observations: dry-bulb temperature, apparent heat index (Rothfusz equation), relative humidity, wind velocity, precipitation likelihood, and ultraviolet exposure (UV Index).
+- Automatic offline caching with 30-minute Time-To-Live (TTL) coordinate-based segmentation.
+
+### 3.2. 24-Hour Trend Analytics & 7-Day Forecasting
+- Custom Bézier line charts (`fl_chart`) rendering continuous 24-hour hourly particulate matter curves and temperature variations with strongly-typed `HourlyAqiPoint` entities.
+- Comprehensive 7-day weather outlooks with daily weather codes, precipitation accumulations, and diurnal temperature ranges.
+- Full criteria pollutant concentration grid: PM2.5, PM10, Carbon Monoxide (CO), Nitrogen Dioxide ($\text{NO}_2$), Sulfur Dioxide ($\text{SO}_2$), and Tropospheric Ozone ($\text{O}_3$).
+
+### 3.3. Interactive Multi-Layer GIS Map & Dropped Pin
+- Vector tile map with smooth zoom controls, interactive pan, and dynamic station clustering.
+- Four operational map layers:
+  1. **Air Quality (AQI)**: Color-coded station markers indicating live air quality.
+  2. **Meteorology**: Station-level temperature, wind vectors, and humidity.
+  3. **Urban Flood Risk**: High-risk drainage blackspots combined with real-time precipitation intensity.
+  4. **NASA FIRMS Hotspots**: Active satellite thermal anomaly radiation detections.
+- **Custom Location Dropped Pin**: Tap anywhere across Vietnam to drop an ad-hoc coordinate pin; the system computes the great-circle Haversine distance, resolves the nearest Vietnamese administrative province, and queries localized environmental data.
+
+### 3.4. NASA FIRMS Satellite Thermal Anomaly Monitoring
+- Integrates NOAA-20 & NOAA-21 VIIRS 375m Near Real-Time (NRT) satellite feeds.
+- Computes Band I4 infrared brightness temperature in Celsius and evaluates Fire Radiative Power (FRP) in Megawatts (MW).
+- Terrain classification categorizes anomalies into highland/mountainous or lowland/delta regions.
+- Rate-limit resilient client: Handles 5,000 transactions / 10-minute quotas with in-flight deduplication and graceful fallback to stale cache on HTTP 429.
+
+### 3.5. Dual-Tier Health & Activity Advisor
+1. **Deterministic Rule Engine (0ms latency)**: Evaluates multi-factor combinations of AQI, PM2.5, apparent temperature, and rain probabilities to provide instant verdicts for outdoor jogging, window ventilation, commuting, and sensitive groups.
+2. **On-Device Edge AI Assistant**: Local large language model chat powered by Google Gemma 2 2B (GGUF). Runs 100% on-device with zero cloud telemetry, ensuring strict user privacy.
+
+### 3.6. Modular Story Share Card Exporter
+- Exports environmental snapshots formatted in **9:16 (Story/Reel)** and **1:1 (Square)** aspect ratios.
+- Flexible modular cards with interactive 4-way arrow controls to reorder and configure shared metrics.
+
+---
+
+## 4. Enterprise Architecture
+
+EnviVN is architected according to **Clean Architecture** combined with the **BLoC / Cubit** state management pattern. Dependencies point strictly inward, decoupling domain rules from frameworks, networking libraries, and databases.
+
+```
+                    ┌─────────────────────────────────────────┐
+                    │           PRESENTATION LAYER            │
+                    │   Pages, Widgets, BLoC / Cubits, States  │
+                    └────────────────────┬────────────────────┘
+                                         │ depends on
+                                         ▼
+                    ┌─────────────────────────────────────────┐
+                    │              DOMAIN LAYER               │
+                    │   Entities, Repository Interfaces, Enums │
+                    └────────────────────▲────────────────────┘
+                                         │ implemented by
+                    ┌────────────────────┴────────────────────┐
+                    │          INFRASTRUCTURE LAYER           │
+                    │  Repositories, API Clients, Local Cache │
+                    └─────────────────────────────────────────┘
+                                         │
+                    ┌────────────────────┴────────────────────┐
+                    │           CORE & COMMON LAYER           │
+                    │  Dependency Injection (GetIt), Utilities│
+                    └─────────────────────────────────────────┘
+```
+
+### Directory Structure
 
 ```
 lib/
-├── main.dart
+├── main.dart                               # Application bootstrap & DI initialization
 └── src/
-    ├── common/
-    │   ├── constants/
-    │   │   ├── colors.dart               # Palette definitions (UIColors)
-    │   │   └── strings.dart              # Default application strings
-    │   ├── extensions/                   # Utility extensions on primitive types
-    │   └── utils/
-    │       ├── aqi_helper.dart           # US EPA AQI linear interpolation helper
-    │       ├── geo_distance_helper.dart  # Great-circle Haversine distance calculator
-    │       └── heat_index_helper.dart    # Rothfusz apparent heat index equation
-    ├── core/
-    │   ├── di/
-    │   │   └── injection_container.dart  # Dependency injection setup (GetIt)
-    │   ├── domain/
-    │   │   └── entities/                 # BaseResult, BaseResponse contracts
+    ├── common/                             # App-wide constants, design tokens, helpers
+    │   ├── constants/                      # UIColors (Dark Navy/Liquid Glass palette), Strings
+    │   ├── extensions/                     # Context and primitive extensions
+    │   └── utils/                          # Pure mathematical engines (AQI, Haversine, HeatIndex)
+    ├── core/                               # Core foundational infrastructure
+    │   ├── di/                             # Service locator registration (GetIt setup)
+    │   ├── domain/entities/                # BaseResult, AppLocationEntity, ModelDownloadState
     │   ├── infrastructure/
-    │   │   ├── configs/                  # EnvConfig (.env loader)
-    │   │   ├── datasources/
-    │   │   │   ├── local/                # LocalStorage (SharedPreferences wrapper)
-    │   │   │   └── network/              # RestfulRequest (HTTP client wrapper)
-    │   │   └── services/                 # LocationService (GPS hardware wrapper)
-    │   └── presentation/                 # Shared core UI widgets (AppText, AppIcon)
-    ├── features/
-    │   ├── advisor/                      # Health & outdoor activity advisor
-    │   │   ├── domain/entities/          # AdvisorDecision, AdvisorEvidence, SafetyLevel
-    │   │   └── presentation/             # AdvisorCubit, AdvisorModalSheet
-    │   ├── air_quality/                  # Air quality tracking (Open-Meteo)
-    │   │   ├── domain/                   # IAirQualityRepository, AirQualityEntity
-    │   │   ├── infrastructure/           # AirQualityRepository, AirQualityModel, Paths
-    │   │   └── presentation/             # AirQualityCubit, AQIGaugeWidget
-    │   ├── details/                      # Weather and 24h hourly detail analytics
-    │   │   ├── domain/                   # IDetailsRepository, DetailsEntity
-    │   │   ├── infrastructure/           # DetailsRepository, DetailsModel, Paths
-    │   │   └── presentation/             # DetailsCubit, TwentyFourHourDetailPage
-    │   ├── explore/                      # Environmental news and utilities
-    │   │   ├── domain/entities/          # UtilityItem, NewsItem
-    │   │   └── presentation/             # ExplorePage, UtilityCard
-    │   ├── home/                         # Central dashboard
-    │   │   ├── domain/entities/          # CityEntity
-    │   │   └── presentation/             # HomeDashboardCubit, HomePage, Sheets
-    │   ├── map/                          # Multi-layer GIS map and NASA FIRMS
-    │   │   ├── domain/                   # IMapRepository, INasaFirmsRepository
-    │   │   │   └── entities/             # MapLayerType, StationEntity, VietnamProvince
-    │   │   ├── infrastructure/           # MapRepository, NasaFirmsRepository
-    │   │   │   ├── models/               # StationModel, ThermalHotspotModel
-    │   │   │   └── paths/                # MapPaths, NasaFirmsPaths
-    │   │   └── presentation/             # MapCubit, MapPage, MapSideControls
-    │   └── story_share/                  # Story card generation and export
-    │       └── presentation/             # StoryPreviewPage, StoryCardView
-    └── shared/
-        ├── router/                       # GlobalKeyManager, RouterPath
-        └── widgets/                      # AppGlass, AppButton, AppTopToast
+    │   │   ├── configs/                    # EnvConfig (.env parser)
+    │   │   ├── datasources/local/          # LocalStorage (SharedPreferences TTL cache)
+    │   │   ├── datasources/network/        # RestfulRequest (HTTP wrapper, deduplication)
+    │   │   └── services/                   # LocationService, ModelDownloadService, EdgeAiService
+    │   └── presentation/                   # Shared UI primitives (AppText, AppIcon, Dialogs)
+    ├── features/                           # Independent domain feature modules
+    │   ├── advisor/                        # Health & Activity Advisor + Gemma 2B Edge AI
+    │   ├── air_quality/                    # Real-time AQI tracking & pollutant metrics
+    │   ├── details/                        # 24H hourly trends & 7-day meteorological forecasts
+    │   ├── explore/                        # Regional environmental news & utilities
+    │   ├── home/                           # Central dashboard orchestration
+    │   ├── map/                            # Multi-layer GIS, Custom Pin & NASA FIRMS
+    │   └── story_share/                    # Aspect-ratio adaptable story card exporter
+    └── shared/                             # Cross-feature reusable widgets & routing
+        ├── router/                         # Global navigation keys & routes
+        └── widgets/                        # Liquid Glass containers, AppButton, AppTopToast
 ```
 
-### Architectural Layer Responsibilities
+---
 
-- Domain Layer: Contains Repository interfaces, domain entities, and business rules. Completely decoupled from external packages, databases, and UI frameworks.
-- Infrastructure Layer: Implements repository contracts, handles API communications via RestfulRequest, manages local persistence via LocalStorage, defines network endpoints, and maps raw JSON or CSV into typed models.
-- Presentation Layer: Uses BLoC/Cubit for deterministic state management, consumes domain entities, and delivers responsive, adaptive interfaces.
-- Core & Common: Foundation layer providing dependency injection via GetIt, central application environment configuration, shared network/storage abstractions, and reusable mathematical utility engines.
+## 5. Key Engineering Highlights & Scientific Calculations
+
+### 5.1. On-Device Edge AI Architecture & Memory Throttling
+- **Quantized Model**: Utilizes Google Gemma 2 2B Instruct GGUF (`Q4_K_M`, ~1.4 GB).
+- **RAM Guard**: Before initiating model download or loading weights into native memory, `ModelDownloadService` queries hardware memory via platform channel (`getAvailableRamBytes`). Execution halts with actionable advice if available RAM is $< 1.4\text{ GB}$.
+- **Throttled Streaming**: Download progress updates emit across the UI stream throttled to $\ge 150\text{ ms}$ intervals or $\ge 0.5\%$ delta increments, completely eliminating UI thread thrashing.
+- **SHA-256 Verification**: Completed model downloads undergo cryptographic checksum validation against a pre-configured hash prior to file system commitment.
+
+### 5.2. Air Quality Index Interpolation (`AQIHelper`)
+Converts raw particulate concentrations ($\mu\text{g}/\text{m}^3$) into standard US EPA Air Quality Index values via piecewise linear interpolation:
+
+$$I = \frac{I_{\text{high}} - I_{\text{low}}}{C_{\text{high}} - C_{\text{low}}} (C - C_{\text{low}}) + I_{\text{low}}$$
+
+Where $C$ is the measured concentration, $[C_{\text{low}}, C_{\text{high}}]$ are the pollutant breakpoint concentrations, and $[I_{\text{low}}, I_{\text{high}}]$ are the corresponding AQI index category boundaries.
+
+### 5.3. Apparent Heat Index Polynomial (`HeatIndexHelper`)
+Calculates perceived temperature from dry-bulb temperature ($T$ in $^\circ\text{F}$) and relative humidity ($RH$) using the multivariate Rothfusz regression equation:
+
+$$\text{HI} = -42.379 + 2.04901523 T + 10.14333127 RH - 0.22475541 T \cdot RH - 6.83783 \times 10^{-3} T^2 - 5.481717 \times 10^{-2} RH^2 + 1.22874 \times 10^{-3} T^2 \cdot RH + 8.5282 \times 10^{-4} T \cdot RH^2 - 1.99 \times 10^{-6} T^2 \cdot RH^2$$
+
+### 5.4. Spherical Great-Circle Distance (`GeoDistanceHelper`)
+Computes distance between coordinates on a spherical Earth ($R = 6,371\text{ km}$) using the Haversine formulation:
+
+$$a = \sin^2\left(\frac{\Delta\phi}{2}\right) + \cos(\phi_1)\cos(\phi_2)\sin^2\left(\frac{\Delta\lambda}{2}\right)$$
+$$d = 2R \cdot \text{atan2}\left(\sqrt{a}, \sqrt{1-a}\right)$$
+
+### 5.5. Resilient Network & Caching Infrastructure
+- **Coordinate-Aware TTL Caching**: Keyed by rounded coordinates $(\text{lat}, \text{lon})$ with automatic expiration (30 minutes for weather/AQI, 15 minutes for NASA FIRMS).
+- **Request Deduplication**: In-flight HTTP requests for identical endpoints share a single network call.
+- **HTTP 429 Cooldown**: Automatic graceful fallback to stale cache when upstream API rate limits are encountered.
 
 ---
 
-## 3. Developer Guide to Calculation Methods
+## 6. Tech Stack & Dependencies
 
-The application performs several real-time calculations directly on the client side. The following summaries focus on practical implementation, inputs, outputs, and their usage within the app.
-
-### 3.1. Geographic Distance Calculation (`GeoDistanceHelper`)
-
-- Purpose: Computes the spherical great-circle distance between two geographic coordinates on Earth using the Haversine formula (Earth radius R = 6,371 km).
-- Implementation:
-  - Inputs: Latitude and longitude of Point A (lat1, lon1) and Point B (lat2, lon2).
-  - Method: `GeoDistanceHelper.calculateDistanceKm(lat1, lon1, lat2, lon2)`.
-  - Display formatting:
-    - Distance under 10 km: Displayed with 1 decimal place (e.g., "~3.4km").
-    - Distance 10 km and above: Rounded to the nearest integer (e.g., "~25km", "~140km").
-- App usage: When a user taps anywhere on the map, the app uses this method to find the closest monitoring station. If the nearest station is further than 35 km, the app queries `VietnamProvince.provinces` to resolve the nearest Vietnamese province and formats a human-readable title (e.g., "Dropped Pin (~4.2km from Da Nang)").
-
-### 3.2. Apparent Heat Index Calculation (`HeatIndexHelper`)
-
-- Purpose: Estimates the physiological temperature perceived by the human body by combining dry-bulb ambient temperature with relative humidity.
-- Implementation:
-  - Inputs: Ambient temperature in Celsius (T) and relative humidity percentage (RH).
-  - Method: `HeatIndexHelper.calculateHeatIndex(temperatureCelsius, humidity)`.
-  - Logic: Converts temperature to Fahrenheit, computes apparent temperature via Rothfusz's multivariate regression polynomial equation, and converts the result back to Celsius.
-  - Risk tiers:
-    - Under 27 degrees Celsius: Safe (Normal conditions).
-    - 27 to 31 degrees Celsius: Caution (Fatigue possible with prolonged physical exertion).
-    - 32 to 40 degrees Celsius: Extreme Caution (Risk of sunstroke and muscle cramps).
-    - 41 degrees Celsius and above: Danger (Imminent risk of heat exhaustion and heatstroke).
-- App usage: Displayed on the Home Weather Card and Details page with dedicated warning badges to inform users of thermal stress risks during heatwaves.
-
-### 3.3. Air Quality Index Interpolation (`AQIHelper`)
-
-- Purpose: Converts raw particulate matter concentrations (PM2.5 and PM10 in ug/m3) into standard US EPA Air Quality Index values.
-- Implementation:
-  - Inputs: Measured pollutant concentration (C).
-  - Method: `AQIHelper.calculateAqiFromPm25(pm25)` and `AQIHelper.calculateAqiFromPm10(pm10)`.
-  - Logic: Employs standard piecewise linear interpolation:
-    `I = [ (I_high - I_low) / (C_high - C_low) ] * (C - C_low) + I_low`
-    where C_low and C_high are regulatory concentration thresholds, and I_low and I_high are the corresponding index bracket values.
-  - Categories:
-    - 0 - 50: Good (Green)
-    - 51 - 100: Moderate (Yellow)
-    - 101 - 150: Unhealthy for Sensitive Groups (Orange)
-    - 151 - 200: Unhealthy (Red)
-    - 201 - 300: Very Unhealthy (Purple)
-    - 301+: Hazardous (Maroon)
-- App usage: Generates the prominent AQI gauge on the home screen, drives color-coded health risk indicators, and informs the smart advisor rule engine.
-
-### 3.4. NASA FIRMS Satellite Thermal Anomaly Metrics (`ThermalHotspotModel`)
-
-- Purpose: Parses and contextualizes infrared brightness and radiant energy detected by NOAA-20 and NOAA-21 VIIRS 375m satellite sensors.
-- Implementation:
-  - Brightness temperature: Converts sensor Band I4 brightness from Kelvin to Celsius (`T_celsius = T_kelvin - 273.15`).
-  - Fire Radiative Power (FRP): Measured in Megawatts (MW).
-    - FRP >= 20.0 MW: Classified as high radiative output.
-    - FRP < 20.0 MW: Classified as standard surface thermal emission.
-  - Terrain classification: The app evaluates geographic coordinates against Vietnamese regional terrain:
-    - Lowland / Delta regions: Classified objectively as surface thermal points in lowland terrain.
-    - Highland / Mountainous regions: Classified objectively as surface thermal points in highland terrain.
-  - Sensor confidence: Maps sensor detection flags ('h', 'n', 'l') to confidence percentages (95%, 80%, 50%).
-- App usage: Renders glowing thermal hotspot markers on the satellite map layer, accompanied by preview cards detailing radiative intensity, detection timestamp, and terrain context.
-
-### 3.5. Urban Flood Vulnerability Evaluation
-
-- Purpose: Flags localized urban flooding danger in vulnerable metropolitan centers.
-- Implementation: Combines real-time precipitation intensity (precipitation >= 20.0 mm/h) with pre-mapped historical drainage blackspots (`FloodBlackspot.vietnamBlackspots`).
-- App usage: Toggles the `isHighFloodRisk` warning flag on station cards and the flood map layer to alert users of potential street-level inundation.
+| Category | Technology / Package | Purpose |
+|---|---|---|
+| **Framework** | Flutter 3.22+ / Dart 3.12+ | High-performance multi-platform UI engine |
+| **State Management** | `flutter_bloc` & `equatable` | Deterministic, unidirectional state management |
+| **Dependency Injection**| `get_it` | Fast service locator and dependency inversion |
+| **On-Device Edge AI** | `flutter_gemma` | Quantized on-device LLM inference |
+| **GIS & Mapping** | `flutter_map` & `latlong2` | High-fps OpenStreetMap vector tile rendering |
+| **Data Visualization** | `fl_chart` | Smooth 24-hour Bézier curves and pollutant charts |
+| **Networking** | `http` | Low-overhead REST client with connection pooling |
+| **Storage & Caching** | `shared_preferences` | Key-value offline persistence and TTL caches |
+| **Hardware Access** | `geolocator` | High-accuracy GPS positioning and permission flows |
+| **UI Polish** | `liquid_glass_renderer` & `gap` | Modern translucent glassmorphism aesthetics |
 
 ---
 
-## 4. Setup and Installation Guide
+## 7. Installation & Local Setup
 
-### 4.1. Prerequisites
+### 7.1. Prerequisites
+- **Flutter SDK**: `^3.22.0` (Dart SDK `^3.12.0`)
+- **Git**
+- **Android Studio** (with Android SDK & NDK) or **VS Code** with Flutter extension
+- **Xcode 15+** (for macOS / iOS compilation)
 
-- Flutter SDK: Version 3.22.0 or higher (compatible with Flutter 3.44+).
-- Dart SDK: Version 3.12.0 or higher.
-- Git installed on your system.
-- Android Studio (with Android SDK and command-line tools) or VS Code.
-- Xcode (version 15 or higher, for macOS/iOS builds).
-
-### 4.2. Environment Configuration
-
-Create a `.env` file in the project root directory:
+### 7.2. Environment Configuration
+Create a `.env` file from the provided template:
 
 ```bash
 # Windows PowerShell:
@@ -207,7 +268,7 @@ Copy-Item .env_example .env
 cp .env_example .env
 ```
 
-Ensure the `.env` file contains your NASA FIRMS map key:
+Ensure `.env` contains valid endpoints and your NASA FIRMS key:
 
 ```properties
 APP_NAME=EnviVN
@@ -218,440 +279,302 @@ OPEN_METEO_GEOCODING_BASE_URL=https://geocoding-api.open-meteo.com
 OSM_TILE_URL=https://tile.openstreetmap.org/{z}/{x}/{y}.png
 MAP_USER_AGENT=com.envivn.envivn
 NASA_FIRMS_BASE_URL=https://firms.modaps.eosdis.nasa.gov/api
-NASA_FIRMS_MAP_KEY= #get your key at: https://firms.modaps.eosdis.nasa.gov/api/map_key
+NASA_FIRMS_MAP_KEY=your_nasa_firms_key_here
+```
+> Obtain your free NASA FIRMS MAP Key at: [https://firms.modaps.eosdis.nasa.gov/api/map_key](https://firms.modaps.eosdis.nasa.gov/api/map_key)
+
+### 7.3. Run Application
+```bash
+# Install dependencies
+flutter pub get
+
+# Run on connected device or emulator
+flutter run
 ```
 
-### 4.3. Running on Visual Studio Code
+### 7.4. Release APK Compilation
+```bash
+# Optimized 64-bit release APK (~23MB, recommended for modern devices):
+flutter build apk --split-per-abi
 
-1. Install the official Flutter and Dart extensions from the Marketplace.
-2. Open the project root directory in VS Code.
-3. Open the integrated terminal and resolve dependencies:
-   ```bash
-   flutter pub get
-   ```
-4. Select your target device from the bottom status bar (connected Android phone, emulator, or iOS simulator).
-5. Press F5 or run:
-   ```bash
-   flutter run
-   ```
+# Universal Fat APK (~59MB):
+flutter build apk --release
+```
 
-### 4.4. Running on Android Studio
+---
 
-1. Install the Flutter plugin (Settings -> Plugins -> Marketplace -> Search "Flutter").
-2. Open the `EnviVN` project directory.
-3. Click "Pub get" in the top notification bar when opening `pubspec.yaml`.
-4. Select your connected device or Android Virtual Device (AVD).
-5. Click the green Run button or press Shift + F10.
+## 8. Automated Testing & Quality Verification
 
-### 4.5. Running on Xcode and iOS (macOS Required)
-
-1. Verify CocoaPods installation:
-   ```bash
-   pod --version
-   ```
-2. Install Pod dependencies:
-   ```bash
-   cd ios
-   pod install
-   cd ..
-   ```
-3. Open the workspace file in Xcode:
-   ```bash
-   open ios/Runner.xcworkspace
-   ```
-4. In Xcode, configure Signing & Capabilities with your Apple Developer Team.
-5. Run on an iOS Simulator or connected iPhone:
-   ```bash
-   flutter run -d ios
-   ```
-
-### 4.6. Building Android APK for Direct Installation
-
-To generate APK files for direct side-loading on Android devices:
-
-- Optimized 64-bit APK (Recommended, ~23MB):
-
-  ```bash
-  flutter build apk --split-per-abi
-  ```
-
-  Output path: `build/app/outputs/flutter-apk/app-arm64-v8a-release.apk`
-
-- Universal Fat APK (Works across all Android CPUs, ~59MB):
-  ```bash
-  flutter build apk --release
-  ```
-  Output path: `build/app/outputs/flutter-apk/app-release.apk`
-
-Install directly via ADB:
+EnviVN enforces 100% test pass rates and zero analyzer issues prior to any release:
 
 ```bash
-adb install -r build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+# 1. Run static code analysis (Expected: 0 issues)
+flutter analyze
+
+# 2. Verify code formatting compliance
+dart format --output=none --set-exit-if-changed lib test
+
+# 3. Execute the full test suite (103 unit and widget tests)
+flutter test
 ```
 
----
-
-## 5. Automated Testing & Verification
-
-The project includes an automated test suite with 30 unit and widget tests:
-
-- Run static analysis:
-
-  ```bash
-  flutter analyze
-  ```
-
-  Expected outcome: 0 issues.
-
-- Execute the test suite:
-  ```bash
-  flutter test
-  ```
-  Coverage includes:
-  - NASA FIRMS NOAA-20 VIIRS CSV parsing and 15-minute TTL caching mechanisms.
-  - In-flight HTTP request deduplication and HTTP 429 rate-limit cooldown handling.
-  - Great-circle Haversine distance calculations and nearest province resolvers.
-  - Apparent heat index polynomial calculation and risk tier mappings.
-  - US EPA AQI linear interpolation calculations.
-  - Responsive layout tests verifying zero pixel overflow on narrow mobile screens (320px).
+### Test Coverage Highlights
+- **103/103 Tests Passing (100%)**:
+  - `ModelDownloadService`: Lifecycle, chunk throttling, RAM boundary checks, and SHA-256 verification.
+  - `EdgeAiInferenceService`: Model initialization, streaming chunk yielding, and error recovery.
+  - `AirQualityCubit`, `DetailsCubit`, `AdvisorCubit`, `HomeDashboardCubit`, `MapCubit`: Complete BLoC transition and error state coverage.
+  - `Aqi24hChartCard`, `StoryCardView`, `StationMarkerWidget`: Zero-overflow widget tests across 320px narrow screens.
+  - `GeoDistanceHelper`, `AQIHelper`, `HeatIndexHelper`: Exact mathematical boundary checks.
 
 ---
 
-## 6. Data Attribution
+## 9. Data Attribution & References
 
-- Meteorological forecasts and air quality observations provided by Open-Meteo under standard API terms.
-- Active surface thermal radiation data provided by NASA FIRMS (NOAA-20 and NOAA-21 VIIRS Near Real-Time).
-- Map base tiles provided by OpenStreetMap contributors.
+- **Meteorological & Air Quality Feeds**: Open-Meteo under standard API license.
+- **Satellite Earth Observation**: NASA FIRMS (NOAA-20 and NOAA-21 VIIRS Near Real-Time).
+- **Map Base Tiles**: OpenStreetMap contributors.
+- **Air Quality Standards**: US EPA Air Quality Index (AQI) & Vietnam QCVN 05:2023/BTNMT.
+- **Thermal Heat Risk Guidelines**: National Oceanic and Atmospheric Administration (NOAA) / NWS.
 
 ---
 
 ---
 
-# BẢN DỊCH TIẾNG VIỆT (VIETNAMESE TRANSLATION)
+<a name="bản-hướng-dẫn-tiếng-việt-vietnamese"></a>
+# Bản Hướng Dẫn Tiếng Việt (Vietnamese)
+
+## Mục Lục
+1. [Giới Thiệu Hệ Thống & Giá Trị Thực Tiễn](#1-giới-thiệu-hệ-thống--giá-trị-thực-tiễn)
+2. [Giao Diện Trực Quan Ứng Dụng](#2-giao-diện-trực-quan-ứng-dụng)
+3. [Chi Tiết Tính Năng Cốt Lõi](#3-chi-tiết-tính-năng-cốt-lõi)
+4. [Kiến Trúc Phần Mềm Doanh Nghiệp (Clean Architecture)](#4-kiến-trúc-phần-mềm-doanh-nghiệp-clean-architecture)
+5. [Thuật Toán & Phương Pháp Tính Khoa Học](#5-thuật-toán--phương-pháp-tính-khoa-học)
+6. [Cấu Hình & Khởi Chạy Dự Án](#6-cấu-hình--khởi-chạy-dự-án)
+7. [Kiểm Thử Tự Động & Đảm Bảo Chất Lượng](#7-kiểm-thử-tự-động--đảm-bảo-chất-lượng)
+8. [Nguồn Dữ Liệu & Bản Quyền](#8-nguồn-dữ-liệu--bản-quyền)
 
 ---
 
-# EnviVN - Hệ Thống Giám Sát Môi Trường Và Cảnh Báo Rủi Ro Thời Tiết
+## 1. Giới Thiệu Hệ Thống & Giá Trị Thực Tiễn
 
-EnviVN là ứng dụng di động đa nền tảng phát triển bằng Flutter, cung cấp giải pháp theo dõi chất lượng không khí (AQI), dự báo thời tiết độ chính xác cao, cảnh báo nguy cơ ngập úng đô thị và giám sát các điểm phát xạ nhiệt/dị thường nhiệt bề mặt theo thời gian thực từ vệ tinh NASA FIRMS trên toàn lãnh thổ Việt Nam.
+**EnviVN** là giải pháp di động toàn diện nhằm giám sát môi trường sống và đưa ra các cảnh báo rủi ro thời tiết sớm tại Việt Nam:
 
-Ứng dụng được thiết kế tuân thủ nghiêm ngặt mô hình Kiến trúc Sạch (Clean Architecture) kết hợp quản lý trạng thái BLoC/Cubit, bảo đảm tính độc lập giữa các tầng, dễ bảo trì và khả năng kiểm thử toàn diện.
-
----
-
-## 1. Tính Năng Chính Và Giao Diện Ứng Dụng
-
-### 1.1. Bảng Điều Khiển Môi Trường Thời Gian Thực
-
-Màn hình tổng quan hợp nhất các chỉ số chất lượng không khí và dữ liệu khí tượng tức thời tại vị trí GPS thực tế của người dùng hoặc thành phố được chọn. Các thông số hiển thị bao gồm: chỉ số US AQI, bụi mịn PM2.5, PM10, nhiệt độ môi trường, nhiệt độ cảm nhận (Heat Index), độ ẩm, tốc độ gió, xác suất mưa và chỉ số tia UV.
-
-![Man Hinh Tong Quan](screenshots/dashboard_screen.png)
-
-### 1.2. Phân Tích Xu Hướng 24 Giờ & Dự Báo 7 Ngày
-
-Cung cấp biểu đồ diễn biến 24 giờ tiếp theo cho chất lượng không khí và nhiệt độ, kèm theo bảng dự báo thời tiết 7 ngày mở rộng và chi tiết nồng độ các chất ô nhiễm (CO, NO2, SO2, O3) đối chiếu theo quy chuẩn quốc tế.
-
-![Chi Tiet 24 Gio Va Du Bao](screenshots/details_screen.png)
-
-### 1.3. Bản Đồ Môi Trường Đa Tầng & Ghim Vị Trí Tùy Chọn
-
-Giao diện bản đồ tương tác với 4 lớp dữ liệu chuyên biệt: Chất lượng không khí (AQI), Thời tiết, Điểm đen ngập úng đô thị, và Điểm phát xạ nhiệt vệ tinh. Người dùng có thể chạm vào bất kỳ điểm nào trên bản đồ để ghim vị trí tùy chọn; hệ thống sẽ tự động xác định tỉnh thành Việt Nam gần nhất và tải dữ liệu môi trường thực tế cho tọa độ đó.
-
-![Ban Do Da Tang Va Ghim Vi Tri](screenshots/map_layers_screen.png)
-
-### 1.4. Lớp Dữ Liệu Điểm Phát Xạ Nhiệt Vệ Tinh NASA FIRMS
-
-Tích hợp trực tiếp dữ liệu từ vệ tinh thế hệ mới NOAA-20 và NOAA-21 VIIRS độ phân giải 375m của NASA. Hiển thị trực quan các điểm phát xạ nhiệt bề mặt trên cả nước kèm thông lượng bức xạ nhiệt (FRP) và phân loại khách quan theo vùng địa hình (vùng cao / đồi núi hoặc vùng đồng bằng).
-
-![Diem Nhiet Ve Tinh](screenshots/thermal_hotspots_screen.png)
-
-### 1.5. Cố Vấn Sức Khỏe & Hoạt Động Ngoài Trời
-
-Động cơ tính toán hoạt động hoàn toàn trên thiết bị (offline, 0ms latency), tự động phân tích các chỉ số môi trường hiện tại để đưa ra quyết định tư vấn thực tế (chạy bộ, đạp xe, đeo khẩu trang) kèm bảng đối chiếu khoa học theo quy chuẩn WHO và QCVN 05:2023/BTNMT.
-
-![Co Van Thong Minh](screenshots/advisor_screen.png)
-
-### 1.6. Xuất Ảnh Chia Sẻ Story & Mạng Xã Hội
-
-Cho phép người dùng tạo các thẻ ảnh môi trường tùy biến chuẩn tỉ lệ 9:16 (Story/Reel) và 1:1 (Vuông) để chia sẻ trực tiếp lên mạng xã hội với chất lượng đồ họa sắc nét.
-
-![Chia Se Story](screenshots/story_share_screen.png)
+- **Giám sát chất lượng không khí thời gian thực**: Chỉ số US AQI, nồng độ bụi mịn PM2.5, PM10 và các khí độc hại (CO, $\text{NO}_2$, $\text{SO}_2$, $\text{O}_3$).
+- **Cảnh báo vi khí hậu & ngập lụt đô thị**: Đồ thị nhiệt độ 24 giờ, chỉ số sốc nhiệt Heat Index (Rothfusz), và bản đồ điểm đen ngập úng khi mưa lớn.
+- **Quan trắc điểm nhiệt vệ tinh NASA FIRMS**: Thu nhận dữ liệu hồng ngoại thời gian thực từ vệ tinh NOAA-20/21 VIIRS (độ phân giải 375m) trên toàn lãnh thổ Việt Nam.
+- **Trợ lý AI Cố vấn Sức khỏe chạy On-Device (Edge AI)**: Trò chuyện và phân tích khuyến nghị sức khỏe hoàn toàn ngoại tuyến với mô hình Google Gemma 2 2B (GGUF), bảo mật tuyệt đối dữ liệu người dùng, kiểm soát RAM an toàn ($\ge 1.4\text{ GB}$).
+- **Single Source of Truth (SSOT)**: Chuẩn hóa thực thể vị trí duy nhất `AppLocationEntity` xuyên suốt toàn bộ ứng dụng (GPS, thành phố mặc định, trạm quan trắc và điểm ghim tự do).
 
 ---
 
-## 2. Kiến Trúc Hệ Thống (Clean Architecture)
+## 2. Giao Diện Trực Quan Ứng Dụng
 
-Mã nguồn được phân bổ chặt chẽ theo mô hình Clean Architecture:
+<div align="center">
+<table>
+  <tr>
+    <td align="center" width="25%">
+      <img src="screenshots/screen_01_home.png" alt="Màn hình chính" width="100%"/>
+      <br/><b>1. Bảng điều khiển chính</b>
+      <br/><i>Vòng đo AQI, Thời tiết & Truy cập nhanh</i>
+    </td>
+    <td align="center" width="25%">
+      <img src="screenshots/screen_02_city_selector.png" alt="Chọn thành phố" width="100%"/>
+      <br/><b>2. Chọn Tỉnh / Thành phố</b>
+      <br/><i>Định vị GPS & Danh mục 63 tỉnh</i>
+    </td>
+    <td align="center" width="25%">
+      <img src="screenshots/screen_03_map.png" alt="Bản đồ môi trường" width="100%"/>
+      <br/><b>3. Bản đồ GIS ô nhiễm</b>
+      <br/><i>Tương tác trượt, zoom mượt mà</i>
+    </td>
+    <td align="center" width="25%">
+      <img src="screenshots/screen_04_station_preview.png" alt="Xem trước trạm" width="100%"/>
+      <br/><b>4. Thẻ trạm & Ghim vị trí</b>
+      <br/><i>Tính khoảng cách & dữ liệu tức thời</i>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="25%">
+      <img src="screenshots/screen_05_map_layers.png" alt="Chọn lớp bản đồ" width="100%"/>
+      <br/><b>5. Lớp bản đồ chuyên dụng</b>
+      <br/><i>AQI, Thời tiết, Ngập úng & Vệ tinh</i>
+    </td>
+    <td align="center" width="25%">
+      <img src="screenshots/screen_06_24h_details.png" alt="Chi tiết 24h" width="100%"/>
+      <br/><b>6. Phân tích xu hướng 24h</b>
+      <br/><i>Đồ thị Bézier & Lưới chất ô nhiễm</i>
+    </td>
+    <td align="center" width="25%">
+      <img src="screenshots/screen_07_advisor_modal.png" alt="Cố vấn sức khỏe" width="100%"/>
+      <br/><b>7. Cố vấn sức khỏe thông minh</b>
+      <br/><i>Ma trận đa yếu tố phản hồi tức thì</i>
+    </td>
+    <td align="center" width="25%">
+      <img src="screenshots/screen_08_advisor_ai.png" alt="AI On-Device" width="100%"/>
+      <br/><b>8. Trợ lý AI On-Device</b>
+      <br/><i>Gemma 2 2B trò chuyện ngoại tuyến</i>
+    </td>
+  </tr>
+</table>
+</div>
+
+---
+
+## 3. Chi Tiết Tính Năng Cốt Lõi
+
+### 3.1. Bảng Điều Khiển Môi Trường Trung Tâm
+- Vòng tròn đồng hồ đo AQI hiển thị màu sắc và mức đánh giá theo chuẩn US EPA.
+- Tích hợp đầy đủ: nhiệt độ thực, nhiệt độ cảm nhận (Heat Index), độ ẩm, tốc độ gió, xác suất mưa và tia UV.
+- Cơ chế lưu đệm ngoại tuyến (TTL 30 phút) theo từng tọa độ địa lý.
+
+### 3.2. Phân Tích Diễn Biến 24 Giờ & Dự Báo 7 Ngày
+- Đồ thị đường cong Bézier 24 giờ liên tục thể hiện xu hướng biến thiên của chỉ số ô nhiễm không khí và nhiệt độ (sử dụng thực thể định kiểu mạnh `HourlyAqiPoint`).
+- Dự báo thời tiết 7 ngày với mã thời tiết trực quan, lượng mưa tích lũy và biên độ nhiệt ngày/đêm.
+- Lưới chi tiết nồng độ các chất ô nhiễm: PM2.5, PM10, CO, $\text{NO}_2$, $\text{SO}_2$, $\text{O}_3$.
+
+### 3.3. Bản Đồ Môi Trường Đa Tầng & Ghim Tọa Độ Tùy Chọn
+- Bản đồ vector mượt mà với 4 lớp nghiệp vụ chuyên sâu:
+  1. **Chất lượng không khí (AQI)**: Hiển thị các trạm đo kèm mức độ ô nhiễm màu sắc.
+  2. **Thời tiết**: Trực quan hóa nhiệt độ, hướng gió và độ ẩm tại từng vùng.
+  3. **Ngập úng đô thị**: Kết hợp điểm đen thoát nước lịch sử với lượng mưa tức thời.
+  4. **Vệ tinh NASA FIRMS**: Phát hiện điểm phát xạ nhiệt mặt đất.
+- **Tính năng Ghim Vị Trí Tự Do**: Chạm vào bất kỳ điểm nào trên toàn lãnh thổ Việt Nam; ứng dụng tự động tính khoảng cách Haversine, tìm tỉnh thành gần nhất và tải dữ liệu môi trường cục bộ.
+
+### 3.4. Điểm Phát Xạ Nhiệt Vệ Tinh NASA FIRMS
+- Dữ liệu vệ tinh thời gian thực (NRT) từ cảm biến NOAA-20 & NOAA-21 VIIRS (độ phân giải 375m).
+- Tính toán nhiệt độ phát xạ hồng ngoại kênh I4 (Celsius) và công suất phát xạ nhiệt Fire Radiative Power (FRP tính bằng MW).
+- Phân loại thông minh theo địa hình: vùng cao đồi núi hoặc vùng đồng bằng châu thổ.
+- Chống nghẽn mạng: Tự động phục hồi và dùng bộ nhớ đệm an toàn khi chạm hạn ngạch HTTP 429.
+
+### 3.5. Hệ Thống Cố Vấn Sức Khỏe Kép
+1. **Động cơ phân tích quy tắc (0ms độ trễ)**: Đánh giá ngay lập tức ma trận đa yếu tố (AQI, bụi mịn, nhiệt độ, mưa giông) để đưa ra lời khuyên thể thao ngoài trời, mở cửa thông gió, đi lại và bảo vệ người già, trẻ nhỏ.
+2. **Trợ lý AI On-Device (Gemma 2 2B)**: Mô hình ngôn ngữ lớn chạy trực tiếp trên chip di động, không gửi dữ liệu ra ngoài Internet, đảm bảo an toàn tuyệt đối quyền riêng tư.
+
+### 3.6. Xuất Thẻ Ảnh Story Mạng Xã Hội
+- Tạo và xuất thẻ ảnh định dạng chuẩn **9:16 (Story/Reel)** và **1:1 (Vuông)**.
+- Hỗ trợ đổi chỗ các thẻ linh hoạt với các nút điều hướng 4 chiều chống tràn màn hình.
+
+---
+
+## 4. Kiến Trúc Phần Mềm Doanh Nghiệp (Clean Architecture)
+
+Mã nguồn EnviVN áp dụng chặt chẽ mô hình **Clean Architecture** kết hợp BLoC/Cubit:
 
 ```
 lib/
-├── main.dart
+├── main.dart                               # Điểm khởi chạy ứng dụng & Dependency Injection
 └── src/
-    ├── common/
-    │   ├── constants/
-    │   │   ├── colors.dart               # Bảng màu định chuẩn (UIColors)
-    │   │   └── strings.dart              # Chuỗi văn bản mặc định
-    │   ├── extensions/                   # Tiện ích mở rộng cho kiểu dữ liệu
-    │   └── utils/
-    │       ├── aqi_helper.dart           # Thuật toán nội suy tuyến tính US EPA AQI
-    │       ├── geo_distance_helper.dart  # Tính khoảng cách mặt cầu Haversine
-    │       └── heat_index_helper.dart    # Phương trình tính chỉ số nhiệt cảm nhận
-    ├── core/
-    │   ├── di/
-    │   │   └── injection_container.dart  # Khởi tạo Dependency Injection (GetIt)
-    │   ├── domain/
-    │   │   └── entities/                 # Hợp đồng chuẩn BaseResult, BaseResponse
+    ├── common/                             # Quy chuẩn giao diện, màu sắc, hằng số dùng chung
+    ├── core/                               # Nền tảng hạ tầng cốt lõi
+    │   ├── di/                             # Đăng ký Service Locator (GetIt)
+    │   ├── domain/entities/                # Thực thể gốc: BaseResult, AppLocationEntity
     │   ├── infrastructure/
-    │   │   ├── configs/                  # Nạp cấu hình môi trường EnvConfig
-    │   │   ├── datasources/
-    │   │   │   ├── local/                # Bộ nhớ đệm LocalStorage (SharedPreferences)
-    │   │   │   └── network/              # Giao tiếp HTTP client RestfulRequest
-    │   │   └── services/                 # Dịch vụ phần cứng GPS LocationService
-    │   └── presentation/                 # Widget giao diện dùng chung (AppText, AppIcon)
-    ├── features/
-    │   ├── advisor/                      # Tính năng cố vấn sức khỏe & hoạt động
-    │   │   ├── domain/entities/          # AdvisorDecision, AdvisorEvidence, SafetyLevel
-    │   │   └── presentation/             # AdvisorCubit, AdvisorModalSheet
-    │   ├── air_quality/                  # Tính năng chất lượng không khí (Open-Meteo)
-    │   │   ├── domain/                   # IAirQualityRepository, AirQualityEntity
-    │   │   ├── infrastructure/           # AirQualityRepository, AirQualityModel, Paths
-    │   │   └── presentation/             # AirQualityCubit, AQIGaugeWidget
-    │   ├── details/                      # Chi tiết thời tiết & xu hướng 24 giờ
-    │   │   ├── domain/                   # IDetailsRepository, DetailsEntity
-    │   │   ├── infrastructure/           # DetailsRepository, DetailsModel, Paths
-    │   │   └── presentation/             # DetailsCubit, TwentyFourHourDetailPage
-    │   ├── explore/                      # Tin tức môi trường & tiện ích
-    │   │   ├── domain/entities/          # UtilityItem, NewsItem
-    │   │   └── presentation/             # ExplorePage, UtilityCard
-    │   ├── home/                         # Màn hình Dashboard trung tâm
-    │   │   ├── domain/entities/          # CityEntity
-    │   │   └── presentation/             # HomeDashboardCubit, HomePage, Sheets
-    │   ├── map/                          # Bản đồ đa tầng & vệ tinh NASA FIRMS
-    │   │   ├── domain/                   # IMapRepository, INasaFirmsRepository
-    │   │   │   └── entities/             # MapLayerType, StationEntity, VietnamProvince
-    │   │   ├── infrastructure/           # MapRepository, NasaFirmsRepository
-    │   │   │   ├── models/               # StationModel, ThermalHotspotModel
-    │   │   │   └── paths/                # MapPaths, NasaFirmsPaths
-    │   │   └── presentation/             # MapCubit, MapPage, MapSideControls
-    │   └── story_share/                  # Tạo và xuất thẻ ảnh Story
-    │       └── presentation/             # StoryPreviewPage, StoryCardView
-    └── shared/
-        ├── router/                       # Điều hướng GlobalKeyManager, RouterPath
-        └── widgets/                      # Widget chia sẻ AppGlass, AppButton, AppTopToast
+    │   │   ├── configs/                    # Trình nạp biến môi trường (.env)
+    │   │   ├── datasources/local/          # LocalStorage (Bộ nhớ đệm TTL SharedPreferences)
+    │   │   ├── datasources/network/        # RestfulRequest (HTTP Client chuẩn, khử trùng lặp)
+    │   │   └── services/                   # LocationService, ModelDownloadService, EdgeAiService
+    │   └── presentation/                   # Widget giao diện dùng chung (AppText, Dialog, Tag)
+    ├── features/                           # Các module tính năng nghiệp vụ độc lập
+    │   ├── advisor/                        # Cố vấn sức khỏe & Trợ lý Edge AI
+    │   ├── air_quality/                    # Giám sát chất lượng không khí & trạm đo
+    │   ├── details/                        # Xu hướng 24 giờ & dự báo thời tiết 7 ngày
+    │   ├── explore/                        # Tiện ích môi trường & tin tức
+    │   ├── home/                           # Bảng điều khiển trung tâm (Dashboard)
+    │   ├── map/                            # Bản đồ đa tầng & điểm nhiệt NASA FIRMS
+    │   └── story_share/                    # Xuất thẻ ảnh Story mạng xã hội
+    └── shared/                             # Widget dùng chung đa tính năng & Router
 ```
 
-### Phân Định Trách Nhiệm Từng Tầng
+---
 
-- Tầng Domain: Chứa Interface của Repository, các Entity thuần túy và Enum định nghĩa luật nghiệp vụ. Hoàn toàn độc lập với các thư viện bên ngoài và giao diện người dùng.
-- Tầng Infrastructure: Triển khai các phương thức Repository, xử lý gọi mạng qua RestfulRequest, đọc/ghi dữ liệu tạm vào LocalStorage, định nghĩa đường dẫn API và chuyển đổi dữ liệu thô (JSON/CSV) sang Model.
-- Tầng Presentation: Sử dụng BLoC/Cubit để quản lý trạng thái giao diện, tiếp nhận dữ liệu từ Domain và kết xuất giao diện phản hồi linh hoạt.
-- Tầng Core & Common: Cung cấp container phụ thuộc GetIt, nạp biến môi trường `.env`, bộ định vị phần cứng và các công cụ tính toán toán học dùng chung.
+## 5. Thuật Toán & Phương Pháp Tính Khoa Học
+
+### 5.1. Cơ Chế Tải & Kiểm Soát Bộ Nhớ Edge AI
+- **Mô hình lượng tử hóa**: Google Gemma 2 2B Instruct GGUF (`Q4_K_M`, ~1.4 GB).
+- **Kiểm soát dung lượng RAM khả dụng**: Trước khi tải hoặc nạp trọng số mô hình vào RAM, ứng dụng truy vấn bộ nhớ native (`getAvailableRamBytes`). Nếu RAM khả dụng $< 1.4\text{ GB}$, hệ thống chủ động dừng và thông báo khuyến nghị để ngăn chặn tràn RAM (OOM Crash).
+- **Tiết lưu luồng tải (Throttling)**: Tiến độ tải chỉ cập nhật lên giao diện khi trôi qua ít nhất 150ms hoặc thay đổi $\ge 0.5\%$, giúp UI không bị giật lag khi tải tệp dung lượng lớn.
+- **Xác thực mã băm SHA-256**: Tệp tải về được kiểm tra toàn vẹn bằng hàm băm SHA-256 trước khi kích hoạt sử dụng.
+
+### 5.2. Công Thức Nội Suy US EPA AQI (`AQIHelper`)
+Nội suy tuyến tính nồng độ chất ô nhiễm thành điểm chỉ số AQI:
+
+$$I = \frac{I_{\text{high}} - I_{\text{low}}}{C_{\text{high}} - C_{\text{low}}} (C - C_{\text{low}}) + I_{\text{low}}$$
+
+### 5.3. Công Thức Nhiệt Cảm Nhận Rothfusz (`HeatIndexHelper`)
+Tính toán chỉ số nhiệt độ sinh lý con người cảm nhận dựa trên nhiệt độ môi trường và độ ẩm tương đối theo phương trình đa thức hồi quy của NOAA/NWS.
+
+### 5.4. Tính Khoảng Cách Mặt Cầu Haversine (`GeoDistanceHelper`)
+Tính khoảng cách đường chim bay giữa hai cặp tọa độ địa lý trên mặt cầu Trái Đất bán kính $R = 6,371\text{ km}$.
 
 ---
 
-## 3. Hướng Dẫn Kỹ Thuật Về Các Phương Thức Tính Toán
+## 6. Cấu Hình & Khởi Chạy Dự Án
 
-Các phép tính toán trong ứng dụng đều được xử lý trực tiếp trên thiết bị di động của người dùng. Dưới đây là mô tả phương thức theo góc nhìn phát triển phần mềm (đầu vào, đầu ra và cách ứng dụng sử dụng):
+### 6.1. Yêu Cầu Môi Trường
+- **Flutter SDK**: `>= 3.22.0` (Dart SDK `>= 3.12.0`)
+- **Android Studio** hoặc **Visual Studio Code**
+- **Xcode 15+** (nếu build trên thiết bị Apple)
 
-### 3.1. Tính Toán Khoảng Cách Địa Lý (`GeoDistanceHelper`)
-
-- Mục đích: Tính khoảng cách đường chim bay giữa hai tọa độ địa lý trên mặt cầu Trái Đất theo công thức Haversine (bán kính Trái Đất R = 6.371 km).
-- Triển khai:
-  - Tham số đầu vào: Vĩ độ và kinh độ của Điểm 1 (lat1, lon1) và Điểm 2 (lat2, lon2).
-  - Phương thức: `GeoDistanceHelper.calculateDistanceKm(lat1, lon1, lat2, lon2)`.
-  - Quy chuẩn làm tròn hiển thị:
-    - Khoảng cách nhỏ hơn 10 km: Hiển thị 1 chữ số thập phân (ví dụ: "~3.4km").
-    - Khoảng cách từ 10 km trở lên: Làm tròn về số nguyên gần nhất (ví dụ: "~25km", "~140km").
-- Sử dụng trong app: Khi người dùng ghim một điểm bất kỳ trên bản đồ, hàm này được gọi để tìm trạm quan trắc gần nhất. Nếu khoảng cách vượt quá 35 km, ứng dụng sẽ duyệt danh sách `VietnamProvince.provinces` để tìm ra tỉnh thành Việt Nam gần nhất và hiển thị tên chuẩn hóa (ví dụ: "Điểm ghim (~4.2km từ Đà Nẵng)").
-
-### 3.2. Tính Chỉ Số Nhiệt Cảm Nhận (`HeatIndexHelper`)
-
-- Mục đích: Ước lượng mức nhiệt độ thực tế mà cơ thể người cảm nhận khi kết hợp giữa nhiệt độ không khí và độ ẩm tương đối.
-- Triển khai:
-  - Tham số đầu vào: Nhiệt độ môi trường tính theo độ C và độ ẩm tương đối (%).
-  - Phương thức: `HeatIndexHelper.calculateHeatIndex(temperatureCelsius, humidity)`.
-  - Thuật toán: Đổi nhiệt độ sang Fahrenheit, áp dụng phương trình đa thức hồi quy Rothfusz của NOAA/NWS, sau đó chuyển ngược kết quả về độ C.
-  - Phân cấp mức độ nguy cơ:
-    - Dưới 27 độ C: An toàn (Điểu kiện bình thường).
-    - 27 đến 31 độ C: Cần thận trọng (Có thể mệt mỏi nếu vận động ngoài trời kéo dài).
-    - 32 đến 40 độ C: Đặc biệt cẩn trọng (Nguy cơ say nắng, chuột rút).
-    - Từ 41 độ C trở lên: Nguy hiểm (Nguy cơ kiệt sức vì nhiệt và sốc nhiệt cấp tính).
-- Sử dụng trong app: Hiển thị trên thẻ thời tiết ở Dashboard và trang Chi tiết 24h kèm huy hiệu cảnh báo màu để người dùng chủ động phòng tránh sốc nhiệt trong những ngày nắng nóng đỉnh điểm.
-
-### 3.3. Tính Chỉ Số Chất Lượng Không Khí (`AQIHelper`)
-
-- Mục đích: Chuyển đổi nồng độ bụi mịn PM2.5 hoặc PM10 (đơn vị ug/m3) thành chỉ số chất lượng không khí US EPA AQI chuẩn quốc tế.
-- Triển khai:
-  - Tham số đầu vào: Nồng độ bụi mịn đo được (C).
-  - Phương thức: `AQIHelper.calculateAqiFromPm25(pm25)` và `AQIHelper.calculateAqiFromPm10(pm10)`.
-  - Thuật toán: Sử dụng công thức nội suy tuyến tính theo từng khoảng quy chuẩn:
-    `I = [ (I_high - I_low) / (C_high - C_low) ] * (C - C_low) + I_low`
-    trong đó C_low và C_high là ngưỡng nồng độ giới hạn dưới và trên, I_low và I_high là các mức điểm AQI tương ứng.
-  - Phân cấp mức độ:
-    - 0 - 50: Tốt (Xanh lá)
-    - 51 - 100: Trung bình (Vàng)
-    - 101 - 150: Kém cho nhóm nhạy cảm (Cam)
-    - 151 - 200: Xấu (Đỏ)
-    - 201 - 300: Rất xấu (Tím)
-    - 301+: Nguy hại (Nâu thẫm)
-- Sử dụng trong app: Dùng để kết xuất vòng đồng hồ đo AQI ở màn hình chính, quy định màu sắc cảnh báo toàn ứng dụng và làm dữ liệu đầu vào cho động cơ cố vấn sức khỏe.
-
-### 3.4. Dữ Liệu Điểm Phát Xạ Nhiệt Vệ Tinh NASA FIRMS (`ThermalHotspotModel`)
-
-- Mục đích: Xử lý và diễn giải dữ liệu bức xạ nhiệt hồng ngoại từ cảm biến VIIRS 375m trên vệ tinh NOAA-20 và NOAA-21.
-- Triển khai:
-  - Nhiệt độ phát xạ: Đổi nhiệt độ bức xạ kênh I4 từ Kelvin sang Celsius (`T_celsius = T_kelvin - 273.15`).
-  - Công suất bức xạ nhiệt (FRP - tính bằng Megawatt):
-    - FRP >= 20.0 MW: Điểm phát xạ nhiệt công suất cao.
-    - FRP < 20.0 MW: Điểm phát xạ nhiệt tiêu chuẩn.
-  - Phân loại theo địa hình: Đánh giá tọa độ điểm vệ tinh dựa trên vùng địa hình Việt Nam:
-    - Vùng đồng bằng: Phân loại khách quan là điểm phát xạ nhiệt ở vùng đồng bằng.
-    - Vùng cao / Đồi núi: Phân loại khách quan là điểm phát xạ nhiệt ở vùng cao.
-  - Độ tin cậy cảm biến: Ánh xạ ký hiệu chất lượng ('h', 'n', 'l') tương ứng với 95%, 80%, và 50% độ tin cậy.
-- Sử dụng trong app: Dùng để vẽ các đốm nhiệt phát sáng trên bản đồ, kết hợp thẻ thông tin xem trước cho biết cường độ bức xạ, thời gian vệ tinh quét qua và ngữ cảnh địa hình.
-
-### 3.5. Đánh Giá Nguy Cơ Ngập Úng Đô Thị
-
-- Mục đích: Cảnh báo nguy cơ ngập úng cục bộ tại các đô thị lớn khi có mưa lớn.
-- Triển khai: Kết hợp lượng mưa thời gian thực (cường độ mưa >= 20.0 mm/h) với dữ liệu các điểm trũng thấp, điểm nghẽn thoát nước trong lịch sử (`FloodBlackspot.vietnamBlackspots`).
-- Sử dụng trong app: Bật cờ cảnh báo `isHighFloodRisk` trên thẻ trạm quan trắc và hiển thị cảnh báo đỏ trên lớp bản đồ Ngập úng.
-
----
-
-## 4. Hướng Dẫn Cài Đặt & Chạy Ứng Dụng Cho Lập Trình Viên
-
-### 4.1. Yêu Cầu Môi Trường
-
-- Flutter SDK: Phiên bản từ 3.22.0 trở lên (tương thích tốt với Flutter 3.44+).
-- Dart SDK: Phiên bản từ 3.12.0 trở lên.
-- Đã cài đặt Git trên máy tính.
-- Android Studio (có Android SDK) hoặc Visual Studio Code.
-- Xcode (từ phiên bản 15 trở lên, nếu muốn chạy trên iOS/macOS).
-
-### 4.2. Cấu Hình Biến Môi Trường
-
-Tạo file `.env` tại thư mục gốc của dự án:
-
+### 6.2. Cấu Hình Tệp Môi Trường
 ```bash
-# Trên Windows PowerShell:
-Copy-Item .env_example .env
-
-# Trên macOS / Linux:
-cp .env_example .env
+# Tạo file .env từ mẫu:
+Copy-Item .env_example .env   # Trên Windows PowerShell
+cp .env_example .env          # Trên macOS / Linux
 ```
 
-Kiểm tra nội dung file `.env` để bảo đảm khóa NASA FIRMS hợp lệ:
-
+Cập nhật mã bản đồ NASA FIRMS vào `.env`:
 ```properties
 APP_NAME=EnviVN
 APP_ENV=development
-OPEN_METEO_WEATHER_BASE_URL=https://api.open-meteo.com
-OPEN_METEO_AIR_QUALITY_BASE_URL=https://air-quality-api.open-meteo.com
-OPEN_METEO_GEOCODING_BASE_URL=https://geocoding-api.open-meteo.com
-OSM_TILE_URL=https://tile.openstreetmap.org/{z}/{x}/{y}.png
-MAP_USER_AGENT=com.envivn.envivn
-NASA_FIRMS_BASE_URL=https://firms.modaps.eosdis.nasa.gov/api
-NASA_FIRMS_MAP_KEY= #lấy mã tại: https://firms.modaps.eosdis.nasa.gov/api/map_key/
+NASA_FIRMS_MAP_KEY=dien_ma_key_cua_ban_tai_day
+```
+*(Đăng ký mã miễn phí tại: [NASA FIRMS API Key](https://firms.modaps.eosdis.nasa.gov/api/map_key))*
+
+### 6.3. Chạy Ứng Dụng
+```bash
+flutter pub get
+flutter run
 ```
 
-### 4.3. Chạy Trên Visual Studio Code (VS Code)
+### 6.4. Đóng Gói Bản Cài Đặt Android (Release APK)
+```bash
+# Bản APK tối ưu cho chip 64-bit (~23MB, khuyên dùng):
+flutter build apk --split-per-abi
 
-1. Cài extension Flutter và Dart chính thức từ Marketplace.
-2. Mở thư mục dự án `EnviVN` bằng VS Code.
-3. Mở Terminal tích hợp và tải thư viện:
-   ```bash
-   flutter pub get
-   ```
-4. Chọn thiết bị đích ở thanh trạng thái dưới cùng (điện thoại cắm cáp, máy ảo Android hoặc iOS Simulator).
-5. Nhấn F5 hoặc gõ lệnh:
-   ```bash
-   flutter run
-   ```
+# Bản Fat APK (~59MB):
+flutter build apk --release
+```
 
-### 4.4. Chạy Trên Android Studio
+---
 
-1. Cài đặt plugin Flutter (Settings -> Plugins -> Tìm "Flutter").
-2. Mở thư mục dự án `EnviVN`.
-3. Bấm "Pub get" ở thanh thông báo phía trên file `pubspec.yaml`.
-4. Chọn thiết bị máy ảo hoặc điện thoại thật ở thanh công cụ.
-5. Nhấn nút Run (tam giác xanh) hoặc phím tắt Shift + F10.
+## 7. Kiểm Thử Tự Động & Đảm Bảo Chất Lượng
 
-### 4.5. Chạy Trên Xcode & iOS (Yêu Cầu macOS)
-
-1. Kiểm tra công cụ CocoaPods:
-   ```bash
-   pod --version
-   ```
-2. Cài đặt Pod dependencies:
-   ```bash
-   cd ios
-   pod install
-   cd ..
-   ```
-3. Mở file workspace trong Xcode:
-   ```bash
-   open ios/Runner.xcworkspace
-   ```
-4. Cấu hình Signing & Capabilities với tài khoản Apple Developer Team của bạn.
-5. Chạy ứng dụng trên iPhone hoặc Simulator:
-   ```bash
-   flutter run -d ios
-   ```
-
-### 4.6. Build Bản Android APK Để Cài Đặt Trực Tiếp
-
-Để tạo file cài APK chạy ngay trên điện thoại (không cần xuất bản lên Store):
-
-- Bản tối ưu cho chip 64-bit (Khuyên dùng, dung lượng nhẹ ~23MB):
-
-  ```bash
-  flutter build apk --split-per-abi
-  ```
-
-  File xuất ra tại: `build/app/outputs/flutter-apk/app-arm64-v8a-release.apk`
-
-- Bản Fat APK dùng chung cho mọi dòng máy (~59MB):
-  ```bash
-  flutter build apk --release
-  ```
-  File xuất ra tại: `build/app/outputs/flutter-apk/app-release.apk`
-
-Cài trực tiếp vào điện thoại qua cáp ADB:
+Dự án cam kết 100% test pass rate và 0 lỗi phân tích mã trước khi đưa lên Git:
 
 ```bash
-adb install -r build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+# 1. Phân tích tĩnh mã nguồn (Kết quả chuẩn: 0 lỗi, 0 cảnh báo)
+flutter analyze
+
+# 2. Kiểm tra định dạng code chuẩn Dart
+dart format --output=none --set-exit-if-changed lib test
+
+# 3. Chạy toàn bộ 103 test cases tự động
+flutter test
 ```
 
----
-
-## 5. Kiểm Thử Tự Động & Đảm Bảo Chất Lượng
-
-Dự án đi kèm bộ 30 bài kiểm thử tự động (Unit Test & Widget Test):
-
-- Kiểm tra phân tích tĩnh mã nguồn:
-
-  ```bash
-  flutter analyze
-  ```
-
-  Kết quả chuẩn: 0 lỗi, 0 cảnh báo.
-
-- Chạy toàn bộ test suites:
-  ```bash
-  flutter test
-  ```
-  Các phạm vi được kiểm thử bao gồm:
-  - Phân tích cú pháp dữ liệu CSV từ vệ tinh NASA NOAA-20 VIIRS và cơ chế lưu đệm TTL 15 phút.
-  - Cơ chế khử trùng lặp yêu cầu mạng (deduplication) và tự phục hồi khi gặp lỗi giới hạn lượt gọi HTTP 429.
-  - Phép tính khoảng cách mặt cầu Haversine và thuật toán ghim tìm tỉnh thành gần nhất.
-  - Tính toán chỉ số nhiệt cảm nhận (Heat Index) và phân loại cấp độ rủi ro.
-  - Phép nội suy chất lượng không khí chuẩn US EPA AQI.
-  - Kiểm tra giao diện chống tràn điểm ảnh (overflow) trên màn hình kích thước hẹp (320px).
+### Kết Quả Kiểm Thử Thực Tế
+- **103/103 Test Cases Đạt Thành Công 100%**:
+  - `ModelDownloadService`: Kiểm tra vòng đời tải, tiết lưu luồng, kiểm tra ngưỡng RAM, và xác minh mã băm SHA-256.
+  - `EdgeAiInferenceService`: Khởi tạo mô hình, trả về chunk streaming, và cơ chế tự phục hồi.
+  - `AirQualityCubit`, `DetailsCubit`, `AdvisorCubit`, `HomeDashboardCubit`, `MapCubit`: Kiểm thử toàn bộ chuyển đổi trạng thái BLoC và ngoại lệ.
+  - `Aqi24hChartCard`, `StoryCardView`, `StationMarkerWidget`: Kiểm thử giao diện chống tràn điểm ảnh (overflow) trên màn hình siêu hẹp (320px).
+  - `GeoDistanceHelper`, `AQIHelper`, `HeatIndexHelper`: Kiểm thử tính toán độ chính xác toán học.
 
 ---
 
-## 6. Nguồn Dữ Liệu & Bản Quyền Sử Dụng
+## 8. Nguồn Dữ Liệu & Bản Quyền
 
-- Dữ liệu dự báo thời tiết và chất lượng không khí được cung cấp bởi Open-Meteo API.
-- Dữ liệu điểm phát xạ nhiệt vệ tinh thời gian thực được cung cấp bởi NASA FIRMS (NOAA-20 và NOAA-21 VIIRS Near Real-Time).
-- Bản đồ nền do cộng đồng OpenStreetMap đóng góp.
+- Dữ liệu dự báo thời tiết và chất lượng không khí: Open-Meteo API.
+- Dữ liệu điểm phát xạ nhiệt vệ tinh thời gian thực: NASA FIRMS (NOAA-20 và NOAA-21 VIIRS).
+- Bản đồ nền: OpenStreetMap contributors.
+- Tiêu chuẩn quy chuẩn chất lượng không khí: US EPA AQI & QCVN 05:2023/BTNMT.

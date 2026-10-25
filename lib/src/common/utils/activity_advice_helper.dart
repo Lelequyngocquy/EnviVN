@@ -4,17 +4,13 @@ import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/features/air_quality/domain/entities/air_quality_entity.dart';
 import 'package:envivn/src/features/details/domain/entities/details_entity.dart';
 
-enum ActivitySafetyLevel {
-  safe,
-  caution,
-  avoid,
-}
+enum ActivitySafetyLevel { safe, caution, avoid }
 
 /// Thông tin dự báo chi tiết cho một khung giờ hoạt động ngoài trời.
 class ActivitySlotInfo {
   final String timeRange; // e.g. '05:30 - 07:30'
-  final String activity;  // e.g. 'Chạy bộ • Sáng nay'
-  final String status;    // e.g. 'Rất lý tưởng', 'Không khí xấu (AQI 160)'
+  final String activity; // e.g. 'Chạy bộ • Sáng nay'
+  final String status; // e.g. 'Rất lý tưởng', 'Không khí xấu (AQI 160)'
   final bool isOk;
 
   const ActivitySlotInfo({
@@ -79,8 +75,10 @@ class ActivityAdviceHelper {
   }) {
     // 1. Phân loại theo Multi-factor Matrix thời điểm hiện tại
     final bool actuallyRaining = isRaining || precipitation > 0.1;
-    final bool isSafe = !actuallyRaining && aqi <= 100 && uv <= 7 && rainProb <= 40;
-    final bool isAvoid = actuallyRaining || aqi > 150 || uv > 9 || rainProb > 70;
+    final bool isSafe =
+        !actuallyRaining && aqi <= 100 && uv <= 7 && rainProb <= 40;
+    final bool isAvoid =
+        actuallyRaining || aqi > 150 || uv > 9 || rainProb > 70;
 
     final ActivitySafetyLevel level = isSafe
         ? ActivitySafetyLevel.safe
@@ -178,63 +176,86 @@ class ActivityAdviceHelper {
   }) {
     final currentMinutes = currentTime.hour * 60 + currentTime.minute;
 
-    final today = DateTime(currentTime.year, currentTime.month, currentTime.day);
+    final today = DateTime(
+      currentTime.year,
+      currentTime.month,
+      currentTime.day,
+    );
     final tomorrow = today.add(const Duration(days: 1));
 
     final candidateSlots = <_SlotCandidate>[];
 
     if (currentMinutes < 7 * 60 + 30) {
       // Trước 07:30 sáng: Gợi ý Sáng nay & Chiều nay
-      candidateSlots.add(_SlotCandidate(
-        targetTime: today.add(const Duration(hours: 6)),
-        timeRange: '05:30 - 07:30',
-        activity: 'Chạy bộ • Sáng nay',
-      ));
-      candidateSlots.add(_SlotCandidate(
-        targetTime: today.add(const Duration(hours: 17)),
-        timeRange: '17:00 - 18:30',
-        activity: 'Tập luyện • Chiều nay',
-      ));
+      candidateSlots.add(
+        _SlotCandidate(
+          targetTime: today.add(const Duration(hours: 6)),
+          timeRange: '05:30 - 07:30',
+          activity: 'Chạy bộ • Sáng nay',
+        ),
+      );
+      candidateSlots.add(
+        _SlotCandidate(
+          targetTime: today.add(const Duration(hours: 17)),
+          timeRange: '17:00 - 18:30',
+          activity: 'Tập luyện • Chiều nay',
+        ),
+      );
     } else if (currentMinutes < 18 * 60 + 30) {
       // Từ 07:30 đến 18:30: Sáng nay đã qua -> Gợi ý Chiều nay & Sáng mai
-      candidateSlots.add(_SlotCandidate(
-        targetTime: today.add(const Duration(hours: 17)),
-        timeRange: '17:00 - 18:30',
-        activity: 'Tập luyện • Chiều nay',
-      ));
-      candidateSlots.add(_SlotCandidate(
-        targetTime: tomorrow.add(const Duration(hours: 6)),
-        timeRange: '05:30 - 07:30',
-        activity: 'Chạy bộ • Sáng mai',
-      ));
+      candidateSlots.add(
+        _SlotCandidate(
+          targetTime: today.add(const Duration(hours: 17)),
+          timeRange: '17:00 - 18:30',
+          activity: 'Tập luyện • Chiều nay',
+        ),
+      );
+      candidateSlots.add(
+        _SlotCandidate(
+          targetTime: tomorrow.add(const Duration(hours: 6)),
+          timeRange: '05:30 - 07:30',
+          activity: 'Chạy bộ • Sáng mai',
+        ),
+      );
     } else if (currentMinutes < 21 * 60) {
       // Từ 18:30 đến 21:00: Chiều nay đã qua -> Gợi ý Tối nay & Sáng mai
-      candidateSlots.add(_SlotCandidate(
-        targetTime: today.add(const Duration(hours: 20)),
-        timeRange: '19:00 - 21:00',
-        activity: 'Đi bộ • Tối nay',
-      ));
-      candidateSlots.add(_SlotCandidate(
-        targetTime: tomorrow.add(const Duration(hours: 6)),
-        timeRange: '05:30 - 07:30',
-        activity: 'Chạy bộ • Sáng mai',
-      ));
+      candidateSlots.add(
+        _SlotCandidate(
+          targetTime: today.add(const Duration(hours: 20)),
+          timeRange: '19:00 - 21:00',
+          activity: 'Đi bộ • Tối nay',
+        ),
+      );
+      candidateSlots.add(
+        _SlotCandidate(
+          targetTime: tomorrow.add(const Duration(hours: 6)),
+          timeRange: '05:30 - 07:30',
+          activity: 'Chạy bộ • Sáng mai',
+        ),
+      );
     } else {
       // Sau 21:00 đêm: Gợi ý Sáng mai & Chiều mai
-      candidateSlots.add(_SlotCandidate(
-        targetTime: tomorrow.add(const Duration(hours: 6)),
-        timeRange: '05:30 - 07:30',
-        activity: 'Chạy bộ • Sáng mai',
-      ));
-      candidateSlots.add(_SlotCandidate(
-        targetTime: tomorrow.add(const Duration(hours: 17)),
-        timeRange: '17:00 - 18:30',
-        activity: 'Tập luyện • Chiều mai',
-      ));
+      candidateSlots.add(
+        _SlotCandidate(
+          targetTime: tomorrow.add(const Duration(hours: 6)),
+          timeRange: '05:30 - 07:30',
+          activity: 'Chạy bộ • Sáng mai',
+        ),
+      );
+      candidateSlots.add(
+        _SlotCandidate(
+          targetTime: tomorrow.add(const Duration(hours: 17)),
+          timeRange: '17:00 - 18:30',
+          activity: 'Tập luyện • Chiều mai',
+        ),
+      );
     }
 
     return candidateSlots.map((candidate) {
-      final weatherPoint = _findHourlyWeather(hourlyWeather, candidate.targetTime);
+      final weatherPoint = _findHourlyWeather(
+        hourlyWeather,
+        candidate.targetTime,
+      );
       final aqiPoint = _findHourlyAqi(hourlyAqi, candidate.targetTime);
 
       final slotAqi = (aqiPoint != null && aqiPoint.aqi > 0)

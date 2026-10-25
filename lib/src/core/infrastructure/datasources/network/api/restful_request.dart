@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import '../../../../domain/entities/base.dart';
@@ -18,8 +19,8 @@ class RestfulRequest {
     http.Client? client,
     String? defaultBaseUrl,
     this.timeout = const Duration(seconds: 15),
-  })  : _client = client ?? http.Client(),
-        defaultBaseUrl = defaultBaseUrl ?? EnvConfig.openMeteoWeatherBaseUrl;
+  }) : _client = client ?? http.Client(),
+       defaultBaseUrl = defaultBaseUrl ?? EnvConfig.openMeteoWeatherBaseUrl;
 
   Future<BaseResponse> requestData(
     EndpointType endpoint, {
@@ -28,7 +29,8 @@ class RestfulRequest {
     final activeBaseUrl = endpoint.customBaseUrl ?? defaultBaseUrl;
     var uri = Uri.parse('$activeBaseUrl${endpoint.path}');
 
-    if (endpoint.method == HttpMethod.get && endpoint.params is Map<String, dynamic>) {
+    if (endpoint.method == HttpMethod.get &&
+        endpoint.params is Map<String, dynamic>) {
       uri = uri.replace(
         queryParameters: (endpoint.params as Map<String, dynamic>).map(
           (k, v) => MapEntry(k, v.toString()),
@@ -45,12 +47,14 @@ class RestfulRequest {
         ? jsonEncode(endpoint.params)
         : null;
 
-    BaseResult.logSend(
-      url: uri.toString(),
-      method: endpoint.method.value,
-      headers: headers,
-      params: endpoint.params,
-    );
+    if (kDebugMode) {
+      BaseResult.logSend(
+        url: uri.toString(),
+        method: endpoint.method.value,
+        headers: headers,
+        params: endpoint.params,
+      );
+    }
 
     try {
       http.Response response;
@@ -59,13 +63,19 @@ class RestfulRequest {
           response = await _client.get(uri, headers: headers).timeout(timeout);
           break;
         case HttpMethod.post:
-          response = await _client.post(uri, headers: headers, body: body).timeout(timeout);
+          response = await _client
+              .post(uri, headers: headers, body: body)
+              .timeout(timeout);
           break;
         case HttpMethod.put:
-          response = await _client.put(uri, headers: headers, body: body).timeout(timeout);
+          response = await _client
+              .put(uri, headers: headers, body: body)
+              .timeout(timeout);
           break;
         case HttpMethod.delete:
-          response = await _client.delete(uri, headers: headers, body: body).timeout(timeout);
+          response = await _client
+              .delete(uri, headers: headers, body: body)
+              .timeout(timeout);
           break;
       }
 
@@ -76,11 +86,13 @@ class RestfulRequest {
         json = response.body;
       }
 
-      BaseResult.logReceive(
-        url: uri.toString(),
-        statusCode: response.statusCode,
-        body: json,
-      );
+      if (kDebugMode) {
+        BaseResult.logReceive(
+          url: uri.toString(),
+          statusCode: response.statusCode,
+          body: json,
+        );
+      }
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return BaseResponse.fromSuccessJson(json);
@@ -88,19 +100,29 @@ class RestfulRequest {
         return BaseResponse.fromErrorJson(json);
       }
     } on SocketException catch (e) {
-      BaseResult.logError(url: uri.toString(), error: 'Lỗi mất kết nối mạng: $e');
+      if (kDebugMode) {
+        BaseResult.logError(
+          url: uri.toString(),
+          error: 'Lỗi mất kết nối mạng: $e',
+        );
+      }
       return const BaseResponse(
         isSuccess: false,
-        message: 'Không thể kết nối đến máy chủ thời tiết. Vui lòng kiểm tra Internet!',
+        message:
+            'Không thể kết nối đến máy chủ thời tiết. Vui lòng kiểm tra Internet!',
       );
     } on TimeoutException catch (e) {
-      BaseResult.logError(url: uri.toString(), error: 'Timeout: $e');
+      if (kDebugMode) {
+        BaseResult.logError(url: uri.toString(), error: 'Timeout: $e');
+      }
       return const BaseResponse(
         isSuccess: false,
         message: 'Kết nối mạng quá hạn (Timeout). Vui lòng thử lại!',
       );
     } catch (e) {
-      BaseResult.logError(url: uri.toString(), error: '$e');
+      if (kDebugMode) {
+        BaseResult.logError(url: uri.toString(), error: '$e');
+      }
       return BaseResponse(
         isSuccess: false,
         message: 'Đã xảy ra sự cố không xác định: $e',

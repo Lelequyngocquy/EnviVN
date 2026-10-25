@@ -58,7 +58,9 @@ class EnviVNApp extends StatelessWidget {
       providers: [
         BlocProvider<DetailsCubit>.value(value: di.sl<DetailsCubit>()),
         BlocProvider<AirQualityCubit>.value(value: di.sl<AirQualityCubit>()),
-        BlocProvider<HomeDashboardCubit>.value(value: di.sl<HomeDashboardCubit>()),
+        BlocProvider<HomeDashboardCubit>.value(
+          value: di.sl<HomeDashboardCubit>(),
+        ),
         BlocProvider<MapCubit>(create: (_) => di.sl<MapCubit>()),
       ],
       child: MaterialApp(
@@ -119,9 +121,7 @@ class EnviVNApp extends StatelessWidget {
                   appBar: PreferredSize(
                     preferredSize: Size.fromHeight(kToolbarHeight),
                     child: SafeArea(
-                      child: Center(
-                        child: AppText.bold('Lỗi', size: 18),
-                      ),
+                      child: Center(child: AppText.bold('Lỗi', size: 18)),
                     ),
                   ),
                   body: Center(child: AppText.regular('Trang không tồn tại')),

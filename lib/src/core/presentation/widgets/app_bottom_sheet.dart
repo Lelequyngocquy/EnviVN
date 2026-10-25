@@ -22,6 +22,7 @@ class AppBottomSheet extends StatelessWidget {
   final bool showCloseButton;
   final double borderRadius;
   final Color? glassColor;
+  final bool enableBlur;
 
   const AppBottomSheet({
     super.key,
@@ -40,6 +41,7 @@ class AppBottomSheet extends StatelessWidget {
     this.showCloseButton = true,
     this.borderRadius = 32,
     this.glassColor,
+    this.enableBlur = true,
   });
 
   static Future<T?> show<T>(
@@ -61,6 +63,7 @@ class AppBottomSheet extends StatelessWidget {
     bool showCloseButton = true,
     double borderRadius = 32,
     Color? glassColor,
+    bool enableBlur = true,
   }) {
     return showModalBottomSheet<T>(
       context: context,
@@ -81,6 +84,7 @@ class AppBottomSheet extends StatelessWidget {
         bottomButton: bottomButton,
         maxHeightFactor: maxHeightFactor,
         padding: padding,
+        enableBlur: enableBlur,
         showDragHandle: showDragHandle,
         showCloseButton: showCloseButton,
         borderRadius: borderRadius,
@@ -110,6 +114,7 @@ class AppBottomSheet extends StatelessWidget {
         borderRadius: borderRadius,
         color: glassColor,
         padding: padding,
+        enableBlur: enableBlur,
         child: SafeArea(
           top: false,
           child: Column(

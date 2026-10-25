@@ -4,7 +4,10 @@ class DateHelper {
   DateHelper._();
 
   /// Formats date to Vietnamese string safely without throwing LocaleDataException
-  static String formatVietnamese(DateTime date, {String pattern = 'EEEE, dd \'tháng\' MM'}) {
+  static String formatVietnamese(
+    DateTime date, {
+    String pattern = 'EEEE, dd \'tháng\' MM',
+  }) {
     try {
       return DateFormat(pattern, 'vi').format(date);
     } catch (_) {
@@ -41,11 +44,15 @@ class DateHelper {
   /// Formats weekday safely in Vietnamese (Hôm nay, Ngày mai, Thứ Hai, etc.)
   static String formatWeekday(DateTime date) {
     final now = DateTime.now();
-    if (date.year == now.year && date.month == now.month && date.day == now.day) {
+    if (date.year == now.year &&
+        date.month == now.month &&
+        date.day == now.day) {
       return 'Hôm nay';
     }
     final tomorrow = now.add(const Duration(days: 1));
-    if (date.year == tomorrow.year && date.month == tomorrow.month && date.day == tomorrow.day) {
+    if (date.year == tomorrow.year &&
+        date.month == tomorrow.month &&
+        date.day == tomorrow.day) {
       return 'Ngày mai';
     }
     switch (date.weekday) {

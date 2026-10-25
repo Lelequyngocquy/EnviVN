@@ -51,8 +51,8 @@ class AppText extends StatelessWidget {
     this.decorationColor,
     this.softWrap,
     this.style,
-  })  : textSpan = null,
-        size = size ?? fontSize;
+  }) : textSpan = null,
+       size = size ?? fontSize;
 
   /// Văn bản thông thường (FontWeight.w400)
   const AppText.regular(
@@ -71,9 +71,9 @@ class AppText extends StatelessWidget {
     this.decorationColor,
     this.softWrap,
     this.style,
-  })  : fontWeight = FontWeight.w400,
-        textSpan = null,
-        size = size ?? fontSize;
+  }) : fontWeight = FontWeight.w400,
+       textSpan = null,
+       size = size ?? fontSize;
 
   /// Văn bản độ đậm vừa (FontWeight.w500)
   const AppText.medium(
@@ -92,9 +92,9 @@ class AppText extends StatelessWidget {
     this.decorationColor,
     this.softWrap,
     this.style,
-  })  : fontWeight = FontWeight.w500,
-        textSpan = null,
-        size = size ?? fontSize;
+  }) : fontWeight = FontWeight.w500,
+       textSpan = null,
+       size = size ?? fontSize;
 
   /// Văn bản bán đậm (FontWeight.w600)
   const AppText.semiBold(
@@ -113,9 +113,9 @@ class AppText extends StatelessWidget {
     this.decorationColor,
     this.softWrap,
     this.style,
-  })  : fontWeight = FontWeight.w600,
-        textSpan = null,
-        size = size ?? fontSize;
+  }) : fontWeight = FontWeight.w600,
+       textSpan = null,
+       size = size ?? fontSize;
 
   /// Bí danh của [AppText.semiBold] (FontWeight.w600)
   const AppText.semibold(
@@ -134,9 +134,9 @@ class AppText extends StatelessWidget {
     this.decorationColor,
     this.softWrap,
     this.style,
-  })  : fontWeight = FontWeight.w600,
-        textSpan = null,
-        size = size ?? fontSize;
+  }) : fontWeight = FontWeight.w600,
+       textSpan = null,
+       size = size ?? fontSize;
 
   /// Văn bản đậm (FontWeight.w700)
   const AppText.bold(
@@ -155,9 +155,9 @@ class AppText extends StatelessWidget {
     this.decorationColor,
     this.softWrap,
     this.style,
-  })  : fontWeight = FontWeight.w700,
-        textSpan = null,
-        size = size ?? fontSize;
+  }) : fontWeight = FontWeight.w700,
+       textSpan = null,
+       size = size ?? fontSize;
 
   /// Văn bản thanh mảnh (FontWeight.w300)
   const AppText.light(
@@ -176,9 +176,9 @@ class AppText extends StatelessWidget {
     this.decorationColor,
     this.softWrap,
     this.style,
-  })  : fontWeight = FontWeight.w300,
-        textSpan = null,
-        size = size ?? fontSize;
+  }) : fontWeight = FontWeight.w300,
+       textSpan = null,
+       size = size ?? fontSize;
 
   /// Văn bản cực đậm (FontWeight.w800)
   const AppText.extraBold(
@@ -197,9 +197,9 @@ class AppText extends StatelessWidget {
     this.decorationColor,
     this.softWrap,
     this.style,
-  })  : fontWeight = FontWeight.w800,
-        textSpan = null,
-        size = size ?? fontSize;
+  }) : fontWeight = FontWeight.w800,
+       textSpan = null,
+       size = size ?? fontSize;
 
   /// Văn bản đa định dạng (Rich Text)
   const AppText.rich(
@@ -219,8 +219,8 @@ class AppText extends StatelessWidget {
     this.decorationColor,
     this.softWrap,
     this.style,
-  })  : text = null,
-        size = size ?? fontSize;
+  }) : text = null,
+       size = size ?? fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -235,7 +235,8 @@ class AppText extends StatelessWidget {
       decorationColor: decorationColor,
     ).merge(style);
 
-    final effectiveOverflow = overflow ?? (maxLines != null ? TextOverflow.ellipsis : null);
+    final effectiveOverflow =
+        overflow ?? (maxLines != null ? TextOverflow.ellipsis : null);
 
     if (textSpan != null) {
       return Text.rich(

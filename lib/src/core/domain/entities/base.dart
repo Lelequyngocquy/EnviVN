@@ -31,8 +31,12 @@ class BaseResult<T> {
       final statusText = success ? 'SUCCESS' : 'FAILURE';
       final buffer = StringBuffer();
       buffer.writeln('$icon [BaseResult $statusText]');
-      if (code != null) buffer.writeln('   • Code   : $code');
-      if (message != null && message!.isNotEmpty) buffer.writeln('   • Message: $message');
+      if (code != null) {
+        buffer.writeln('   • Code   : $code');
+      }
+      if (message != null && message!.isNotEmpty) {
+        buffer.writeln('   • Message: $message');
+      }
       if (data != null) {
         buffer.writeln('   • Data   : ${_prettyJson(data)}');
       }
@@ -50,13 +54,19 @@ class BaseResult<T> {
     if (!kDebugMode) return;
     try {
       final buffer = StringBuffer();
-      buffer.writeln('╔════════════════════ 🚀 [API REQUEST SEND] ════════════════════');
+      buffer.writeln(
+        '╔════════════════════ 🚀 [API REQUEST SEND] ════════════════════',
+      );
       buffer.writeln('║ METHOD: $method');
       buffer.writeln('║ URL   : $url');
       if (params != null) {
-        buffer.writeln('║ BODY  :\n${_indentString(_prettyJson(params), "║   ")}');
+        buffer.writeln(
+          '║ BODY  :\n${_indentString(_prettyJson(params), "║   ")}',
+        );
       }
-      buffer.writeln('╚══════════════════════════════════════════════════════════════');
+      buffer.writeln(
+        '╚══════════════════════════════════════════════════════════════',
+      );
       debugPrint(buffer.toString());
     } catch (_) {}
   }
@@ -72,29 +82,36 @@ class BaseResult<T> {
       final isOk = statusCode >= 200 && statusCode < 300;
       final icon = isOk ? '📥' : '⚠️';
       final buffer = StringBuffer();
-      buffer.writeln('╔════════════════════ $icon [API RESPONSE RECEIVE] ════════════════════');
+      buffer.writeln(
+        '╔════════════════════ $icon [API RESPONSE RECEIVE] ════════════════════',
+      );
       buffer.writeln('║ STATUS: $statusCode');
       buffer.writeln('║ URL   : $url');
       if (body != null) {
-        buffer.writeln('║ BODY  :\n${_indentString(_prettyJson(body), "║   ")}');
+        buffer.writeln(
+          '║ BODY  :\n${_indentString(_prettyJson(body), "║   ")}',
+        );
       }
-      buffer.writeln('╚══════════════════════════════════════════════════════════════════');
+      buffer.writeln(
+        '╚══════════════════════════════════════════════════════════════════',
+      );
       debugPrint(buffer.toString());
     } catch (_) {}
   }
 
   /// Log chi tiết ẩn khi xảy ra lỗi mạng / timeout
-  static void logError({
-    required String url,
-    required String error,
-  }) {
+  static void logError({required String url, required String error}) {
     if (!kDebugMode) return;
     try {
       final buffer = StringBuffer();
-      buffer.writeln('╔════════════════════ ❌ [API NETWORK ERROR] ════════════════════');
+      buffer.writeln(
+        '╔════════════════════ ❌ [API NETWORK ERROR] ════════════════════',
+      );
       buffer.writeln('║ URL  : $url');
       buffer.writeln('║ ERROR: $error');
-      buffer.writeln('╚═══════════════════════════════════════════════════════════════');
+      buffer.writeln(
+        '╚═══════════════════════════════════════════════════════════════',
+      );
       debugPrint(buffer.toString());
     } catch (_) {}
   }
@@ -103,7 +120,11 @@ class BaseResult<T> {
     return str.split('\n').map((line) => '$indent$line').join('\n');
   }
 
-  static String _prettyJson(dynamic raw, {int maxLines = 12, int maxChars = 350}) {
+  static String _prettyJson(
+    dynamic raw, {
+    int maxLines = 12,
+    int maxChars = 350,
+  }) {
     if (raw == null) return 'null';
     String formatted;
     try {

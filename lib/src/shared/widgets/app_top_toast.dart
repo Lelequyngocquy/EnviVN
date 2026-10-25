@@ -87,14 +87,12 @@ class _TopToastOverlayWidgetState extends State<_TopToastOverlayWidget>
     _offsetAnimation = Tween<Offset>(
       begin: const Offset(0, -1.0),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutCubic,
-    ));
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _controller.forward();
   }
@@ -135,8 +133,12 @@ class _TopToastOverlayWidgetState extends State<_TopToastOverlayWidget>
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 420),
                   child: AppGlass(
+                    enableBlur: true,
                     borderRadius: 22,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     color: widget.isError
                         ? UIColors.error.withValues(alpha: 0.28)
                         : UIColors.cardBg.withValues(alpha: 0.88),
@@ -153,7 +155,9 @@ class _TopToastOverlayWidgetState extends State<_TopToastOverlayWidget>
                           widget.isError
                               ? Icons.error_outline_rounded
                               : Icons.info_outline_rounded,
-                          color: widget.isError ? UIColors.error : UIColors.primary,
+                          color: widget.isError
+                              ? UIColors.error
+                              : UIColors.primary,
                           size: 20,
                         ),
                         const Gap(10),

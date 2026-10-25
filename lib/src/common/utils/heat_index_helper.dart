@@ -58,7 +58,8 @@ class HeatIndexHelper {
     final rh = humidity.toDouble();
 
     // Công thức đa thức Rothfusz của NOAA
-    double hi = -42.379 +
+    double hi =
+        -42.379 +
         2.04901523 * t +
         10.14333127 * rh -
         0.22475541 * t * rh -

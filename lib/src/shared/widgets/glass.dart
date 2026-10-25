@@ -13,6 +13,7 @@ class AppGlass extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
   final bool isFixed;
+  final bool enableBlur;
 
   const AppGlass({
     super.key,
@@ -24,6 +25,7 @@ class AppGlass extends StatelessWidget {
     this.padding,
     this.margin,
     this.isFixed = false,
+    this.enableBlur = false,
   });
 
   @override
@@ -52,31 +54,40 @@ class AppGlass extends StatelessWidget {
         ),
       );
     } else {
-      glassBackground = BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16, tileMode: TileMode.mirror),
-        child: Container(
-          decoration: BoxDecoration(
-            color: color ?? UIColors.white.withValues(alpha: 0.04), 
-            borderRadius: BorderRadius.circular(borderRadius),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                UIColors.white.withValues(alpha: 0.16), 
-                UIColors.white.withValues(alpha: 0.02), 
-                UIColors.white.withValues(alpha: 0.06), 
-              ],
-              stops: const [0.0, 0.45, 1.0],
-            ),
+      final innerBox = Container(
+        decoration: BoxDecoration(
+          color: color ?? UIColors.cardBg.withOpacity(0.85),
+          borderRadius: BorderRadius.circular(borderRadius),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              UIColors.white.withOpacity(0.12),
+              UIColors.white.withOpacity(0.03),
+              UIColors.white.withOpacity(0.06),
+            ],
+            stops: const [0.0, 0.45, 1.0],
           ),
         ),
       );
+
+      glassBackground = enableBlur
+          ? BackdropFilter(
+              filter: ImageFilter.blur(
+                sigmaX: 16,
+                sigmaY: 16,
+                tileMode: TileMode.mirror,
+              ),
+              child: innerBox,
+            )
+          : innerBox;
     }
 
     final glassWidget = Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
-        border: border ??
+        border:
+            border ??
             Border.all(
               color: UIColors.white.withValues(alpha: isFixed ? 0.0 : 0.14),
               width: 0.8,
@@ -87,11 +98,8 @@ class AppGlass extends StatelessWidget {
         child: Stack(
           fit: StackFit.passthrough,
           children: [
-            
             Positioned.fill(child: glassBackground),
 
-            
-            
             content,
           ],
         ),

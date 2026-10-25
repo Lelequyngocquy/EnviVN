@@ -9,11 +9,11 @@ class FadeRoute extends PageRouteBuilder {
     this.duration = const Duration(milliseconds: 280),
     super.settings,
   }) : super(
-          pageBuilder: (context, animation, secondaryAnimation) => page,
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-          transitionDuration: duration,
-          reverseTransitionDuration: duration,
-        );
+         pageBuilder: (context, animation, secondaryAnimation) => page,
+         transitionsBuilder: (context, animation, secondaryAnimation, child) {
+           return FadeTransition(opacity: animation, child: child);
+         },
+         transitionDuration: duration,
+         reverseTransitionDuration: duration,
+       );
 }

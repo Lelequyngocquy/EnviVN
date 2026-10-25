@@ -28,11 +28,14 @@ class BaseResponse {
   }
 
   factory BaseResponse.fromErrorJson(dynamic json) {
-    final map = json is Map ? Map<String, dynamic>.from(json) : <String, dynamic>{};
+    final map = json is Map
+        ? Map<String, dynamic>.from(json)
+        : <String, dynamic>{};
     return BaseResponse(
       isSuccess: false,
       code: map['code']?.toString(),
-      message: map['message']?.toString() ??
+      message:
+          map['message']?.toString() ??
           map['error']?.toString() ??
           map['msg']?.toString() ??
           map['reason']?.toString() ??

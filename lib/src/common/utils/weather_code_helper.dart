@@ -33,11 +33,7 @@ class WeatherCodeHelper {
   /// Lấy thông tin thời tiết kèm biểu tượng thực tế theo thời gian (Ngày/Đêm).
   /// Nếu là chiều tối đến gần sáng (18:00 - 05:59), biểu tượng mặt trời sẽ tự động
   /// được chuyển thành biểu tượng trăng đêm (nightlight/nights_stay) để đảm bảo tính thực tế.
-  static WeatherCodeInfo getInfo(
-    int? code, {
-    DateTime? time,
-    bool? isDay,
-  }) {
+  static WeatherCodeInfo getInfo(int? code, {DateTime? time, bool? isDay}) {
     if (code == null) {
       return const WeatherCodeInfo('Không rõ', Icons.cloud_outlined);
     }

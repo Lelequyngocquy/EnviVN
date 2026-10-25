@@ -168,4 +168,16 @@ class EnvConfig {
     'NASA_FIRMS_MAP_KEY',
     defaultValue: 'aaa04b831a37f75677607b924c5df1de',
   );
+
+  static String get gemmaModelDownloadUrl => get(
+    'GEMMA_MODEL_DOWNLOAD_URL',
+    defaultValue:
+        'https://huggingface.co/google/gemma-2-2b-it-GGUF/resolve/main/gemma-2-2b-it-Q4_K_M.gguf',
+  );
+
+  static String get gemmaModelFileName =>
+      get('GEMMA_MODEL_FILE_NAME', defaultValue: 'gemma-2-2b-it-gpu-int4.bin');
+
+  static int get gemmaModelExpectedSizeBytes =>
+      int.tryParse(get('GEMMA_MODEL_EXPECTED_SIZE_BYTES')) ?? 1350000000;
 }

@@ -19,11 +19,7 @@ class LoadingWidget extends StatelessWidget {
           ),
           if (message != null) ...[
             const Gap(16),
-            AppText.medium(
-              message!,
-              color: UIColors.textSecondary,
-              size: 14,
-            ),
+            AppText.medium(message!, color: UIColors.textSecondary, size: 14),
           ],
         ],
       ),

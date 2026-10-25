@@ -24,7 +24,6 @@ class LocationResult {
 }
 
 class LocationService {
-  // Default coordinates: Hà Nội, Việt Nam
   static const double defaultLat = 21.0285;
   static const double defaultLon = 105.8542;
 
@@ -40,16 +39,15 @@ class LocationService {
     }
   }
 
-  Future<LocationResult> getCurrentLocation({bool allowIpFallback = false}) async {
-    // 1. Try Hardware GPS / OS Location
+  Future<LocationResult> getCurrentLocation({
+    bool allowIpFallback = false,
+  }) async {
     try {
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
       }
 
-      // If user explicitly denied permission or denied forever:
-      // Strictly return default city (Hà Nội) and NEVER fallback to IP Geolocation!
       if (permission == LocationPermission.denied ||
           permission == LocationPermission.deniedForever) {
         return LocationResult(
@@ -72,13 +70,13 @@ class LocationService {
           cityName: 'Hà Nội',
           isDefault: true,
           isPermissionDenied: true,
-          errorMessage: 'Dịch vụ định vị GPS trên thiết bị đang tắt. Sử dụng vị trí mặc định (Hà Nội).',
+          errorMessage:
+              'Dịch vụ định vị GPS trên thiết bị đang tắt. Sử dụng vị trí mặc định (Hà Nội).',
         );
       }
 
       if (permission == LocationPermission.whileInUse ||
           permission == LocationPermission.always) {
-        // Quick attempt with last known position
         final lastKnown = await Geolocator.getLastKnownPosition();
         if (lastKnown != null) {
           return LocationResult(
@@ -107,25 +105,27 @@ class LocationService {
       debugPrint('⚠️ [LocationService] Lỗi định vị GPS hoặc timeout: $e');
     }
 
-    // 2. IP Geolocation is ONLY used if explicitly allowed (e.g. desktop/emulator testing without GPS)
-    // NEVER when the user explicitly denied GPS permissions on a phone!
     if (allowIpFallback) {
       final ipResult = await _getLocationByIp();
       if (ipResult != null) {
-        debugPrint('📍 [LocationService] Định vị qua IP: ${ipResult.latitude}, ${ipResult.longitude} (${ipResult.cityName})');
+        debugPrint(
+          '📍 [LocationService] Định vị qua IP: ${ipResult.latitude}, ${ipResult.longitude} (${ipResult.cityName})',
+        );
         return ipResult;
       }
     }
 
-    // 3. Fallback: Default City (Hà Nội)
-    debugPrint('⚠️ [LocationService] Định vị GPS không thành công, sử dụng vị trí mặc định Hà Nội.');
+    debugPrint(
+      '⚠️ [LocationService] Định vị GPS không thành công, sử dụng vị trí mặc định Hà Nội.',
+    );
     return const LocationResult(
       latitude: defaultLat,
       longitude: defaultLon,
       cityName: 'Hà Nội',
       isDefault: true,
       isPermissionDenied: true,
-      errorMessage: 'Không thể nhận diện vị trí GPS. Sử dụng vị trí mặc định (Hà Nội).',
+      errorMessage:
+          'Không thể nhận diện vị trí GPS. Sử dụng vị trí mặc định (Hà Nội).',
     );
   }
 
@@ -140,7 +140,8 @@ class LocationService {
         if (data is Map<String, dynamic> && data['status'] == 'success') {
           final lat = (data['lat'] as num?)?.toDouble();
           final lon = (data['lon'] as num?)?.toDouble();
-          final city = data['city']?.toString() ?? data['regionName']?.toString();
+          final city =
+              data['city']?.toString() ?? data['regionName']?.toString();
           if (lat != null && lon != null) {
             return LocationResult(
               latitude: lat,

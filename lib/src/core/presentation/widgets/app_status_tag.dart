@@ -130,9 +130,11 @@ class AppStatusTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveBgColor = backgroundColor ?? color.withOpacity(bgOpacity);
-    final effectiveBorderColor = borderColor ?? color.withOpacity(borderOpacity);
+    final effectiveBorderColor =
+        borderColor ?? color.withOpacity(borderOpacity);
     final effectiveTextColor = textColor ?? color;
-    final effectiveBorderRadius = borderRadius ?? BorderRadius.circular(size.borderRadius);
+    final effectiveBorderRadius =
+        borderRadius ?? BorderRadius.circular(size.borderRadius);
     final effectivePadding = padding ?? size.padding;
     final effectiveBorderWidth = borderWidth ?? size.borderWidth;
 
@@ -144,11 +146,7 @@ class AppStatusTag extends StatelessWidget {
           leading!,
           Gap(size.spacing),
         ] else if (icon != null) ...[
-          AppIcon(
-            icon!,
-            size: size.iconSize,
-            color: effectiveTextColor,
-          ),
+          AppIcon(icon!, size: size.iconSize, color: effectiveTextColor),
           Gap(size.spacing),
         ],
         AppText(
@@ -158,10 +156,7 @@ class AppStatusTag extends StatelessWidget {
           fontWeight: fontWeight,
           height: 1.15,
         ),
-        if (trailing != null) ...[
-          Gap(size.spacing),
-          trailing!,
-        ],
+        if (trailing != null) ...[Gap(size.spacing), trailing!],
       ],
     );
 

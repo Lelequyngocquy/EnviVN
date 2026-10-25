@@ -32,7 +32,6 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
-test/
 
 # Symbolication related
 app.*.symbols
@@ -49,4 +48,3 @@ app.*.map.json
 .env
 .env*.local
 !.env_example
-

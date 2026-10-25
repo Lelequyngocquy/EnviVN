@@ -29,7 +29,7 @@ class DefaultHeader {
   static final DefaultHeader instance = DefaultHeader._();
 
   Map<String, String> get defaultHeader => {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      };
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  };
 }

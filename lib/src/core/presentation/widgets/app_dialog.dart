@@ -247,6 +247,7 @@ class AppDialog extends StatelessWidget {
                   ],
                 ),
                 child: AppGlass(
+                  enableBlur: true,
                   borderRadius: borderRadius,
                   padding: padding,
                   child: Column(
