@@ -178,6 +178,7 @@ lib/
     ├── core/                               # Core foundational infrastructure
     │   ├── di/                             # Service locator registration (GetIt setup)
     │   ├── domain/entities/                # BaseResult, AppLocationEntity, ModelDownloadState
+    │   │   └── enum/                       # LocationOriginType, PopularLocation domain enums
     │   ├── infrastructure/
     │   │   ├── configs/                    # EnvConfig (.env parser)
     │   │   ├── datasources/local/          # LocalStorage (SharedPreferences TTL cache)
@@ -468,6 +469,7 @@ lib/
     ├── core/                               # Nền tảng hạ tầng cốt lõi
     │   ├── di/                             # Đăng ký Service Locator (GetIt)
     │   ├── domain/entities/                # Thực thể gốc: BaseResult, AppLocationEntity
+    │   │   └── enum/                       # Thư mục enum chuẩn hóa: LocationOriginType, PopularLocation
     │   ├── infrastructure/
     │   │   ├── configs/                    # Trình nạp biến môi trường (.env)
     │   │   ├── datasources/local/          # LocalStorage (Bộ nhớ đệm TTL SharedPreferences)

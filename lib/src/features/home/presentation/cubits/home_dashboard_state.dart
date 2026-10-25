@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:envivn/src/core/domain/entities/app_location_entity.dart';
+import '../../../../core/domain/entities/app_location_entity.dart';
 
 enum DashboardStatus { initial, loading, success, failure }
 
