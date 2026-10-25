@@ -58,7 +58,6 @@ class DailyDetailsPoint {
   });
 }
 
-// Backward-compatibility aliases
 typedef WeatherEntity = DetailsEntity;
 typedef HourlyWeatherPoint = HourlyDetailsPoint;
 typedef DailyWeatherPoint = DailyDetailsPoint;

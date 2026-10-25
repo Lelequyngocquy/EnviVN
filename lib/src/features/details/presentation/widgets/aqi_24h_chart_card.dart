@@ -3,15 +3,13 @@ import 'package:flutter/material.dart';
 
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/core/presentation/widgets/widgets.dart';
+import 'package:envivn/src/features/air_quality/domain/entities/air_quality_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 
 class Aqi24hChartCard extends StatelessWidget {
-  final List<dynamic> hourlyPoints;
+  final List<HourlyAqiPoint> hourlyPoints;
 
-  const Aqi24hChartCard({
-    super.key,
-    required this.hourlyPoints,
-  });
+  const Aqi24hChartCard({super.key, required this.hourlyPoints});
 
   @override
   Widget build(BuildContext context) {
@@ -61,17 +59,27 @@ class Aqi24hChartCard extends StatelessWidget {
     );
   }
 
-  Widget _build24hChart(List<dynamic> points) {
+  Widget _build24hChart(List<HourlyAqiPoint> points) {
     final spots = <FlSpot>[];
     if (points.isNotEmpty) {
       final step = (points.length / 9).clamp(1, 10).toInt();
       for (int i = 0; i < points.length && spots.length < 9; i += step) {
         final p = points[i];
-        final aqiVal = (p.aqi as int? ?? 50).toDouble();
+        final aqiVal = p.aqi.toDouble();
         spots.add(FlSpot(spots.length.toDouble(), aqiVal));
       }
     } else {
-      const defaultVals = [52.0, 58.0, 64.0, 52.0, 78.0, 94.0, 84.0, 72.0, 65.0];
+      const defaultVals = [
+        52.0,
+        58.0,
+        64.0,
+        52.0,
+        78.0,
+        94.0,
+        84.0,
+        72.0,
+        65.0,
+      ];
       for (int i = 0; i < defaultVals.length; i++) {
         spots.add(FlSpot(i.toDouble(), defaultVals[i]));
       }
@@ -82,7 +90,6 @@ class Aqi24hChartCard extends StatelessWidget {
       rawMax = spots.map((s) => s.y).reduce((a, b) => a > b ? a : b);
     }
 
-    // Dynamic division based on max value to always keep curves well within bounds:
     const double minY = 0.0;
     final double maxY;
     final double interval;
@@ -124,10 +131,8 @@ class Aqi24hChartCard extends StatelessWidget {
             show: true,
             drawVerticalLine: false,
             horizontalInterval: interval,
-            getDrawingHorizontalLine: (value) => FlLine(
-              color: UIColors.border.withOpacity(0.6),
-              strokeWidth: 1,
-            ),
+            getDrawingHorizontalLine: (value) =>
+                FlLine(color: UIColors.border.withOpacity(0.6), strokeWidth: 1),
           ),
           titlesData: FlTitlesData(
             leftTitles: AxisTitles(
@@ -142,8 +147,12 @@ class Aqi24hChartCard extends StatelessWidget {
                 ),
               ),
             ),
-            topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,

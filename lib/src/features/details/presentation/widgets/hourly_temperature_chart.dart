@@ -9,10 +9,7 @@ import '../../domain/entities/details_entity.dart';
 class HourlyTemperatureChart extends StatelessWidget {
   final List<HourlyDetailsPoint> hourlyData;
 
-  const HourlyTemperatureChart({
-    super.key,
-    required this.hourlyData,
-  });
+  const HourlyTemperatureChart({super.key, required this.hourlyData});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +17,7 @@ class HourlyTemperatureChart extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final points = hourlyData.take(12).toList(); 
+    final points = hourlyData.take(12).toList();
     final spots = <FlSpot>[];
     double rawMin = 100.0;
     double rawMax = -50.0;
@@ -77,7 +74,11 @@ class HourlyTemperatureChart extends StatelessWidget {
         children: [
           Row(
             children: const [
-              AppIcon(Icons.show_chart_rounded, color: UIColors.secondary, size: 20),
+              AppIcon(
+                Icons.show_chart_rounded,
+                color: UIColors.secondary,
+                size: 20,
+              ),
               Gap(8),
               AppText.bold(
                 'Biểu đồ nhiệt độ (12h tới)',
@@ -147,12 +148,13 @@ class HourlyTemperatureChart extends StatelessWidget {
                     isStrokeCapRound: true,
                     dotData: FlDotData(
                       show: true,
-                      getDotPainter: (spot, percent, barData, index) => FlDotCirclePainter(
-                        radius: 3.5,
-                        color: UIColors.white,
-                        strokeWidth: 2,
-                        strokeColor: UIColors.secondary,
-                      ),
+                      getDotPainter: (spot, percent, barData, index) =>
+                          FlDotCirclePainter(
+                            radius: 3.5,
+                            color: UIColors.white,
+                            strokeWidth: 2,
+                            strokeColor: UIColors.secondary,
+                          ),
                     ),
                     belowBarData: BarAreaData(
                       show: true,
@@ -171,7 +173,7 @@ class HourlyTemperatureChart extends StatelessWidget {
             ),
           ),
           const Gap(12),
-          
+
           SizedBox(
             height: 70,
             child: ListView.separated(
@@ -199,7 +201,11 @@ class HourlyTemperatureChart extends StatelessWidget {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const AppIcon(Icons.water_drop, size: 10, color: UIColors.secondary),
+                        const AppIcon(
+                          Icons.water_drop,
+                          size: 10,
+                          color: UIColors.secondary,
+                        ),
                         AppText.regular(
                           '${pt.humidity}%',
                           size: 10,

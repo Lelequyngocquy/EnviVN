@@ -85,6 +85,10 @@ class HomeDashboardView extends StatelessWidget {
         SafeArea(
           bottom: false,
           child: BlocConsumer<HomeDashboardCubit, HomeDashboardState>(
+            buildWhen: (prev, curr) =>
+                prev.status != curr.status ||
+                prev.currentCity != curr.currentCity ||
+                prev.hasNotification != curr.hasNotification,
             listener: (context, state) {
               if (state.noticeMessage != null &&
                   state.noticeMessage!.isNotEmpty) {
@@ -93,117 +97,118 @@ class HomeDashboardView extends StatelessWidget {
               }
             },
             builder: (context, dashState) {
-              return BlocBuilder<DetailsCubit, DetailsState>(
-                builder: (context, detailsState) {
-                  return BlocBuilder<AirQualityCubit, AirQualityState>(
-                    builder: (context, aqiState) {
-                      final isInitialLoading = dashState.isInitialLoading(
-                        detailsState.details.hourlyForecast.length,
-                      );
+              final hasHourlyData = context.select<DetailsCubit, bool>(
+                (cubit) => cubit.state.details.hourlyForecast.isNotEmpty,
+              );
+              final isInitialLoading =
+                  dashState.status == DashboardStatus.loading && !hasHourlyData;
 
-                      if (isInitialLoading) {
-                        return const LoadingWidget(
-                          message: 'Đang tải dữ liệu môi trường...',
-                        );
-                      }
+              if (isInitialLoading) {
+                return const LoadingWidget(
+                  message: 'Đang tải dữ liệu môi trường...',
+                );
+              }
 
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: UIColors.white.withOpacity(0.06),
-                                  width: 0.8,
-                                ),
-                              ),
-                            ),
-                            child: HomeTopBar(
-                              cityName: dashState.currentCity.name,
-                              isGps: dashState.currentCity.isGps,
-                              dateText: dateStr,
-                              hasNotification: dashState.hasNotification,
-                              onLocationTap: () =>
-                                  _openCitySelector(context, dashState),
-                              onSelectCurrentLocation: () {
-                                context
-                                    .read<HomeDashboardCubit>()
-                                    .detectGpsLocation();
-                              },
-                              onNotificationTap: () =>
-                                  EnvironmentalNotificationSheet.show(
-                                    context,
-                                    cityName: dashState.currentCity.name,
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(16, 6, 16, 10),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: UIColors.white.withOpacity(0.06),
+                          width: 0.8,
+                        ),
+                      ),
+                    ),
+                    child: HomeTopBar(
+                      cityName: dashState.currentCity.name,
+                      isGps: dashState.currentCity.isGps,
+                      dateText: dateStr,
+                      hasNotification: dashState.hasNotification,
+                      onLocationTap: () =>
+                          _openCitySelector(context, dashState),
+                      onSelectCurrentLocation: () {
+                        context.read<HomeDashboardCubit>().detectGpsLocation();
+                      },
+                      onNotificationTap: () =>
+                          EnvironmentalNotificationSheet.show(
+                            context,
+                            cityName: dashState.currentCity.name,
+                            airQuality: context
+                                .read<AirQualityCubit>()
+                                .state
+                                .airQuality,
+                            weather: context.read<DetailsCubit>().state.details,
+                          ),
+                    ),
+                  ),
+
+                  Expanded(
+                    child: RefreshIndicator(
+                      color: UIColors.primary,
+                      backgroundColor: UIColors.cardBg,
+                      onRefresh: () =>
+                          context.read<HomeDashboardCubit>().refresh(),
+                      child: ClipRect(
+                        child: SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(
+                            parent: ClampingScrollPhysics(),
+                          ),
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              BlocBuilder<AirQualityCubit, AirQualityState>(
+                                buildWhen: (prev, curr) =>
+                                    prev.airQuality != curr.airQuality ||
+                                    prev.status != curr.status,
+                                builder: (context, aqiState) {
+                                  return HeroAQICard(
                                     airQuality: aqiState.airQuality,
-                                    weather: detailsState.details,
-                                  ),
-                            ),
-                          ),
-
-                          Expanded(
-                            child: RefreshIndicator(
-                              color: UIColors.primary,
-                              backgroundColor: UIColors.cardBg,
-                              onRefresh: () =>
-                                  context.read<HomeDashboardCubit>().refresh(),
-                              child: ClipRect(
-                                child: SingleChildScrollView(
-                                  physics: const AlwaysScrollableScrollPhysics(
-                                    parent: ClampingScrollPhysics(),
-                                  ),
-                                  padding: const EdgeInsets.fromLTRB(
-                                    16,
-                                    16,
-                                    16,
-                                    120,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      HeroAQICard(
-                                        airQuality: aqiState.airQuality,
-                                        onDetailTap: () {
-                                          Navigator.pushNamed(
-                                            context,
-                                            RouterPath.twentyFourHours,
-                                          );
-                                        },
-                                      ),
-                                      const Gap(16),
-                                      HomeDetailsCard(
-                                        details: detailsState.details,
-                                        onDetailTap: () {
-                                          Navigator.pushNamed(
-                                            context,
-                                            RouterPath.twentyFourHours,
-                                          );
-                                        },
-                                      ),
-
-                                      const Gap(16),
-
-                                      MapShortcutCard(
-                                        onTap: () {
-                                          final cubit = context
-                                              .read<HomeDashboardCubit>();
-                                          cubit.markPendingMapSync();
-                                          cubit.setTab(1);
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                    onDetailTap: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        RouterPath.twentyFourHours,
+                                      );
+                                    },
+                                  );
+                                },
                               ),
-                            ),
+                              const Gap(16),
+                              BlocBuilder<DetailsCubit, DetailsState>(
+                                buildWhen: (prev, curr) =>
+                                    prev.details != curr.details ||
+                                    prev.status != curr.status,
+                                builder: (context, detailsState) {
+                                  return HomeDetailsCard(
+                                    details: detailsState.details,
+                                    onDetailTap: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        RouterPath.twentyFourHours,
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                              const Gap(16),
+                              MapShortcutCard(
+                                onTap: () {
+                                  final cubit = context
+                                      .read<HomeDashboardCubit>();
+                                  cubit.markPendingMapSync();
+                                  cubit.setTab(1);
+                                },
+                              ),
+                            ],
                           ),
-                        ],
-                      );
-                    },
-                  );
-                },
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               );
             },
           ),

@@ -25,15 +25,13 @@ class StationPreviewCard extends StatelessWidget {
 
   bool get _isContentLoading {
     if (isLoading) {
-      
-      
       if (activeLayer == MapLayerType.airQuality &&
           !station.id.startsWith('picked_')) {
         return false;
       }
       return true;
     }
-    
+
     if (station.id.startsWith('picked_') && station.temperature == null) {
       return true;
     }
@@ -49,11 +47,9 @@ class StationPreviewCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          
           _buildHeader(),
           const Gap(8),
 
-          
           if (_isContentLoading)
             _buildLoadingContent()
           else
@@ -256,9 +252,6 @@ class StationPreviewCard extends StatelessWidget {
     }
   }
 
-  
-  
-  
   Widget _buildWeatherContent() {
     final weatherInfo = WeatherCodeHelper.getInfo(station.weatherCode);
     final temp = station.temperature ?? 28.0;
@@ -273,7 +266,6 @@ class StationPreviewCard extends StatelessWidget {
       children: [
         Row(
           children: [
-            
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
@@ -298,7 +290,6 @@ class StationPreviewCard extends StatelessWidget {
             ),
             const Gap(10),
 
-            
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -314,8 +305,7 @@ class StationPreviewCard extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text:
-                              ' • Cảm giác ${feelsLike.toStringAsFixed(0)}°C',
+                          text: ' • Cảm giác ${feelsLike.toStringAsFixed(0)}°C',
                           style: const TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.normal,
@@ -362,7 +352,6 @@ class StationPreviewCard extends StatelessWidget {
         ),
         const Gap(7),
 
-        
         _buildBottomTip(
           icon: rain > 0 ? Icons.umbrella_rounded : Icons.wb_sunny_outlined,
           color: weatherInfo.color,
@@ -374,9 +363,6 @@ class StationPreviewCard extends StatelessWidget {
     );
   }
 
-  
-  
-  
   Widget _buildAirQualityContent() {
     final aqiInfo = AQIHelper.getAQIInfo(station.aqi);
 
@@ -386,7 +372,6 @@ class StationPreviewCard extends StatelessWidget {
       children: [
         Row(
           children: [
-            
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
@@ -418,7 +403,6 @@ class StationPreviewCard extends StatelessWidget {
             ),
             const Gap(12),
 
-            
             Expanded(
               child: Row(
                 children: [
@@ -479,7 +463,6 @@ class StationPreviewCard extends StatelessWidget {
         ),
         const Gap(7),
 
-        
         _buildBottomTip(
           icon: aqiInfo.wearMask
               ? Icons.masks_rounded
@@ -491,13 +474,7 @@ class StationPreviewCard extends StatelessWidget {
     );
   }
 
-  
-  
-  
   Widget _buildThermalContent() {
-    
-    
-    
     if (station.isThermalHotspot) {
       final isActive = station.isActiveFire;
       final Color statusColor = isActive
@@ -522,7 +499,6 @@ class StationPreviewCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
@@ -550,7 +526,6 @@ class StationPreviewCard extends StatelessWidget {
               ),
               const Gap(10),
 
-              
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -576,7 +551,6 @@ class StationPreviewCard extends StatelessWidget {
             ],
           ),
 
-          
           const Gap(6),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
@@ -683,7 +657,6 @@ class StationPreviewCard extends StatelessWidget {
 
           const Gap(6),
 
-          
           _buildBottomTip(
             icon: isActive ? Icons.warning_rounded : Icons.info_outline_rounded,
             color: isActive ? UIColors.markerRedDark : UIColors.warning,
@@ -695,9 +668,6 @@ class StationPreviewCard extends StatelessWidget {
       );
     }
 
-    
-    
-    
     final heatIndex = station.calculatedHeatIndex;
     final risk = station.heatRiskLevel;
     final uv = station.uvIndex ?? 6.0;
@@ -709,7 +679,6 @@ class StationPreviewCard extends StatelessWidget {
       children: [
         Row(
           children: [
-            
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
               decoration: BoxDecoration(
@@ -734,7 +703,6 @@ class StationPreviewCard extends StatelessWidget {
             ),
             const Gap(10),
 
-            
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -790,7 +758,6 @@ class StationPreviewCard extends StatelessWidget {
         ),
         const Gap(7),
 
-        
         _buildBottomTip(
           icon: Icons.wb_sunny_rounded,
           color: risk.color,
@@ -800,16 +767,12 @@ class StationPreviewCard extends StatelessWidget {
     );
   }
 
-  
-  
-  
   Widget _buildFloodContent() {
     final rain = station.precipitation ?? 0.0;
     final isBlackspot = station.isFloodBlackspot;
     final isHighRain = rain >= 20.0;
     final hasRain = rain > 0.0;
 
-    
     final Color liveColor;
     final IconData liveIcon;
     final String liveStatus;
@@ -840,10 +803,8 @@ class StationPreviewCard extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        
         Row(
           children: [
-            
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
@@ -868,7 +829,6 @@ class StationPreviewCard extends StatelessWidget {
             ),
             const Gap(10),
 
-            
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -894,7 +854,6 @@ class StationPreviewCard extends StatelessWidget {
           ],
         ),
 
-        
         if (isBlackspot) ...[
           const Gap(6),
           Container(
@@ -999,7 +958,6 @@ class StationPreviewCard extends StatelessWidget {
 
         const Gap(6),
 
-        
         _buildBottomTip(
           icon: isHighRain
               ? Icons.warning_rounded

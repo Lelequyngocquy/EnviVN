@@ -1,12 +1,12 @@
 class AirQualityEntity {
   final int usAqi;
   final int europeanAqi;
-  final double pm25; // µg/m³
-  final double pm10; // µg/m³
-  final double carbonMonoxide; // µg/m³
-  final double nitrogenDioxide; // µg/m³
-  final double sulphurDioxide; // µg/m³
-  final double ozone; // µg/m³
+  final double pm25;
+  final double pm10;
+  final double carbonMonoxide;
+  final double nitrogenDioxide;
+  final double sulphurDioxide;
+  final double ozone;
   final List<HourlyAqiPoint> hourlyAqi;
   final bool isOfflineCache;
 

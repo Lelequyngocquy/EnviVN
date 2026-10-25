@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:envivn/src/core/domain/entities/app_location_entity.dart';
 import 'package:envivn/src/core/infrastructure/datasources/local/local_storage.dart';
 import 'package:envivn/src/core/infrastructure/services/location_service.dart';
 import 'package:envivn/src/features/air_quality/presentation/cubits/air_quality_cubit.dart';
 import 'package:envivn/src/features/details/presentation/cubits/details_cubit.dart';
-import 'package:envivn/src/features/home/domain/entities/city_entity.dart';
 import 'home_dashboard_state.dart';
 
 class HomeDashboardCubit extends Cubit<HomeDashboardState> {
@@ -26,31 +26,45 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
     emit(state.copyWith(status: DashboardStatus.loading));
 
     final savedCity = storage.getSelectedCity();
-    CityEntity targetCity = CityEntity.defaultCity;
+    AppLocationEntity targetCity = AppLocationEntity.defaultLocation;
 
     if (savedCity != null) {
       final rawName =
-          savedCity['name']?.toString() ?? CityEntity.defaultCity.name;
+          savedCity['name']?.toString() ??
+          AppLocationEntity.defaultLocation.displayName;
       final normalizedName = rawName.startsWith('Vị trí hiện tại')
           ? 'Vị trí hiện tại'
           : rawName;
       final isGpsCity = normalizedName == 'Vị trí hiện tại';
+      final isCustom = rawName.startsWith('Điểm ghim');
 
-      targetCity = CityEntity(
-        name: normalizedName,
-        province: isGpsCity
-            ? 'Định vị GPS'
-            : (savedCity['province']?.toString() ??
-                  (savedCity['name']?.toString() ??
-                      CityEntity.defaultCity.province)),
-        latitude:
-            double.tryParse(savedCity['lat']?.toString() ?? '') ??
-            CityEntity.defaultCity.latitude,
-        longitude:
-            double.tryParse(savedCity['lon']?.toString() ?? '') ??
-            CityEntity.defaultCity.longitude,
-        isGps: isGpsCity,
-      );
+      final lat =
+          double.tryParse(savedCity['lat']?.toString() ?? '') ??
+          AppLocationEntity.defaultLocation.latitude;
+      final lon =
+          double.tryParse(savedCity['lon']?.toString() ?? '') ??
+          AppLocationEntity.defaultLocation.longitude;
+
+      if (isCustom) {
+        targetCity = AppLocationEntity.customPin(
+          latitude: lat,
+          longitude: lon,
+          customName: rawName,
+          referenceProvince: savedCity['province']?.toString(),
+        );
+      } else if (isGpsCity) {
+        targetCity = AppLocationEntity.gps(latitude: lat, longitude: lon);
+      } else {
+        targetCity = AppLocationEntity.city(
+          name: normalizedName,
+          province:
+              savedCity['province']?.toString() ??
+              (savedCity['name']?.toString() ??
+                  AppLocationEntity.defaultLocation.provinceOrRegion),
+          latitude: lat,
+          longitude: lon,
+        );
+      }
     }
 
     final isGrantedInOs = await locationService.checkPermissionGranted();
@@ -63,7 +77,7 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
 
     if ((targetCity.isGps || targetCity.name.startsWith('Vị trí hiện tại')) &&
         !isGrantedInOs) {
-      targetCity = CityEntity.defaultCity;
+      targetCity = AppLocationEntity.defaultLocation;
       await storage.saveSelectedCity(
         targetCity.name,
         targetCity.latitude,
@@ -82,7 +96,7 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
     await _fetchDataForCity(targetCity);
   }
 
-  Future<void> changeCity(CityEntity city) async {
+  Future<void> changeCity(AppLocationEntity city) async {
     emit(
       state.copyWith(
         status: DashboardStatus.loading,
@@ -95,6 +109,27 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
 
     await storage.saveSelectedCity(city.name, city.latitude, city.longitude);
     await _fetchDataForCity(city);
+  }
+
+  Future<void> syncLocationFromMap(AppLocationEntity location) async {
+    if (state.currentCity == location) return;
+
+    emit(
+      state.copyWith(
+        status: DashboardStatus.loading,
+        isChangingLocation: false,
+        currentCity: location,
+        hasPendingMapSync: false,
+        clearNotice: true,
+      ),
+    );
+
+    await storage.saveSelectedCity(
+      location.displayName,
+      location.latitude,
+      location.longitude,
+    );
+    await _fetchDataForCity(location);
   }
 
   Future<void> detectGpsLocation() async {
@@ -114,7 +149,7 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
     if (locationResult.isDefault || locationResult.isPermissionDenied) {
       await storage.saveLocationPermission(false);
 
-      final defaultCity = CityEntity.defaultCity;
+      final defaultCity = AppLocationEntity.defaultLocation;
       await storage.saveSelectedCity(
         defaultCity.name,
         defaultCity.latitude,
@@ -136,12 +171,10 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
 
     const displayName = 'Vị trí hiện tại';
 
-    final gpsCity = CityEntity(
-      name: displayName,
-      province: 'Định vị GPS',
+    final gpsCity = AppLocationEntity.gps(
       latitude: locationResult.latitude,
       longitude: locationResult.longitude,
-      isGps: true,
+      displayName: displayName,
     );
 
     await storage.saveLocationPermission(true);
@@ -164,6 +197,15 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
     await _fetchDataForCity(gpsCity);
   }
 
+  Future<void> revertToGpsOrHome() async {
+    final isGranted = await locationService.checkPermissionGranted();
+    if (isGranted) {
+      await detectGpsLocation();
+    } else {
+      await changeCity(AppLocationEntity.defaultLocation);
+    }
+  }
+
   void clearNotice() {
     if (state.noticeMessage != null) {
       emit(state.copyWith(clearNotice: true));
@@ -171,20 +213,17 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
   }
 
   Future<void> refresh() async {
-    await _fetchDataForCity(state.currentCity);
+    await _fetchDataForCity(state.currentCity, forceRefresh: true);
   }
 
-  Future<void> _fetchDataForCity(CityEntity city) async {
+  Future<void> _fetchDataForCity(
+    AppLocationEntity city, {
+    bool forceRefresh = false,
+  }) async {
     try {
       await Future.wait([
-        detailsCubit.fetchDetails(
-          latitude: city.latitude,
-          longitude: city.longitude,
-        ),
-        airQualityCubit.fetchAirQuality(
-          latitude: city.latitude,
-          longitude: city.longitude,
-        ),
+        detailsCubit.fetchForLocation(city, forceRefresh: forceRefresh),
+        airQualityCubit.fetchForLocation(city, forceRefresh: forceRefresh),
       ]);
 
       final aqi = airQualityCubit.state.airQuality.usAqi;
@@ -264,7 +303,7 @@ class HomeDashboardCubit extends Cubit<HomeDashboardState> {
   }
 
   Future<void> skipLocationPermission({void Function()? onCompleted}) async {
-    final defaultCity = CityEntity.defaultCity;
+    final defaultCity = AppLocationEntity.defaultLocation;
     await storage.saveLocationPermission(false);
     await storage.saveSelectedCity(
       defaultCity.name,

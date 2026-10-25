@@ -19,7 +19,22 @@ class AirQualityRepository implements IAirQualityRepository {
   Future<BaseResult<AirQualityEntity>> getAirQuality({
     required double latitude,
     required double longitude,
+    bool forceRefresh = false,
   }) async {
+    if (!forceRefresh) {
+      final validCache = storage.getCachedAirQuality(
+        lat: latitude,
+        lon: longitude,
+        checkTtl: true,
+      );
+      if (validCache != null) {
+        return BaseResult(
+          success: true,
+          data: AirQualityModel.fromJson(validCache),
+        );
+      }
+    }
+
     try {
       final endpoint = EndpointType(
         path: AirQualityPaths.airQuality,
@@ -44,12 +59,19 @@ class AirQualityRepository implements IAirQualityRepository {
         final dataMap = Map<String, dynamic>.from(response.data as Map);
         final airQuality = AirQualityModel.fromJson(dataMap);
 
-        await storage.saveCachedAirQuality(dataMap);
+        await storage.saveCachedAirQuality(
+          dataMap,
+          lat: latitude,
+          lon: longitude,
+        );
 
         return BaseResult(success: true, data: airQuality);
       }
 
-      final cached = getCachedAirQuality();
+      final cached = getCachedAirQuality(
+        latitude: latitude,
+        longitude: longitude,
+      );
       if (cached != null) {
         return BaseResult(
           success: true,
@@ -66,7 +88,10 @@ class AirQualityRepository implements IAirQualityRepository {
       );
     } catch (e) {
       debugPrint('❌ [AirQualityRepository] Lỗi: $e');
-      final cached = getCachedAirQuality();
+      final cached = getCachedAirQuality(
+        latitude: latitude,
+        longitude: longitude,
+      );
       if (cached != null) {
         return BaseResult(
           success: true,
@@ -84,8 +109,11 @@ class AirQualityRepository implements IAirQualityRepository {
   }
 
   @override
-  AirQualityEntity? getCachedAirQuality() {
-    final cachedJson = storage.getCachedAirQuality();
+  AirQualityEntity? getCachedAirQuality({double? latitude, double? longitude}) {
+    final cachedJson = storage.getCachedAirQuality(
+      lat: latitude,
+      lon: longitude,
+    );
     if (cachedJson != null) {
       return AirQualityModel.fromJson(cachedJson, isOfflineCache: true);
     }

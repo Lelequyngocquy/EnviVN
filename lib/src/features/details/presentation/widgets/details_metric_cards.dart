@@ -8,8 +8,10 @@ class DetailsMetricCards extends StatelessWidget {
 
   const DetailsMetricCards({super.key, required this.details});
 
-  const DetailsMetricCards.fromWeather({super.key, required DetailsEntity weather})
-      : details = weather;
+  const DetailsMetricCards.fromWeather({
+    super.key,
+    required DetailsEntity weather,
+  }) : details = weather;
 
   @override
   Widget build(BuildContext context) {
@@ -110,17 +112,9 @@ class _MetricCard extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppText.bold(
-                value,
-                size: 18,
-                color: UIColors.textPrimary,
-              ),
+              AppText.bold(value, size: 18, color: UIColors.textPrimary),
               const Gap(2),
-              AppText.semiBold(
-                subText,
-                size: 11,
-                color: iconColor,
-              ),
+              AppText.semiBold(subText, size: 11, color: iconColor),
             ],
           ),
         ],
@@ -131,4 +125,3 @@ class _MetricCard extends StatelessWidget {
 
 // Backward-compatibility alias
 typedef WeatherMetricCards = DetailsMetricCards;
-

@@ -52,6 +52,8 @@ class _StoryPreviewPageState extends State<StoryPreviewPage> {
   Future<void> _handleShare(String cityName) async {
     if (_isSharing) return;
 
+    final ratio = MediaQuery.of(context).devicePixelRatio.clamp(1.5, 2.2);
+
     setState(() {
       _isSharing = true;
       _selectedCardIndex = null;
@@ -66,7 +68,7 @@ class _StoryPreviewPageState extends State<StoryPreviewPage> {
         throw Exception('Không tìm thấy vùng hiển thị thẻ ảnh');
       }
 
-      final image = await boundary.toImage(pixelRatio: 3.0);
+      final image = await boundary.toImage(pixelRatio: ratio);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       if (byteData == null) {
         throw Exception('Không thể chuyển đổi dữ liệu ảnh');

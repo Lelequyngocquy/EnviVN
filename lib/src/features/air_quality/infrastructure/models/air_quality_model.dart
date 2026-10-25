@@ -14,9 +14,16 @@ class AirQualityModel extends AirQualityEntity {
     super.isOfflineCache,
   });
 
-  factory AirQualityModel.fromJson(Map<String, dynamic> json, {bool isOfflineCache = false}) {
-    final current = (json['current'] is Map) ? json['current'] as Map<String, dynamic> : <String, dynamic>{};
-    final hourly = (json['hourly'] is Map) ? json['hourly'] as Map<String, dynamic> : <String, dynamic>{};
+  factory AirQualityModel.fromJson(
+    Map<String, dynamic> json, {
+    bool isOfflineCache = false,
+  }) {
+    final current = (json['current'] is Map)
+        ? json['current'] as Map<String, dynamic>
+        : <String, dynamic>{};
+    final hourly = (json['hourly'] is Map)
+        ? json['hourly'] as Map<String, dynamic>
+        : <String, dynamic>{};
 
     final hourlyList = <HourlyAqiPoint>[];
     if (hourly['time'] is List) {
@@ -33,9 +40,15 @@ class AirQualityModel extends AirQualityEntity {
           hourlyList.add(
             HourlyAqiPoint(
               time: pointTime,
-              aqi: (i < aqis.length) ? (int.tryParse(aqis[i].toString()) ?? 0) : 0,
-              pm25: (i < pm25s.length) ? (double.tryParse(pm25s[i].toString()) ?? 0.0) : 0.0,
-              pm10: (i < pm10s.length) ? (double.tryParse(pm10s[i].toString()) ?? 0.0) : 0.0,
+              aqi: (i < aqis.length)
+                  ? (int.tryParse(aqis[i].toString()) ?? 0)
+                  : 0,
+              pm25: (i < pm25s.length)
+                  ? (double.tryParse(pm25s[i].toString()) ?? 0.0)
+                  : 0.0,
+              pm10: (i < pm10s.length)
+                  ? (double.tryParse(pm10s[i].toString()) ?? 0.0)
+                  : 0.0,
             ),
           );
           count++;
@@ -45,12 +58,17 @@ class AirQualityModel extends AirQualityEntity {
 
     return AirQualityModel(
       usAqi: int.tryParse(current['us_aqi']?.toString() ?? '0') ?? 0,
-      europeanAqi: int.tryParse(current['european_aqi']?.toString() ?? '0') ?? 0,
+      europeanAqi:
+          int.tryParse(current['european_aqi']?.toString() ?? '0') ?? 0,
       pm25: double.tryParse(current['pm2_5']?.toString() ?? '0') ?? 0.0,
       pm10: double.tryParse(current['pm10']?.toString() ?? '0') ?? 0.0,
-      carbonMonoxide: double.tryParse(current['carbon_monoxide']?.toString() ?? '0') ?? 0.0,
-      nitrogenDioxide: double.tryParse(current['nitrogen_dioxide']?.toString() ?? '0') ?? 0.0,
-      sulphurDioxide: double.tryParse(current['sulphur_dioxide']?.toString() ?? '0') ?? 0.0,
+      carbonMonoxide:
+          double.tryParse(current['carbon_monoxide']?.toString() ?? '0') ?? 0.0,
+      nitrogenDioxide:
+          double.tryParse(current['nitrogen_dioxide']?.toString() ?? '0') ??
+          0.0,
+      sulphurDioxide:
+          double.tryParse(current['sulphur_dioxide']?.toString() ?? '0') ?? 0.0,
       ozone: double.tryParse(current['ozone']?.toString() ?? '0') ?? 0.0,
       hourlyAqi: hourlyList,
       isOfflineCache: isOfflineCache,

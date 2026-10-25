@@ -7,7 +7,7 @@ import 'package:envivn/src/core/infrastructure/configs/env_config.dart';
 import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/core/presentation/widgets/loading.dart';
-import 'package:envivn/src/features/home/domain/entities/city_entity.dart';
+import 'package:envivn/src/core/domain/entities/app_location_entity.dart';
 import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
 import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_state.dart';
 import 'package:envivn/src/features/map/domain/entities/flood_blackspot.dart';
@@ -64,15 +64,15 @@ class _MapPageState extends State<MapPage> {
       final mapCubit = context.read<MapCubit>();
       final homeCubit = context.read<HomeDashboardCubit>();
 
-      CityEntity effectiveCity = homeCubit.state.currentCity;
-      if (effectiveCity == CityEntity.defaultCity) {
+      AppLocationEntity effectiveCity = homeCubit.state.currentCity;
+      if (effectiveCity == AppLocationEntity.defaultLocation) {
         final saved = homeCubit.storage.getSelectedCity();
         if (saved != null) {
           final rawName = saved['name']?.toString() ?? effectiveCity.name;
           final normalizedName = rawName.startsWith('Vị trí hiện tại')
               ? 'Vị trí hiện tại'
               : rawName;
-          effectiveCity = CityEntity(
+          effectiveCity = AppLocationEntity.city(
             name: normalizedName,
             province: normalizedName == 'Vị trí hiện tại'
                 ? 'Định vị GPS'
@@ -146,7 +146,13 @@ class _MapPageState extends State<MapPage> {
     });
   }
 
-  void _syncWithHomeCity(CityEntity city) {
+  @override
+  void dispose() {
+    _mapController.dispose();
+    super.dispose();
+  }
+
+  void _syncWithHomeCity(AppLocationEntity city) {
     final mapCubit = context.read<MapCubit>();
     mapCubit.selectHomeLocation(
       lat: city.latitude,
@@ -158,34 +164,10 @@ class _MapPageState extends State<MapPage> {
   }
 
   void _moveToCurrentGpsLocation() async {
-    final mapCubit = context.read<MapCubit>();
     final homeCubit = context.read<HomeDashboardCubit>();
-
-    // 1. Kiểm tra tọa độ GPS hiện tại của người dùng (từ mapCubit hoặc homeCubit)
-    LatLng? userGps = mapCubit.state.userGpsLocation;
-    if (userGps == null && homeCubit.state.currentCity.isGps) {
-      userGps = LatLng(
-        homeCubit.state.currentCity.latitude,
-        homeCubit.state.currentCity.longitude,
-      );
-    }
-
-    if (userGps != null) {
-      mapCubit.selectHomeLocation(
-        lat: userGps.latitude,
-        lon: userGps.longitude,
-        zoom: 12.0,
-        label: 'Vị trí hiện tại',
-      );
-      _safeMove(userGps, 12.0);
-    } else {
-      // Nếu chưa có vị trí GPS, gọi detectGpsLocation để cập nhật và di chuyển
-      await homeCubit.detectGpsLocation();
-      final updatedCity = homeCubit.state.currentCity;
-      if (updatedCity.isGps) {
-        _syncWithHomeCity(updatedCity);
-      }
-    }
+    await homeCubit.detectGpsLocation();
+    final updatedCity = homeCubit.state.currentCity;
+    _syncWithHomeCity(updatedCity);
   }
 
   void _safeMove(LatLng latLng, double zoom) {
@@ -259,9 +241,12 @@ class _MapPageState extends State<MapPage> {
           );
         }
 
-        if (mapCubit.state.isHomeSelected ||
-            mapCubit.state.selectedQuickCity == null ||
-            homeState.hasPendingMapSync) {
+        final hasActiveMapSelection =
+            mapCubit.state.pickedLocation != null ||
+            mapCubit.state.selectedStation != null;
+
+        if (homeState.hasPendingMapSync ||
+            (mapCubit.state.isHomeSelected && !hasActiveMapSelection)) {
           _syncWithHomeCity(homeState.currentCity);
         }
         context.read<HomeDashboardCubit>().consumeMapSync();
@@ -276,12 +261,35 @@ class _MapPageState extends State<MapPage> {
           builder: (context, homeState) {
             return BlocConsumer<MapCubit, MapState>(
               listenWhen: (prev, curr) =>
-                  curr.targetLocation != null &&
-                  (prev.targetLocation != curr.targetLocation ||
-                      prev.targetZoom != curr.targetZoom),
+                  (curr.targetLocation != null &&
+                      (prev.targetLocation != curr.targetLocation ||
+                          prev.targetZoom != curr.targetZoom)) ||
+                  prev.selectedStation != curr.selectedStation,
               listener: (context, state) {
                 if (state.targetLocation != null && state.targetZoom != null) {
                   _safeMove(state.targetLocation!, state.targetZoom!);
+                }
+                final station = state.selectedStation;
+                if (station != null && !state.isHomeSelected) {
+                  final isPicked = station.id.startsWith('picked_');
+                  final location = isPicked
+                      ? AppLocationEntity.customPin(
+                          latitude: station.latitude,
+                          longitude: station.longitude,
+                          customName: station.name,
+                          referenceProvince: station.province,
+                          distanceKm: state.pickedDistanceKm,
+                        )
+                      : AppLocationEntity.station(
+                          id: station.id,
+                          name: station.name,
+                          province: station.province,
+                          latitude: station.latitude,
+                          longitude: station.longitude,
+                        );
+                  context.read<HomeDashboardCubit>().syncLocationFromMap(
+                    location,
+                  );
                 }
               },
               builder: (context, state) {
@@ -664,9 +672,9 @@ class _MapPageState extends State<MapPage> {
                           child: DroppedPinMarkerWidget(
                             isLoading: state.isPickingLocation,
                             onTap: () {
-                              context
-                                  .read<MapCubit>()
-                                  .pickCustomLocation(state.pickedLocation!);
+                              context.read<MapCubit>().pickCustomLocation(
+                                state.pickedLocation!,
+                              );
                             },
                           ),
                         ),
@@ -778,17 +786,10 @@ class _MapPageState extends State<MapPage> {
                       options: MapOptions(
                         backgroundColor: UIColors.bg,
                         initialCenter:
-                            context
-                                .read<MapCubit>()
-                                .state
-                                .targetLocation ??
+                            context.read<MapCubit>().state.targetLocation ??
                             const LatLng(16.0544, 108.2022),
                         initialZoom:
-                            context
-                                .read<MapCubit>()
-                                .state
-                                .targetZoom ??
-                            5.8,
+                            context.read<MapCubit>().state.targetZoom ?? 5.8,
                         minZoom: 4.6,
                         maxZoom: 18.0,
                         cameraConstraint: CameraConstraint.containCenter(
@@ -797,9 +798,7 @@ class _MapPageState extends State<MapPage> {
                         onMapReady: () {
                           _isMapReady = true;
                           _currentZoom = _mapController.camera.zoom;
-                          final curState = context
-                              .read<MapCubit>()
-                              .state;
+                          final curState = context.read<MapCubit>().state;
                           if (curState.targetLocation != null &&
                               curState.targetZoom != null) {
                             _safeMove(
@@ -809,7 +808,9 @@ class _MapPageState extends State<MapPage> {
                           }
                         },
                         onPositionChanged: (camera, hasGesture) {
-                          if ((camera.zoom - _currentZoom).abs() >= 0.06) {
+                          final oldScale = _calculateMarkerScale(_currentZoom);
+                          final newScale = _calculateMarkerScale(camera.zoom);
+                          if (oldScale != newScale) {
                             setState(() {
                               _currentZoom = camera.zoom;
                             });
@@ -817,18 +818,18 @@ class _MapPageState extends State<MapPage> {
                         },
                         onTap: (tapPosition, point) {
                           if (_vietnamMapBounds.contains(point)) {
-                            context
-                                .read<MapCubit>()
-                                .pickCustomLocation(point);
+                            context.read<MapCubit>().pickCustomLocation(point);
                           }
                         },
                       ),
                       children: [
-                        TileLayer(
-                          urlTemplate: EnvConfig.osmTileUrl,
-                          userAgentPackageName: EnvConfig.mapUserAgent,
-                          tileBuilder: darkModeTileBuilder,
-                          tileBounds: _vietnamMapBounds,
+                        RepaintBoundary(
+                          child: TileLayer(
+                            urlTemplate: EnvConfig.osmTileUrl,
+                            userAgentPackageName: EnvConfig.mapUserAgent,
+                            tileBuilder: darkModeTileBuilder,
+                            tileBounds: _vietnamMapBounds,
+                          ),
                         ),
 
                         PolygonLayer(
@@ -889,28 +890,29 @@ class _MapPageState extends State<MapPage> {
                       top: 50,
                       left: 16,
                       right: 16,
-                      child: MapTopControlBar(
-                        activeFilter: state.activeFilter,
-                        onFilterChanged: (filter) =>
-                            context.read<MapCubit>().setFilter(filter),
-                        showHeatmap: state.showHeatmap,
-                        onToggleHeatmap: () =>
-                            context.read<MapCubit>().toggleHeatmap(),
-                        selectedCityName: state.selectedCityName,
-                        homeCityName: homeState.currentCity.name,
-                        isHomeSelected: state.isHomeSelected,
-                        selectedQuickCity: state.selectedQuickCity,
-                        onSelectHomeCity: () =>
-                            _syncWithHomeCity(homeState.currentCity),
-                        quickCities: state.quickCities,
-                        onSelectQuickCity: (target) => context
-                            .read<MapCubit>()
-                            .selectQuickCity(target),
-                        onSelectCity: (city) => context
-                            .read<MapCubit>()
-                            .selectLocationByCityName(city),
-                        onSelectAllVietnam: () =>
-                            context.read<MapCubit>().showAllVietnam(),
+                      child: RepaintBoundary(
+                        child: MapTopControlBar(
+                          activeFilter: state.activeFilter,
+                          onFilterChanged: (filter) =>
+                              context.read<MapCubit>().setFilter(filter),
+                          showHeatmap: state.showHeatmap,
+                          onToggleHeatmap: () =>
+                              context.read<MapCubit>().toggleHeatmap(),
+                          selectedCityName: state.selectedCityName,
+                          homeCityName: homeState.currentCity.name,
+                          isHomeSelected: state.isHomeSelected,
+                          selectedQuickCity: state.selectedQuickCity,
+                          onSelectHomeCity: () =>
+                              _syncWithHomeCity(homeState.currentCity),
+                          quickCities: state.quickCities,
+                          onSelectQuickCity: (target) =>
+                              context.read<MapCubit>().selectQuickCity(target),
+                          onSelectCity: (city) => context
+                              .read<MapCubit>()
+                              .selectLocationByCityName(city),
+                          onSelectAllVietnam: () =>
+                              context.read<MapCubit>().showAllVietnam(),
+                        ),
                       ),
                     ),
 
@@ -978,9 +980,11 @@ class _MapPageState extends State<MapPage> {
                       top: 0,
                       bottom: 0,
                       child: Center(
-                        child: MapZoomControls(
-                          onZoomIn: _zoomIn,
-                          onZoomOut: _zoomOut,
+                        child: RepaintBoundary(
+                          child: MapZoomControls(
+                            onZoomIn: _zoomIn,
+                            onZoomOut: _zoomOut,
+                          ),
                         ),
                       ),
                     ),
@@ -990,22 +994,25 @@ class _MapPageState extends State<MapPage> {
                       top: 0,
                       bottom: 0,
                       child: Center(
-                        child: MapSideControls(
-                          hasPickedLocation: state.pickedLocation != null,
-                          onCancelPicker: () {
-                            context
-                                .read<MapCubit>()
-                                .clearPickedLocation();
-                          },
-                          onCurrentLocation: _moveToCurrentGpsLocation,
-                          isHomeSelected: state.isHomeSelected,
-                          onToggleLayer: () =>
-                              _openLayerSelector(context, state.activeLayer),
-                          activeLayer: state.activeLayer,
-                          onWholeCountry: () {
-                            context.read<MapCubit>().showAllVietnam();
-                          },
-                          isShowedAllVN: state.isShowedAllVN,
+                        child: RepaintBoundary(
+                          child: MapSideControls(
+                            hasPickedLocation: state.pickedLocation != null,
+                            onCancelPicker: () {
+                              context.read<MapCubit>().clearPickedLocation();
+                              context
+                                  .read<HomeDashboardCubit>()
+                                  .revertToGpsOrHome();
+                            },
+                            onCurrentLocation: _moveToCurrentGpsLocation,
+                            isHomeSelected: state.isHomeSelected,
+                            onToggleLayer: () =>
+                                _openLayerSelector(context, state.activeLayer),
+                            activeLayer: state.activeLayer,
+                            onWholeCountry: () {
+                              context.read<MapCubit>().showAllVietnam();
+                            },
+                            isShowedAllVN: state.isShowedAllVN,
+                          ),
                         ),
                       ),
                     ),
@@ -1015,15 +1022,20 @@ class _MapPageState extends State<MapPage> {
                         left: 16,
                         right: 16,
                         bottom: 100,
-                        child: StationPreviewCard(
-                          station: state.selectedStation!,
-                          isLoading:
-                              state.isPickingLocation ||
-                              state.isLoadingPointData,
-                          activeLayer: state.activeLayer,
-                          onClose: () => context
-                              .read<MapCubit>()
-                              .clearSelection(),
+                        child: RepaintBoundary(
+                          child: StationPreviewCard(
+                            station: state.selectedStation!,
+                            isLoading:
+                                state.isPickingLocation ||
+                                state.isLoadingPointData,
+                            activeLayer: state.activeLayer,
+                            onClose: () {
+                              context.read<MapCubit>().clearSelection();
+                              context
+                                  .read<HomeDashboardCubit>()
+                                  .revertToGpsOrHome();
+                            },
+                          ),
                         ),
                       ),
                   ],

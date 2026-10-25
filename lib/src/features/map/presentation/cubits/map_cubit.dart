@@ -2,10 +2,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../../common/utils/geo_distance_helper.dart';
+import '../../../../core/domain/entities/app_location_entity.dart';
 import '../../../../core/infrastructure/services/location_service.dart';
 import '../../../air_quality/domain/entities/air_quality_entity.dart';
 import '../../../air_quality/domain/interfaces/i_air_quality_repository.dart';
-import '../../../home/domain/entities/city_entity.dart';
 import '../../../details/domain/entities/details_entity.dart';
 import '../../../details/domain/interfaces/i_details_repository.dart';
 import '../../domain/entities/map_layer_type.dart';
@@ -30,8 +30,8 @@ class MapCubit extends Cubit<MapState> {
     this.airQualityRepository,
     this.locationService,
     this.nasaFirmsRepository,
-  })  : detailsRepository = detailsRepository ?? weatherRepository,
-        super(const MapState());
+  }) : detailsRepository = detailsRepository ?? weatherRepository,
+       super(const MapState());
 
   IDetailsRepository? get weatherRepository => detailsRepository;
 
@@ -39,17 +39,13 @@ class MapCubit extends Cubit<MapState> {
     String? initialCity,
     LatLng? initialCoords,
   }) async {
-    emit(
-      state.copyWith(status: MapStatus.loading, errorMessage: null),
-    );
+    emit(state.copyWith(status: MapStatus.loading, errorMessage: null));
 
     final result = await repository.getVietnamStations();
 
     if (result.isSuccess && result.data != null) {
       final stations = result.data!;
-      emit(
-        state.copyWith(status: MapStatus.success, stations: stations),
-      );
+      emit(state.copyWith(status: MapStatus.success, stations: stations));
 
       await loadUserGpsLocation();
 
@@ -138,7 +134,12 @@ class MapCubit extends Cubit<MapState> {
     StationEntity? closestStation;
     double minDistance = double.infinity;
     for (final st in state.stations) {
-      final d = GeoDistanceHelper.distanceInKm(lat, lon, st.latitude, st.longitude);
+      final d = GeoDistanceHelper.distanceInKm(
+        lat,
+        lon,
+        st.latitude,
+        st.longitude,
+      );
       if (d < minDistance) {
         minDistance = d;
         closestStation = st;
@@ -147,10 +148,7 @@ class MapCubit extends Cubit<MapState> {
     return (station: closestStation, distanceKm: minDistance);
   }
 
-  void selectStation(
-    StationEntity station, {
-    QuickCityTarget? quickCity,
-  }) {
+  void selectStation(StationEntity station, {QuickCityTarget? quickCity}) {
     final matchedQuickCity = quickCity ?? _findQuickCityForStation(station);
     final bool needsWeather = station.temperature == null;
     emit(
@@ -455,10 +453,16 @@ class MapCubit extends Cubit<MapState> {
         province = closestCity.label;
         referenceCoords = LatLng(closestCity.latitude, closestCity.longitude);
       } else {
-        final prov = VietnamProvince.findClosest(point.latitude, point.longitude);
+        final prov = VietnamProvince.findClosest(
+          point.latitude,
+          point.longitude,
+        );
         province = prov.province.provinceName;
         minDistance = prov.distanceKm;
-        referenceCoords = LatLng(prov.province.latitude, prov.province.longitude);
+        referenceCoords = LatLng(
+          prov.province.latitude,
+          prov.province.longitude,
+        );
       }
     }
 
@@ -635,7 +639,7 @@ class MapCubit extends Cubit<MapState> {
     }
 
     final norm = GeoDistanceHelper.normalizeName(cityName);
-    for (final city in CityEntity.popularCities) {
+    for (final city in AppLocationEntity.popularLocations) {
       final normCity = GeoDistanceHelper.normalizeName(city.name);
       if (normCity.contains(norm) || norm.contains(normCity)) {
         return LatLng(city.latitude, city.longitude);
@@ -657,6 +661,5 @@ class MapCubit extends Cubit<MapState> {
     double lon1,
     double lat2,
     double lon2,
-  ) =>
-      GeoDistanceHelper.distanceInKm(lat1, lon1, lat2, lon2);
+  ) => GeoDistanceHelper.distanceInKm(lat1, lon1, lat2, lon2);
 }

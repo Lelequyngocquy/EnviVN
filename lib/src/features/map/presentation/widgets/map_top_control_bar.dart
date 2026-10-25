@@ -41,7 +41,6 @@ class MapTopControlBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasHome = homeCityName != null && homeCityName!.isNotEmpty;
 
-    
     final effectiveQuickCities = hasHome
         ? quickCities
               .where((target) => !target.matchesPinnedLocation(homeCityName))
@@ -50,7 +49,6 @@ class MapTopControlBar extends StatelessWidget {
 
     return Column(
       children: [
-        
         AppGlass(
           isFixed: true,
           borderRadius: 22,
@@ -113,7 +111,6 @@ class MapTopControlBar extends StatelessWidget {
         ),
         const Gap(8),
 
-        
         SizedBox(
           height: 34,
           child: ListView.separated(
@@ -177,7 +174,9 @@ class _FilterGlassChip extends StatelessWidget {
           color: isActive ? UIColors.primary : UIColors.white.withOpacity(0.08),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isActive ? UIColors.primary : UIColors.white.withOpacity(0.2),
+            color: isActive
+                ? UIColors.primary
+                : UIColors.white.withOpacity(0.2),
           ),
         ),
         child: AppText.bold(
@@ -213,7 +212,9 @@ class _QuickCityGlassChip extends StatelessWidget {
           color: isActive ? UIColors.primary : UIColors.black.withOpacity(0.25),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isActive ? UIColors.primary : UIColors.white.withOpacity(0.18),
+            color: isActive
+                ? UIColors.primary
+                : UIColors.white.withOpacity(0.18),
             width: isActive ? 1.5 : 1.0,
           ),
         ),

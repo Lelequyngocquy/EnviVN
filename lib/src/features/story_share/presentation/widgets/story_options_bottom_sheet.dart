@@ -6,7 +6,7 @@ import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/features/air_quality/domain/entities/air_quality_entity.dart';
 import 'package:envivn/src/features/details/domain/entities/details_entity.dart';
-import 'package:envivn/src/features/home/domain/entities/city_entity.dart';
+import 'package:envivn/src/core/domain/entities/app_location_entity.dart';
 import 'package:envivn/src/shared/widgets/app_button.dart';
 import 'package:envivn/src/shared/widgets/app_divider.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
@@ -99,7 +99,7 @@ class StoryCardMeta {
 class StoryOptionsBottomSheet extends StatefulWidget {
   final StoryRatio initialRatio;
   final List<StoryCardType> initialCards;
-  final CityEntity city;
+  final AppLocationEntity city;
   final AirQualityEntity airQuality;
   final DetailsEntity weather;
   final void Function(StoryRatio ratio, List<StoryCardType> cards) onApply;
@@ -118,7 +118,7 @@ class StoryOptionsBottomSheet extends StatefulWidget {
     BuildContext context, {
     required StoryRatio currentRatio,
     required List<StoryCardType> currentCards,
-    required CityEntity city,
+    required AppLocationEntity city,
     required AirQualityEntity airQuality,
     required DetailsEntity weather,
     required void Function(StoryRatio ratio, List<StoryCardType> cards) onApply,

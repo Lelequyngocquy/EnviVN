@@ -414,4 +414,3 @@ class _WeatherPillItem extends StatelessWidget {
 
 // Backward-compatibility alias
 typedef HomeWeatherCard = HomeDetailsCard;
-

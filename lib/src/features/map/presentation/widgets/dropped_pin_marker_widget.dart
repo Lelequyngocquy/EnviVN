@@ -49,9 +49,7 @@ class DroppedPinMarkerWidget extends StatelessWidget {
                     height: 16,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        UIColors.white,
-                      ),
+                      valueColor: AlwaysStoppedAnimation<Color>(UIColors.white),
                     ),
                   )
                 : const AppIcon(

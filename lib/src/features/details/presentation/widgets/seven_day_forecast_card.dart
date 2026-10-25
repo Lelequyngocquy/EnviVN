@@ -10,10 +10,7 @@ import 'package:envivn/src/shared/widgets/glass.dart';
 class SevenDayForecastCard extends StatelessWidget {
   final List<DailyDetailsPoint> dailyForecast;
 
-  const SevenDayForecastCard({
-    super.key,
-    required this.dailyForecast,
-  });
+  const SevenDayForecastCard({super.key, required this.dailyForecast});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +32,11 @@ class SevenDayForecastCard extends StatelessWidget {
                 letterSpacing: 0.8,
                 color: UIColors.textSecondary,
               ),
-              AppIcon(Icons.calendar_month_rounded, size: 16, color: UIColors.textSecondary),
+              AppIcon(
+                Icons.calendar_month_rounded,
+                size: 16,
+                color: UIColors.textSecondary,
+              ),
             ],
           ),
           const Gap(14),
@@ -43,14 +44,15 @@ class SevenDayForecastCard extends StatelessWidget {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: days.length,
-            separatorBuilder: (context, index) => Divider(
-              color: UIColors.white.withOpacity(0.06),
-              height: 16,
-            ),
+            separatorBuilder: (context, index) =>
+                Divider(color: UIColors.white.withOpacity(0.06), height: 16),
             itemBuilder: (context, index) {
               final day = days[index];
               final dayName = DateHelper.formatWeekday(day.date);
-              final info = WeatherCodeHelper.getInfo(day.weatherCode, isDay: true);
+              final info = WeatherCodeHelper.getInfo(
+                day.weatherCode,
+                isDay: true,
+              );
 
               return Row(
                 children: [
@@ -59,8 +61,12 @@ class SevenDayForecastCard extends StatelessWidget {
                     child: AppText(
                       dayName,
                       size: 13,
-                      fontWeight: index == 0 ? FontWeight.bold : FontWeight.w500,
-                      color: index == 0 ? UIColors.textPrimary : UIColors.textSecondary,
+                      fontWeight: index == 0
+                          ? FontWeight.bold
+                          : FontWeight.w500,
+                      color: index == 0
+                          ? UIColors.textPrimary
+                          : UIColors.textSecondary,
                     ),
                   ),
                   AppIcon(info.icon, size: 18, color: info.color),
@@ -76,7 +82,10 @@ class SevenDayForecastCard extends StatelessWidget {
                   if (day.precipitationSum > 0)
                     Container(
                       margin: const EdgeInsets.only(right: 12),
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: UIColors.secondary.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(6),

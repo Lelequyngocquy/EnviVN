@@ -13,16 +13,28 @@ class DetailsRepository implements IDetailsRepository {
   final RestfulRequest network;
   final LocalStorage storage;
 
-  DetailsRepository({
-    required this.network,
-    required this.storage,
-  });
+  DetailsRepository({required this.network, required this.storage});
 
   @override
   Future<BaseResult<DetailsEntity>> getDetailsForecast({
     required double latitude,
     required double longitude,
+    bool forceRefresh = false,
   }) async {
+    if (!forceRefresh) {
+      final validCache = storage.getCachedWeather(
+        lat: latitude,
+        lon: longitude,
+        checkTtl: true,
+      );
+      if (validCache != null) {
+        return BaseResult(
+          success: true,
+          data: DetailsModel.fromJson(validCache),
+        );
+      }
+    }
+
     try {
       final endpoint = EndpointType(
         path: DetailsPaths.forecast,
@@ -30,25 +42,31 @@ class DetailsRepository implements IDetailsRepository {
         params: {
           'latitude': latitude,
           'longitude': longitude,
-          'current': 'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,surface_pressure,uv_index',
-          'hourly': 'temperature_2m,relative_humidity_2m,weather_code,precipitation_probability,uv_index',
-          'daily': 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum',
+          'current':
+              'temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,surface_pressure,uv_index',
+          'hourly':
+              'temperature_2m,relative_humidity_2m,weather_code,precipitation_probability,uv_index',
+          'daily':
+              'weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum',
           'timezone': 'auto',
         },
       );
 
-      final response = await network.requestData(endpoint, showErrorToast: false);
+      final response = await network.requestData(
+        endpoint,
+        showErrorToast: false,
+      );
 
       if (response.isSuccess && response.data is Map) {
         final dataMap = Map<String, dynamic>.from(response.data as Map);
         final details = DetailsModel.fromJson(dataMap);
 
-        await storage.saveCachedWeather(dataMap);
+        await storage.saveCachedWeather(dataMap, lat: latitude, lon: longitude);
 
         return BaseResult(success: true, data: details);
       }
 
-      final cached = getCachedDetails();
+      final cached = getCachedDetails(latitude: latitude, longitude: longitude);
       if (cached != null) {
         return BaseResult(
           success: true,
@@ -64,7 +82,7 @@ class DetailsRepository implements IDetailsRepository {
       );
     } catch (e) {
       debugPrint('❌ [DetailsRepository] Lỗi: $e');
-      final cached = getCachedDetails();
+      final cached = getCachedDetails(latitude: latitude, longitude: longitude);
       if (cached != null) {
         return BaseResult(
           success: true,
@@ -82,24 +100,28 @@ class DetailsRepository implements IDetailsRepository {
   }
 
   @override
-  DetailsEntity? getCachedDetails() {
-    final cachedJson = storage.getCachedWeather();
+  DetailsEntity? getCachedDetails({double? latitude, double? longitude}) {
+    final cachedJson = storage.getCachedWeather(lat: latitude, lon: longitude);
     if (cachedJson != null) {
       return DetailsModel.fromJson(cachedJson, isOfflineCache: true);
     }
     return null;
   }
 
-  // Aliases for compatibility
   @override
   Future<BaseResult<DetailsEntity>> getWeatherForecast({
     required double latitude,
     required double longitude,
-  }) => getDetailsForecast(latitude: latitude, longitude: longitude);
+    bool forceRefresh = false,
+  }) => getDetailsForecast(
+    latitude: latitude,
+    longitude: longitude,
+    forceRefresh: forceRefresh,
+  );
 
   @override
-  DetailsEntity? getCachedWeather() => getCachedDetails();
+  DetailsEntity? getCachedWeather({double? latitude, double? longitude}) =>
+      getCachedDetails(latitude: latitude, longitude: longitude);
 }
 
-// Backward-compatibility alias
 typedef WeatherRepository = DetailsRepository;

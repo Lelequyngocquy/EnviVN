@@ -25,7 +25,8 @@ class DetailsState extends Equatable {
       activeDetailTab == DetailTab.all || activeDetailTab == DetailTab.weather;
 
   bool get showAirQualitySection =>
-      activeDetailTab == DetailTab.all || activeDetailTab == DetailTab.airQuality;
+      activeDetailTab == DetailTab.all ||
+      activeDetailTab == DetailTab.airQuality;
 
   DetailsState copyWith({
     DetailsStatus? status,
@@ -46,12 +47,12 @@ class DetailsState extends Equatable {
 
   @override
   List<Object?> get props => [
-        status,
-        details,
-        errorMessage,
-        noticeMessage,
-        activeDetailTab,
-      ];
+    status,
+    details,
+    errorMessage,
+    noticeMessage,
+    activeDetailTab,
+  ];
 }
 
 // Backward-compatibility aliases

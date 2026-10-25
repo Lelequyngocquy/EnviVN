@@ -10,10 +10,7 @@ import 'package:envivn/src/shared/widgets/glass.dart';
 class TwentyFourHourTempChart extends StatelessWidget {
   final List<HourlyDetailsPoint> hourlyList;
 
-  const TwentyFourHourTempChart({
-    super.key,
-    required this.hourlyList,
-  });
+  const TwentyFourHourTempChart({super.key, required this.hourlyList});
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +20,12 @@ class TwentyFourHourTempChart extends StatelessWidget {
     }
 
     final spots = <FlSpot>[];
-    double rawMin = points.map((p) => p.temperature).reduce((a, b) => a < b ? a : b);
-    double rawMax = points.map((p) => p.temperature).reduce((a, b) => a > b ? a : b);
+    double rawMin = points
+        .map((p) => p.temperature)
+        .reduce((a, b) => a < b ? a : b);
+    double rawMax = points
+        .map((p) => p.temperature)
+        .reduce((a, b) => a > b ? a : b);
 
     final diff = rawMax - rawMin;
     final double interval;
@@ -124,8 +125,12 @@ class TwentyFourHourTempChart extends StatelessWidget {
                       ),
                     ),
                   ),
-                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  topTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                  rightTitles: const AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,

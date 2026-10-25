@@ -135,10 +135,7 @@ class StationMarkerWidget extends StatelessWidget {
               width: 1.8,
             ),
           ),
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: content,
-          ),
+          child: FittedBox(fit: BoxFit.scaleDown, child: content),
         ),
       ),
     );

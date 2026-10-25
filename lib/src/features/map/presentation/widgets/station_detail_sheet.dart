@@ -29,75 +29,77 @@ class StationDetailSheet extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: info.color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  children: [
-                    AppText.extraBold(
-                      '${station.aqi}',
-                      size: 36,
-                      color: info.color,
-                      height: 1.0,
-                    ),
-                    const Gap(4),
-                    const AppText.semiBold(
-                      'US AQI',
-                      size: 11,
-                      color: UIColors.textLight,
-                    ),
-                  ],
-                ),
-              ),
-              const Gap(16),
-              Expanded(
-                child: Column(
-                  children: [
-                    _MetricRow(
-                      label: 'Bụi mịn PM2.5',
-                      value: '${station.pm25.toStringAsFixed(1)} µg/m³',
-                      isHigh: station.pm25 > 35,
-                    ),
-                    const Divider(height: 16, color: UIColors.border),
-                    _MetricRow(
-                      label: 'Bụi PM10',
-                      value: '${station.pm10.toStringAsFixed(1)} µg/m³',
-                      isHigh: station.pm10 > 50,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const Gap(18),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: UIColors.surfaceVariant,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppIcon(
-                  info.wearMask ? Icons.masks_rounded : Icons.check_circle_rounded,
-                  color: info.color,
-                  size: 20,
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: info.color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
+                    children: [
+                      AppText.extraBold(
+                        '${station.aqi}',
+                        size: 36,
+                        color: info.color,
+                        height: 1.0,
+                      ),
+                      const Gap(4),
+                      const AppText.semiBold(
+                        'US AQI',
+                        size: 11,
+                        color: UIColors.textLight,
+                      ),
+                    ],
+                  ),
                 ),
-                const Gap(8),
+                const Gap(16),
                 Expanded(
-                  child: AppText.medium(
-                    info.healthAdvice,
-                    size: 12,
-                    color: UIColors.textPrimary,
+                  child: Column(
+                    children: [
+                      _MetricRow(
+                        label: 'Bụi mịn PM2.5',
+                        value: '${station.pm25.toStringAsFixed(1)} µg/m³',
+                        isHigh: station.pm25 > 35,
+                      ),
+                      const Divider(height: 16, color: UIColors.border),
+                      _MetricRow(
+                        label: 'Bụi PM10',
+                        value: '${station.pm10.toStringAsFixed(1)} µg/m³',
+                        isHigh: station.pm10 > 50,
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
+            const Gap(18),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: UIColors.surfaceVariant,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppIcon(
+                    info.wearMask
+                        ? Icons.masks_rounded
+                        : Icons.check_circle_rounded,
+                    color: info.color,
+                    size: 20,
+                  ),
+                  const Gap(8),
+                  Expanded(
+                    child: AppText.medium(
+                      info.healthAdvice,
+                      size: 12,
+                      color: UIColors.textPrimary,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -122,11 +124,7 @@ class _MetricRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        AppText.regular(
-          label,
-          size: 13,
-          color: UIColors.textSecondary,
-        ),
+        AppText.regular(label, size: 13, color: UIColors.textSecondary),
         AppText.bold(
           value,
           size: 14,

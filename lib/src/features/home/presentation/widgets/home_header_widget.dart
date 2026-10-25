@@ -5,13 +5,13 @@ import 'package:intl/intl.dart';
 import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/common/utils/weather_code_helper.dart';
 import 'package:envivn/src/core/presentation/widgets/widgets.dart';
-import 'package:envivn/src/features/home/domain/entities/city_entity.dart';
+import 'package:envivn/src/core/domain/entities/app_location_entity.dart';
 import 'package:envivn/src/features/home/presentation/cubits/home_dashboard_cubit.dart';
 import 'package:envivn/src/features/details/domain/entities/details_entity.dart';
 import 'package:envivn/src/shared/router/router_key_manager.dart';
 
 class HomeHeaderWidget extends StatelessWidget {
-  final CityEntity city;
+  final AppLocationEntity city;
   final DateTime? lastUpdated;
   final DetailsEntity weather;
   final VoidCallback onSelectCity;

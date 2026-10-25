@@ -91,9 +91,7 @@ class HourlyDetailsSlider extends StatelessWidget {
                       AppText(
                         timeStr,
                         size: 10,
-                        fontWeight: isFirst
-                            ? FontWeight.bold
-                            : FontWeight.w500,
+                        fontWeight: isFirst ? FontWeight.bold : FontWeight.w500,
                         color: isFirst
                             ? UIColors.secondary
                             : UIColors.textSecondary,
@@ -140,4 +138,3 @@ class HourlyDetailsSlider extends StatelessWidget {
 
 // Backward-compatibility alias
 typedef HourlyWeatherSlider = HourlyDetailsSlider;
-

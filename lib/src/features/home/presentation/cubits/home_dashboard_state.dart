@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
-import 'package:envivn/src/features/home/domain/entities/city_entity.dart';
+import 'package:envivn/src/core/domain/entities/app_location_entity.dart';
 
 enum DashboardStatus { initial, loading, success, failure }
 
 class HomeDashboardState extends Equatable {
   final DashboardStatus status;
-  final CityEntity currentCity;
+  final AppLocationEntity currentCity;
   final DateTime? lastUpdated;
   final String? noticeMessage;
   final int currentTab;
@@ -16,7 +16,7 @@ class HomeDashboardState extends Equatable {
 
   const HomeDashboardState({
     this.status = DashboardStatus.initial,
-    this.currentCity = CityEntity.defaultCity,
+    this.currentCity = AppLocationEntity.defaultLocation,
     this.lastUpdated,
     this.noticeMessage,
     this.currentTab = 0,
@@ -26,12 +26,14 @@ class HomeDashboardState extends Equatable {
     this.hasPendingMapSync = true,
   });
 
+  AppLocationEntity get currentLocation => currentCity;
+
   bool isInitialLoading(int hourlyForecastLength) =>
       status == DashboardStatus.loading && hourlyForecastLength == 0;
 
   HomeDashboardState copyWith({
     DashboardStatus? status,
-    CityEntity? currentCity,
+    AppLocationEntity? currentCity,
     DateTime? lastUpdated,
     String? noticeMessage,
     bool clearNotice = false,
@@ -57,14 +59,14 @@ class HomeDashboardState extends Equatable {
 
   @override
   List<Object?> get props => [
-        status,
-        currentCity,
-        lastUpdated,
-        noticeMessage,
-        currentTab,
-        isChangingLocation,
-        hasNotification,
-        isLocationPermissionGranted,
-        hasPendingMapSync,
-      ];
+    status,
+    currentCity,
+    lastUpdated,
+    noticeMessage,
+    currentTab,
+    isChangingLocation,
+    hasNotification,
+    isLocationPermissionGranted,
+    hasPendingMapSync,
+  ];
 }

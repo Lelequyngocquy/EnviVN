@@ -9,13 +9,13 @@ import 'package:envivn/src/core/presentation/widgets/app_text.dart';
 import 'package:envivn/src/features/story_share/presentation/widgets/story_options_bottom_sheet.dart';
 import 'package:envivn/src/features/air_quality/domain/entities/air_quality_entity.dart';
 import 'package:envivn/src/features/details/domain/entities/details_entity.dart';
-import 'package:envivn/src/features/home/domain/entities/city_entity.dart';
+import 'package:envivn/src/core/domain/entities/app_location_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 import 'package:gap/gap.dart';
 
 /// Thẻ hình ảnh tóm tắt dữ liệu môi trường, thiết kế compact, hỗ trợ chọn & di chuyển card.
 class StoryCardView extends StatelessWidget {
-  final CityEntity city;
+  final AppLocationEntity city;
   final AirQualityEntity airQuality;
   final DetailsEntity weather;
   final DateTime updateTime;
@@ -254,10 +254,7 @@ class StoryCardView extends StatelessWidget {
   }
 
   /// Lưới 2 cột cho các thẻ con trong Story thu gọn về min
-  Widget _buildCardsGrid(
-    BuildContext context, {
-    required dynamic aqiInfo,
-  }) {
+  Widget _buildCardsGrid(BuildContext context, {required dynamic aqiInfo}) {
     if (cards.isEmpty) {
       return const Center(
         child: AppText.regular(
@@ -369,7 +366,10 @@ class StoryCardView extends StatelessWidget {
               Positioned.fill(
                 child: Container(
                   color: UIColors.bg.withOpacity(0.88),
-                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 2,
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
@@ -561,7 +561,11 @@ class StoryCardView extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    AppIcon(weatherInfo.icon, size: 12, color: weatherInfo.color),
+                    AppIcon(
+                      weatherInfo.icon,
+                      size: 12,
+                      color: weatherInfo.color,
+                    ),
                     const SizedBox(width: 4),
                     const Expanded(
                       child: AppText.bold(
@@ -721,8 +725,8 @@ class StoryCardView extends StatelessWidget {
                 const Gap(4),
                 AppText.bold(
                   aqi > 100
-                    ? 'Khuyên dùng khẩu trang N95'
-                    : 'An toàn khi ra ngoài',
+                      ? 'Khuyên dùng khẩu trang N95'
+                      : 'An toàn khi ra ngoài',
                   size: 10.5,
                   color: aqi > 100 ? UIColors.warning : UIColors.primary,
                   maxLines: 3,
@@ -771,8 +775,8 @@ class StoryCardView extends StatelessWidget {
                 const Gap(4),
                 AppText.bold(
                   aqi <= 100
-                    ? 'Thích hợp cho chạy bộ sáng'
-                    : 'Nên tập luyện trong nhà',
+                      ? 'Thích hợp cho chạy bộ sáng'
+                      : 'Nên tập luyện trong nhà',
                   size: 10.5,
                   color: aqi <= 100 ? UIColors.primary : UIColors.error,
                   maxLines: 3,

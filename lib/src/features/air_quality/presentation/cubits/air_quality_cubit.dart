@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:envivn/src/core/domain/entities/app_location_entity.dart';
 import '../../domain/interfaces/i_air_quality_repository.dart';
 import 'air_quality_state.dart';
 
@@ -21,12 +22,14 @@ class AirQualityCubit extends Cubit<AirQualityState> {
   Future<void> fetchAirQuality({
     required double latitude,
     required double longitude,
+    bool forceRefresh = false,
   }) async {
     emit(state.copyWith(status: AirQualityStatus.loading, errorMessage: null));
 
     final result = await repository.getAirQuality(
       latitude: latitude,
       longitude: longitude,
+      forceRefresh: forceRefresh,
     );
 
     if (result.isSuccess && result.data != null) {
@@ -47,4 +50,13 @@ class AirQualityCubit extends Cubit<AirQualityState> {
       );
     }
   }
+
+  Future<void> fetchForLocation(
+    AppLocationEntity location, {
+    bool forceRefresh = false,
+  }) => fetchAirQuality(
+    latitude: location.latitude,
+    longitude: location.longitude,
+    forceRefresh: forceRefresh,
+  );
 }

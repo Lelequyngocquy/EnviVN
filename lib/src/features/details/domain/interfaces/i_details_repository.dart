@@ -5,18 +5,23 @@ abstract class IDetailsRepository {
   Future<BaseResult<DetailsEntity>> getDetailsForecast({
     required double latitude,
     required double longitude,
+    bool forceRefresh = false,
   });
 
-  DetailsEntity? getCachedDetails();
+  DetailsEntity? getCachedDetails({double? latitude, double? longitude});
 
-  // Backward-compatibility methods
   Future<BaseResult<DetailsEntity>> getWeatherForecast({
     required double latitude,
     required double longitude,
-  }) => getDetailsForecast(latitude: latitude, longitude: longitude);
+    bool forceRefresh = false,
+  }) => getDetailsForecast(
+    latitude: latitude,
+    longitude: longitude,
+    forceRefresh: forceRefresh,
+  );
 
-  DetailsEntity? getCachedWeather() => getCachedDetails();
+  DetailsEntity? getCachedWeather({double? latitude, double? longitude}) =>
+      getCachedDetails(latitude: latitude, longitude: longitude);
 }
 
-// Backward-compatibility alias
 typedef IWeatherRepository = IDetailsRepository;

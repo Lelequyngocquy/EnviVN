@@ -4,13 +4,13 @@ import 'package:envivn/src/common/constants/colors.dart';
 import 'package:envivn/src/core/presentation/widgets/app_bottom_sheet.dart';
 import 'package:envivn/src/core/presentation/widgets/app_icon.dart';
 import 'package:envivn/src/core/presentation/widgets/app_text.dart';
-import 'package:envivn/src/features/home/domain/entities/city_entity.dart';
+import 'package:envivn/src/core/domain/entities/app_location_entity.dart';
 import 'package:envivn/src/shared/widgets/glass.dart';
 import 'package:gap/gap.dart';
 
 class CitySelectorSheet extends StatefulWidget {
-  final CityEntity currentCity;
-  final ValueChanged<CityEntity> onCitySelected;
+  final AppLocationEntity currentCity;
+  final ValueChanged<AppLocationEntity> onCitySelected;
   final VoidCallback onSelectGps;
 
   const CitySelectorSheet({
@@ -29,9 +29,10 @@ class _CitySelectorSheetState extends State<CitySelectorSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredCities = CityEntity.popularCities.where((city) {
+    final filteredCities = AppLocationEntity.popularLocations.where((city) {
       final q = _searchQuery.toLowerCase();
-      return city.name.toLowerCase().contains(q) || city.province.toLowerCase().contains(q);
+      return city.name.toLowerCase().contains(q) ||
+          city.province.toLowerCase().contains(q);
     }).toList();
 
     return AppBottomSheet(
@@ -40,18 +41,23 @@ class _CitySelectorSheetState extends State<CitySelectorSheet> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
-          
           TextField(
             onChanged: (val) => setState(() => _searchQuery = val),
             style: const TextStyle(color: UIColors.textPrimary),
             decoration: InputDecoration(
               hintText: 'Tìm kiếm tỉnh/thành phố...',
               hintStyle: const TextStyle(color: UIColors.textMuted),
-              prefixIcon: const AppIcon(Icons.search, color: UIColors.textSecondary, size: 20),
+              prefixIcon: const AppIcon(
+                Icons.search,
+                color: UIColors.textSecondary,
+                size: 20,
+              ),
               filled: true,
               fillColor: UIColors.white.withOpacity(0.07),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 12,
+              ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide(color: UIColors.white.withOpacity(0.12)),
@@ -68,7 +74,6 @@ class _CitySelectorSheetState extends State<CitySelectorSheet> {
           ),
           const Gap(14),
 
-          
           AppGlass(
             borderRadius: 16,
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -83,7 +88,11 @@ class _CitySelectorSheetState extends State<CitySelectorSheet> {
                   color: UIColors.primary.withOpacity(0.18),
                   shape: BoxShape.circle,
                 ),
-                child: const AppIcon(Icons.my_location_rounded, color: UIColors.primary, size: 20),
+                child: const AppIcon(
+                  Icons.my_location_rounded,
+                  color: UIColors.primary,
+                  size: 20,
+                ),
               ),
               title: const AppText.bold(
                 'Sử dụng vị trí hiện tại (GPS)',
@@ -96,7 +105,10 @@ class _CitySelectorSheetState extends State<CitySelectorSheet> {
                 color: UIColors.textSecondary,
               ),
               trailing: widget.currentCity.isGps
-                  ? const AppIcon(Icons.check_circle_rounded, color: UIColors.primary)
+                  ? const AppIcon(
+                      Icons.check_circle_rounded,
+                      color: UIColors.primary,
+                    )
                   : null,
               contentPadding: EdgeInsets.zero,
             ),
@@ -109,15 +121,16 @@ class _CitySelectorSheetState extends State<CitySelectorSheet> {
           ),
           const Gap(8),
 
-          
           Expanded(
             child: ListView.separated(
               physics: const ClampingScrollPhysics(),
               itemCount: filteredCities.length,
-              separatorBuilder: (_, _) => Divider(height: 1, color: UIColors.white.withOpacity(0.08)),
+              separatorBuilder: (_, _) =>
+                  Divider(height: 1, color: UIColors.white.withOpacity(0.08)),
               itemBuilder: (context, index) {
                 final city = filteredCities[index];
-                final isSelected = !widget.currentCity.isGps &&
+                final isSelected =
+                    !widget.currentCity.isGps &&
                     widget.currentCity.latitude == city.latitude &&
                     widget.currentCity.longitude == city.longitude;
 
@@ -128,7 +141,9 @@ class _CitySelectorSheetState extends State<CitySelectorSheet> {
                   },
                   title: AppText(
                     city.name,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    fontWeight: isSelected
+                        ? FontWeight.bold
+                        : FontWeight.normal,
                     color: isSelected ? UIColors.primary : UIColors.textPrimary,
                   ),
                   subtitle: AppText.regular(
@@ -137,9 +152,15 @@ class _CitySelectorSheetState extends State<CitySelectorSheet> {
                     color: UIColors.textSecondary,
                   ),
                   trailing: isSelected
-                      ? const AppIcon(Icons.check_circle_rounded, color: UIColors.primary)
+                      ? const AppIcon(
+                          Icons.check_circle_rounded,
+                          color: UIColors.primary,
+                        )
                       : null,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 2,
+                  ),
                 );
               },
             ),

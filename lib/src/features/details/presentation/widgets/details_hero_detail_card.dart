@@ -9,10 +9,7 @@ import 'package:envivn/src/shared/widgets/glass.dart';
 class DetailsHeroDetailCard extends StatelessWidget {
   final DetailsEntity details;
 
-  const DetailsHeroDetailCard({
-    super.key,
-    required this.details,
-  });
+  const DetailsHeroDetailCard({super.key, required this.details});
 
   // Backward compatible constructor
   const DetailsHeroDetailCard.fromWeather({
@@ -32,7 +29,9 @@ class DetailsHeroDetailCard extends StatelessWidget {
         ? weather.hourlyForecast.first.precipitationProbability
         : 0;
 
-    final daily = weather.dailyForecast.isNotEmpty ? weather.dailyForecast.first : null;
+    final daily = weather.dailyForecast.isNotEmpty
+        ? weather.dailyForecast.first
+        : null;
     final highLowStr = daily != null
         ? 'Cao: ${daily.maxTemp.toStringAsFixed(0)}° • Thấp: ${daily.minTemp.toStringAsFixed(0)}°'
         : null;
@@ -114,7 +113,6 @@ class DetailsHeroDetailCard extends StatelessWidget {
           ),
           const Gap(16),
 
-          
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
@@ -223,4 +221,3 @@ class _MetricItem extends StatelessWidget {
 
 // Backward-compatibility alias
 typedef WeatherHeroDetailCard = DetailsHeroDetailCard;
-

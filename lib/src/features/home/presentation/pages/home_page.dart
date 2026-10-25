@@ -43,6 +43,7 @@ class _HomePageState extends State<HomePage> {
       airQuality: aqiState.airQuality,
       weather: detailsState.details,
       cityName: homeState.currentCity.name,
+      location: homeState.currentLocation,
     );
   }
 

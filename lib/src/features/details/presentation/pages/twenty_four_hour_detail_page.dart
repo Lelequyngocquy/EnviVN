@@ -117,7 +117,7 @@ class TwentyFourHourDetailPage extends StatelessWidget {
                                         children: [
                                           ConstrainedBox(
                                             constraints: const BoxConstraints(
-                                              maxWidth: 110,
+                                              maxWidth: 160,
                                             ),
                                             child: AppText.semiBold(
                                               homeState.currentCity.name,

@@ -14,8 +14,10 @@ class ThermalHotspotModel {
   final double brightnessKelvin; // Nhiệt độ bức xạ vệ tinh (Kelvin)
   final String fireType; // Loại hình cháy / phát xạ nhiệt
   final double confidence; // Độ tin cậy cảm biến vệ tinh (%)
-  final bool isActiveFire; // TRUE: Tín hiệu phát xạ nhiệt thời gian thực; FALSE: Vùng biến động nhiệt chu kỳ
-  final String proneSeason; // Khoảng thời gian / mùa thường có biến động nhiệt cao
+  final bool
+  isActiveFire; // TRUE: Tín hiệu phát xạ nhiệt thời gian thực; FALSE: Vùng biến động nhiệt chu kỳ
+  final String
+  proneSeason; // Khoảng thời gian / mùa thường có biến động nhiệt cao
   final String? detectedTime; // Thời điểm vệ tinh quét phát hiện
   final String description; // Mô tả thực địa
 
@@ -38,19 +40,19 @@ class ThermalHotspotModel {
   double get brightnessCelsius => brightnessKelvin - 273.15;
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'locationName': locationName,
-        'province': province,
-        'latitude': latitude,
-        'longitude': longitude,
-        'brightnessKelvin': brightnessKelvin,
-        'fireType': fireType,
-        'confidence': confidence,
-        'isActiveFire': isActiveFire,
-        'proneSeason': proneSeason,
-        'detectedTime': detectedTime,
-        'description': description,
-      };
+    'id': id,
+    'locationName': locationName,
+    'province': province,
+    'latitude': latitude,
+    'longitude': longitude,
+    'brightnessKelvin': brightnessKelvin,
+    'fireType': fireType,
+    'confidence': confidence,
+    'isActiveFire': isActiveFire,
+    'proneSeason': proneSeason,
+    'detectedTime': detectedTime,
+    'description': description,
+  };
 
   factory ThermalHotspotModel.fromJson(Map<String, dynamic> json) {
     return ThermalHotspotModel(
@@ -90,7 +92,8 @@ class ThermalHotspotModel {
       final acqDate = parts[5];
       final acqTime = parts[6];
       final confStr = parts[9].toLowerCase().trim();
-      final frp = double.tryParse(parts[12]) ?? 0.0; // Fire Radiative Power (MW)
+      final frp =
+          double.tryParse(parts[12]) ?? 0.0; // Fire Radiative Power (MW)
 
       if (lat == null || lon == null || brightTi4 == null) continue;
 
@@ -179,7 +182,8 @@ class ThermalHotspotModel {
 
   static String _determineFireType(String province, double frp) {
     final norm = province.toLowerCase();
-    final isDelta = norm.contains('đồng tháp') ||
+    final isDelta =
+        norm.contains('đồng tháp') ||
         norm.contains('an giang') ||
         norm.contains('cần thơ') ||
         norm.contains('kiên giang') ||
@@ -193,7 +197,8 @@ class ThermalHotspotModel {
           : 'Điểm nhiệt bề mặt ở vùng đồng bằng';
     }
 
-    final isHighland = norm.contains('gia lai') ||
+    final isHighland =
+        norm.contains('gia lai') ||
         norm.contains('kon tum') ||
         norm.contains('đắk lắk') ||
         norm.contains('lâm đồng') ||
@@ -228,7 +233,8 @@ class ThermalHotspotModel {
       isActiveFire: true,
       detectedTime: 'Vệ tinh VIIRS phát hiện lúc 08:30 sáng nay',
       proneSeason: 'Thời kỳ khô hạn ở vùng cao (Tháng 12 - Tháng 4)',
-      description: 'Vệ tinh ghi nhận tín hiệu phát xạ nhiệt tăng cao ở khu vực độ cao, cần theo dõi thêm từ thực địa.',
+      description:
+          'Vệ tinh ghi nhận tín hiệu phát xạ nhiệt tăng cao ở khu vực độ cao, cần theo dõi thêm từ thực địa.',
     ),
     ThermalHotspotModel(
       id: 'fire_dt_01',
@@ -241,8 +247,10 @@ class ThermalHotspotModel {
       confidence: 88,
       isActiveFire: true,
       detectedTime: 'Vệ tinh Terra/MODIS quét cách đây 1.5 giờ',
-      proneSeason: 'Thời điểm thu hoạch mùa vụ (Tháng 3 - Tháng 4 & Tháng 8 - Tháng 9)',
-      description: 'Vệ tinh ghi nhận nguồn nhiệt bề mặt cục bộ tại khu vực đồng bằng canh tác nông nghiệp.',
+      proneSeason:
+          'Thời điểm thu hoạch mùa vụ (Tháng 3 - Tháng 4 & Tháng 8 - Tháng 9)',
+      description:
+          'Vệ tinh ghi nhận nguồn nhiệt bề mặt cục bộ tại khu vực đồng bằng canh tác nông nghiệp.',
     ),
 
     // -------------------------------------------------------------------------
@@ -258,8 +266,10 @@ class ThermalHotspotModel {
       fireType: 'Vùng có biến động nhiệt bề mặt theo mùa',
       confidence: 85,
       isActiveFire: false,
-      proneSeason: 'Giai đoạn sau thu hoạch mùa vụ (Tháng 5 - Tháng 6 & Tháng 10 - Tháng 11)',
-      description: 'Khu vực đồng bằng thường ghi nhận biến động phát xạ nhiệt bề mặt theo chu kỳ mùa vụ.',
+      proneSeason:
+          'Giai đoạn sau thu hoạch mùa vụ (Tháng 5 - Tháng 6 & Tháng 10 - Tháng 11)',
+      description:
+          'Khu vực đồng bằng thường ghi nhận biến động phát xạ nhiệt bề mặt theo chu kỳ mùa vụ.',
     ),
     ThermalHotspotModel(
       id: 'fire_hn_02',
@@ -272,7 +282,8 @@ class ThermalHotspotModel {
       confidence: 82,
       isActiveFire: false,
       proneSeason: 'Tháng 5 - Tháng 6 & Tháng 10 - Tháng 11',
-      description: 'Khu vực đồng bằng nông nghiệp ghi nhận dao động nhiệt độ bề mặt định kỳ.',
+      description:
+          'Khu vực đồng bằng nông nghiệp ghi nhận dao động nhiệt độ bề mặt định kỳ.',
     ),
     ThermalHotspotModel(
       id: 'fire_hy_01',
@@ -285,7 +296,8 @@ class ThermalHotspotModel {
       confidence: 78,
       isActiveFire: false,
       proneSeason: 'Tháng 11 - Tháng 1 & Tháng 5 - Tháng 6',
-      description: 'Khu vực bãi bồi phù sa ven sông có ghi nhận dao động nhiệt bề mặt trong năm.',
+      description:
+          'Khu vực bãi bồi phù sa ven sông có ghi nhận dao động nhiệt bề mặt trong năm.',
     ),
     ThermalHotspotModel(
       id: 'fire_kg_01',
@@ -298,7 +310,8 @@ class ThermalHotspotModel {
       confidence: 91,
       isActiveFire: false,
       proneSeason: 'Thời kỳ khô hạn kéo dài (Tháng 2 - Tháng 5)',
-      description: 'Khu vực địa hình đất than bùn có độ ẩm nền thấp, cần theo dõi biến động nhiệt trong mùa khô.',
+      description:
+          'Khu vực địa hình đất than bùn có độ ẩm nền thấp, cần theo dõi biến động nhiệt trong mùa khô.',
     ),
     ThermalHotspotModel(
       id: 'fire_ct_01',
@@ -310,8 +323,10 @@ class ThermalHotspotModel {
       fireType: 'Vùng có dao động nhiệt theo chu kỳ canh tác',
       confidence: 80,
       isActiveFire: false,
-      proneSeason: 'Các đợt sau thu hoạch nông nghiệp (Tháng 3, Tháng 7, Tháng 11)',
-      description: 'Khu vực đồng bằng canh tác tập trung có dao động nhiệt độ bề mặt theo chu kỳ sản xuất.',
+      proneSeason:
+          'Các đợt sau thu hoạch nông nghiệp (Tháng 3, Tháng 7, Tháng 11)',
+      description:
+          'Khu vực đồng bằng canh tác tập trung có dao động nhiệt độ bề mặt theo chu kỳ sản xuất.',
     ),
   ];
 }
